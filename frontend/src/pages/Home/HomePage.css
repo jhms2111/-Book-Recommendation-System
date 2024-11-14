@@ -1,0 +1,66 @@
+/* src/pages/HomePage.css */
+
+:root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: normal;
+    align-content: stretch;
+    flex-wrap: wrap;
+    background-color: #e21010; /* Fundo escuro para contraste */
+}
+
+
+
+/* Estilos para o Banner */
+.banner {
+    width: 100%;
+    background: url('path-to-banner-image.jpg') no-repeat center;
+    background-size: cover;
+    padding: 40px;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Seções de Categoria */
+.category-section, .explore-section, .top-rated-section {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #000000;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.category-section h2, .top-rated-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Cartões de Categoria */
+.category-cards {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 10px 0;
+    justify-content: center;
+    width: 100%;
+}
+
+.category-cards div {
+    flex: 0 0 150px;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+

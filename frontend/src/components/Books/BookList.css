@@ -1,0 +1,47 @@
+/* src/components/Books/BookList.css */
+
+/* Contêiner da estante */
+.bookshelf {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Espaço entre os livros */
+    justify-content: center;
+    padding: 20px;
+    background-color: #30160f; /* Fundo mogno para um visual mais tradicional */
+  }
+  
+  
+  /* Cada item de livro */
+  .book-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px; /* Ajuste o tamanho da "capa" */
+    text-align: center;
+    border: 2px solid #e9e5e3; /* Borda em cor madeira */
+    border-radius: 5px;
+    padding: 8px;
+    background-color: #150701; /* Fundo interno de madeira mais clara */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4); /* Sombra mais forte para profundidade */
+  }
+  
+  /* A capa do livro */
+  .book-cover img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 3px;
+  }
+  
+  /* Título do livro */
+  .book-title {
+    margin-top: 8px;
+    font-size: 0.5rem; /* Tamanho menor para o título */
+    font-weight: bold;
+    color: #f4f1de; /* Cor clara para contraste */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%; /* Título ocupa 80% da largura do livro */
+  }
+  
