@@ -99,7 +99,6 @@ const HomePage = () => {
   useEffect(() => {
     const fetchBooksByCategory = async (query, setter) => {
       try {
-        // Busca livros em espanhol
         const responseEs = await axios.get(`http://localhost:5000/api/books/search`, {
           params: {
             q: query,
@@ -107,7 +106,6 @@ const HomePage = () => {
           },
         });
 
-        // Busca livros em inglês
         const responseEn = await axios.get(`http://localhost:5000/api/books/search`, {
           params: {
             q: query,
@@ -115,9 +113,7 @@ const HomePage = () => {
           },
         });
 
-        // Combina os resultados (limitando a quantidade se necessário)
-        const combinedResults = [...responseEs.data, ...responseEn.data].slice(0, 16); // Limita a 16 livros, 8 de cada idioma
-
+        const combinedResults = [...responseEs.data, ...responseEn.data].slice(0, 16);
         setter(combinedResults); // Atualiza o estado com os resultados combinados
       } catch (error) {
         console.error(`Erro ao buscar livros para a categoria ${query}:`, error);
@@ -132,7 +128,7 @@ const HomePage = () => {
     const fetchBooksFromOpenLibrary = async () => {
       try {
         const response = await axios.get('https://openlibrary.org/search.json', {
-          params: { q: 'fiction', limit: 10 }, // Busca por livros de ficção
+          params: { q: 'fiction', limit: 10 },
         });
 
         const filteredBooks = response.data.docs.filter(book => book.cover_i);
@@ -193,6 +189,23 @@ const ShelfSection = ({ title, books }) => (
     <Slider {...sliderSettings}>
       {books.map((book) => (
         <Box key={book.id || book.key} sx={{ padding: '10px' }}>
+          {book.cover_i ? (
+            <img
+              src={`https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`}
+              alt={book.title}
+              style={{ width: '100px', height: '150px', objectFit: 'cover' }}
+              onError={(e) => {
+                e.target.onerror = null; // Previne um loop infinito
+                e.target.src = "https://via.placeholder.com/100x150.png?text=Sem+Capa"; // Substitui caso a imagem não exista
+              }}
+            />
+          ) : (
+            <img
+              src="https://via.placeholder.com/100x150.png?text=Sem+Capa"
+              alt="Sem capa"
+              style={{ width: '100px', height: '150px', objectFit: 'cover' }}
+            />
+          )}
           <BookList books={[book]} />
         </Box>
       ))}
@@ -207,6 +220,7 @@ ShelfSection.propTypes = {
       id: PropTypes.string.isRequired,
       title: PropTypes.string,
       thumbnail: PropTypes.string,
+      cover_i: PropTypes.number,
     })
   ).isRequired,
 };
