@@ -48,14 +48,14 @@ const GoogleBooksCarousel = () => {
       // Requisição ao backend que faz a busca na API do Google Books
       const response = await axios.get(`http://localhost:5000/api/google-books/search?q=${searchQuery}`);
       console.log(response.data); // Verifique o conteúdo da resposta no console
-
+//
       // Certifique-se de que estamos acessando a propriedade "items" na resposta
       setGoogleBooks(response.data.items || []);  // Atualiza o estado com os livros encontrados
     } catch (error) {
       console.error('Erro ao buscar livros na API do Google Books:', error);
     }
   };
-
+//
   return (
     <Box sx={{ marginBottom: '20px' }}>
       <Typography variant="h4" sx={{ textAlign: 'center', color: '#fff' }}>
