@@ -95,7 +95,7 @@ const HomePage = () => {
   const [openLibraryBooks, setOpenLibraryBooks] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
-  // Busca livros da API local (como já estava no código anterior)
+  //// Busca livros da API local (como já estava no código anterior)
   useEffect(() => {
     const fetchBooksByCategory = async (query, setter) => {
       try {
@@ -115,7 +115,7 @@ const HomePage = () => {
           },
         });
 
-        // Combina os resultados (limitando a quantidade se necessário)
+        //// Combina os resultados (limitando a quantidade se necessário)
         const combinedResults = [...responseEs.data, ...responseEn.data].slice(0, 16); // Limita a 16 livros, 8 de cada idioma
 
         setter(combinedResults); // Atualiza o estado com os resultados combinados
