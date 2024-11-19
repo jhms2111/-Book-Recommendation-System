@@ -136,6 +136,35 @@ router.post('/api/reset-password', async (req, res) => {
 });
 
 
+app.post('/api/book-pages', authenticateUser, async (req, res) => {
+    const { bookId, content } = req.body;
+    const userId = req.user.id; // Obtém o ID do usuário autenticado
+  
+    try {
+      const existingPage = await BookPage.findOne({ bookId, userId });
+  
+      if (existingPage) {
+        existingPage.content = content;
+        await existingPage.save();
+        return res.status(200).json({ message: 'Página atualizada com sucesso', page: existingPage });
+      }
+  
+      const newPage = await BookPage.create({ bookId, userId, content });
+      res.status(201).json({ message: 'Página criada com sucesso', page: newPage });
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao salvar a página', error });
+    }
+  });
+  
+
+  <Link to={`/create-page/${book.id}`}>
+  <img
+    src={book.volumeInfo.imageLinks.thumbnail}
+    alt={book.volumeInfo.title}
+    style={{ height: '200px', objectFit: 'contain', margin: '0 auto', cursor: 'pointer' }}
+  />
+</Link>
+
 
 
 
