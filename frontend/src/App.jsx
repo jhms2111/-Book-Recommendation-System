@@ -8,6 +8,7 @@ import AuthSuccess from './components/Auth/AuthSuccess';
 import BookSearchPage from './pages/Books/BookSearchPage';
 import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
+import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
@@ -37,35 +38,44 @@ const App = () => {
             <Routes>
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
-                
+
                 {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute */}
-                <Route 
-                    path="/" 
+                <Route
+                    path="/"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <HomePage handleLogout={handleLogout} />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
 
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
-                
+
                 {/* Outras rotas protegidas */}
-                <Route 
-                    path="/search-books" 
+                <Route
+                    path="/search-books"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <BookSearchPage />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/book/:bookId" 
+                <Route
+                    path="/book/:bookId"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <BookDetailsPage />
                         </ProtectedRoute>
-                    } 
+                    }
+                />
+
+                <Route
+                    path="/book-review/:bookId"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <BookReviewPage />
+                        </ProtectedRoute>
+                    }
                 />
             </Routes>
         </Router>
