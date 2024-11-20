@@ -9,6 +9,7 @@ import BookSearchPage from './pages/Books/BookSearchPage';
 import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
+import UserBooksPage from './pages/Books/UserBooksPage';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
@@ -77,6 +78,16 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
+
+<Route 
+  path="/my-books" 
+  element={
+    <ProtectedRoute isAuthenticated={isAuthenticated}>
+      <UserBooksPage />
+    </ProtectedRoute>
+  }
+/>
+
             </Routes>
         </Router>
     );

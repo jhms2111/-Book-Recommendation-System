@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const sliderSettings = {
@@ -28,22 +28,23 @@ const sliderSettings = {
 };
 
 const GoogleBooksCarousel = () => {
-  const [googleBooks, setGoogleBooks] = useState([]);
+  const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch('https://www.googleapis.com/books/v1/volumes?q=popular');
+        const response = await fetch(
+          'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
+        );
         const data = await response.json();
 
-        // Atualiza o estado com os livros obtidos
-        setGoogleBooks(data.items || []);
+        setBooks(data.items || []);
       } catch (error) {
         console.error('Erro ao buscar livros do Google Books:', error);
       } finally {
-        setLoading(false); // Finaliza o carregamento
+        setLoading(false);
       }
     };
 
@@ -62,14 +63,15 @@ const GoogleBooksCarousel = () => {
           textAlign: 'center',
         }}
       >
+        <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" color="textSecondary">
-          Carregando livros populares...
+          Carregando livros do Google Books...
         </Typography>
       </Box>
     );
   }
 
-  if (googleBooks.length === 0) {
+  if (books.length === 0) {
     return (
       <Box
         sx={{
@@ -89,7 +91,7 @@ const GoogleBooksCarousel = () => {
 
   return (
     <Slider {...sliderSettings}>
-      {googleBooks.map((book) => (
+      {books.map((book) => (
         <Box
           key={book.id}
           sx={{
@@ -100,27 +102,27 @@ const GoogleBooksCarousel = () => {
           }}
           onClick={() => navigate(`/book-review/${book.id}`)}
         >
-          {/* Nome do Livro em letras menores */}
+          {/* Nome do Livro */}
           <Typography
             variant="caption"
             sx={{
               display: 'block',
               marginBottom: '5px',
-              fontSize: '10px', // Reduzido para cerca de 60%
+              fontSize: '10px',
               color: '#555',
             }}
           >
             {book.volumeInfo?.title || 'Título indisponível'}
           </Typography>
 
-          {/* Capa do Livro Padronizada */}
+          {/* Capa do Livro */}
           {book.volumeInfo?.imageLinks?.thumbnail ? (
             <img
               src={book.volumeInfo.imageLinks.thumbnail}
               alt={book.volumeInfo?.title}
               style={{
-                height: '150px', // Altura padronizada
-                width: '100px', // Largura padronizada
+                height: '150px',
+                width: '100px',
                 objectFit: 'cover',
                 margin: '0 auto',
                 display: 'block',
@@ -143,47 +145,23 @@ const GoogleBooksCarousel = () => {
             </Box>
           )}
 
-          {/* Selos Abaixo da Capa */}
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: '5px',
-            }}
-          >
-            {/* Selo de Gratuito */}
-            {book.saleInfo?.isEbook && book.saleInfo?.listPrice?.amount === 0 && (
-              <Box
-                sx={{
-                  backgroundColor: 'green',
-                  color: 'white',
-                  padding: '2px 5px',
-                  borderRadius: '3px',
-                  fontWeight: 'bold',
-                  fontSize: '10px', // Reduzido para ser discreto
-                  marginBottom: '2px',
-                }}
-              >
-                Gratuito
-              </Box>
-            )}
-            {/* Selo de Dominio Público */}
-            {book.accessInfo?.publicDomain && (
-              <Box
-                sx={{
-                  backgroundColor: 'blue',
-                  color: 'white',
-                  padding: '2px 5px',
-                  borderRadius: '3px',
-                  fontWeight: 'bold',
-                  fontSize: '10px', // Reduzido para ser discreto
-                }}
-              >
-                Dominio Público
-              </Box>
-            )}
-          </Box>
+          {/* Selo de Gratuito */}
+          {book.saleInfo?.saleability === 'FREE' && (
+            <Box
+              sx={{
+                backgroundColor: 'green',
+                color: 'white',
+                padding: '5px 10px',
+                borderRadius: '3px',
+                fontWeight: 'bold',
+                fontSize: '10px',
+                marginTop: '10px',
+                display: 'inline-block', // Centraliza o selo abaixo da capa
+              }}
+            >
+              Gratuito
+            </Box>
+          )}
         </Box>
       ))}
     </Slider>

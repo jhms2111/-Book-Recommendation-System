@@ -1,7 +1,8 @@
-// backend/routes/userRoutes.js
 const express = require('express');
 const bcrypt = require('bcrypt'); // Para hash de senha
+const jwt = require('jsonwebtoken'); // Para geração e verificação de tokens JWT
 const User = require('../../../infrastructure/database/models/User');
+const authenticateUser = require('../middleware/authenticateUser'); // Middleware de autenticação
 
 const router = express.Router();
 
@@ -17,73 +18,65 @@ const isPasswordStrong = (senha) => {
     return strongPasswordRegex.test(senha);
 };
 
+// ** ROTAS DE AUTENTICAÇÃO **
+
+// Cadastro de usuário
 router.post('/api/usuarios', async (req, res) => {
     const { nome, email, senha } = req.body;
 
-    // Log para verificar se todos os campos estão recebidos
-    console.log('Dados recebidos para cadastro:', req.body);
-
-    // Verifique se todos os campos foram recebidos
     if (!nome || !email || !senha) {
-        console.log('Erro: Campos obrigatórios não foram preenchidos.');
         return res.status(400).send({ error: 'Todos os campos são obrigatórios.' });
     }
 
-    // Validar o formato do email
     if (!validateEmail(email)) {
-        console.log('Erro: Formato de email inválido:', email);
         return res.status(400).send({ error: 'Formato de email inválido.' });
     }
 
-    // Verificar a força da senha
     if (!isPasswordStrong(senha)) {
-        console.log('Erro: Senha fraca.');
-        return res.status(400).send({ error: 'A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula e um número.' });
+        return res.status(400).send({ error: 'Senha fraca. Deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula e um número.' });
     }
 
     try {
         const hashedPassword = await bcrypt.hash(senha, 10);
         const usuario = new User({ nome, email, senha: hashedPassword });
         await usuario.save();
-        console.log('Usuário cadastrado com sucesso:', usuario);
         res.status(201).send({ message: 'Usuário cadastrado com sucesso!' });
     } catch (error) {
-        console.log('Erro ao cadastrar usuário:', error);
         res.status(400).send({ error: 'Erro ao cadastrar usuário', details: error });
     }
 });
 
-
-// backend/routes/userRoutes.js
+// Login de usuário
 router.post('/api/login', async (req, res) => {
-    console.log('Requisição recebida para login:', req.body);
-    
     const { email, senha } = req.body;
 
     try {
         const usuario = await User.findOne({ email });
         if (!usuario) {
-            console.log('Usuário não encontrado:', email);
             return res.status(400).send({ error: 'Usuário não encontrado' });
         }
 
         const match = await bcrypt.compare(senha, usuario.senha);
         if (!match) {
-            console.log('Senha incorreta para o usuário:', email);
             return res.status(400).send({ error: 'Senha incorreta' });
         }
 
-        // Se o login for bem-sucedido, envie a resposta
-        console.log('Login bem-sucedido para o usuário:', usuario);
-        res.send({ message: 'Login bem-sucedido', usuario }); // Envie a resposta ao frontend
+        // Gerar um token JWT
+        const token = jwt.sign(
+            { id: usuario._id, email: usuario.email },
+            process.env.JWT_SECRET, // Usa a chave secreta definida no .env
+            { expiresIn: '1h' } // Token expira em 1 hora
+        );
+
+        res.send({ message: 'Login bem-sucedido', token, usuario });
     } catch (error) {
-        console.log('Erro ao fazer login:', error);
         res.status(500).send({ error: 'Erro ao fazer login', details: error });
     }
 });
 
+// ** ROTAS PARA RECUPERAÇÃO DE SENHA **
 
-// Rota para solicitar recuperação de senha
+// Solicitar recuperação de senha
 router.post('/api/recover', async (req, res) => {
     const { email } = req.body;
 
@@ -93,47 +86,94 @@ router.post('/api/recover', async (req, res) => {
             return res.status(400).send({ error: 'Usuário não encontrado' });
         }
 
-        // Aqui você deve gerar um token único e enviar um email ao usuário com o link
-        // Por simplicidade, estamos apenas retornando uma mensagem.
-        // No final, você deve usar um serviço de email (como Nodemailer).
-        
-        // Exemplo de token gerado (na prática, use um pacote para gerar tokens)
-        const token = 'tokenGeradoAqui'; // Você deve gerar um token válido
-        console.log(`Envie um email para ${email} com o link de recuperação que contém o token: ${token}`);
+        const token = jwt.sign(
+            { id: usuario._id, email: usuario.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '15m' } // Token expira em 15 minutos
+        );
 
-        res.send({ message: 'Instruções de recuperação de senha foram enviadas para seu email.' });
+        console.log(`Envie um email para ${email} com o token: ${token}`);
+        res.send({ message: 'Instruções de recuperação de senha enviadas ao email.' });
     } catch (error) {
         res.status(500).send({ error: 'Erro ao solicitar recuperação de senha', details: error });
     }
 });
 
-// Rota para redefinir a senha
+// Redefinir senha
 router.post('/api/reset-password', async (req, res) => {
     const { token, novaSenha } = req.body;
 
-    // Aqui, você deve verificar se o token é válido. Por simplicidade, estamos apenas fazendo um exemplo básico.
     if (!token) {
         return res.status(400).send({ error: 'Token inválido.' });
     }
 
     try {
-        // Aqui você deve buscar o usuário associado ao token (não implementado neste exemplo)
-        const usuario = await User.findOne({ /* condição para encontrar usuário pelo token */ });
-
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const usuario = await User.findById(decoded.id);
         if (!usuario) {
             return res.status(400).send({ error: 'Usuário não encontrado.' });
         }
 
-        // Hash da nova senha
         const hashedPassword = await bcrypt.hash(novaSenha, 10);
         usuario.senha = hashedPassword;
         await usuario.save();
 
         res.send({ message: 'Senha redefinida com sucesso!' });
     } catch (error) {
-        res.status(500).send({ error: 'Erro ao redefinir a senha', details: error });
+        res.status(500).send({ error: 'Erro ao redefinir senha', details: error });
     }
 });
 
+// ** ROTAS PARA LIVROS DO USUÁRIO **
+
+// Adicionar livro à lista do usuário
+router.post('/api/user/books', authenticateUser, async (req, res) => {
+    const { bookId, title, thumbnail, status } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
+
+        user.books.push({ bookId, title, thumbnail, status });
+        await user.save();
+
+        res.status(201).json({ message: 'Livro adicionado com sucesso!', books: user.books });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao adicionar livro.', details: error });
+    }
+});
+
+// Buscar livros do usuário
+router.get('/api/user/books', authenticateUser, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+        res.status(200).json({ books: user.books });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar livros do usuário.', details: error });
+    }
+});
+
+// Remover livro da lista do usuário
+router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
+    const userId = req.user.id;
+    const { bookId } = req.params;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
+
+        user.books = user.books.filter((book) => book.bookId !== bookId);
+        await user.save();
+
+        res.status(200).json({ message: 'Livro removido com sucesso!', books: user.books });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao remover livro.', details: error });
+    }
+});
 
 module.exports = router;

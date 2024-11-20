@@ -13,18 +13,11 @@ const BookReviewPage = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
-        const isGoogleBook = !bookId.includes('OL'); // Verifica se é do Google Books pelo ID
-        console.log('Book ID:', bookId);
+        const isGoogleBook = !bookId.includes('OL');
 
         if (isGoogleBook) {
           const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${bookId}`);
           const data = await response.json();
-          console.log('Google Books Data:', data);
-
-          if (!data.volumeInfo) {
-            console.error('Erro: volumeInfo ausente na resposta do Google Books.');
-            return;
-          }
 
           setBookDetails({
             title: data.volumeInfo.title || 'Título não disponível',
@@ -34,25 +27,22 @@ const BookReviewPage = () => {
             publishedDate: data.volumeInfo.publishedDate || 'Desconhecida',
             pageCount: data.volumeInfo.pageCount || 'Desconhecido',
             imageLinks: data.volumeInfo.imageLinks,
-            link: data.volumeInfo.infoLink || data.volumeInfo.previewLink || null, // Link do livro
+            link: data.volumeInfo.infoLink || data.volumeInfo.previewLink || null,
           });
         } else {
           const response = await fetch(`https://openlibrary.org/works/${bookId}.json`);
           const data = await response.json();
-          console.log('Open Library Data:', data);
 
           setBookDetails({
             title: data.title || 'Título não disponível',
             description: data.description?.value || data.description || 'Nenhum resumo disponível.',
-            authors: data.authors
-              ? await Promise.all(
-                  data.authors.map(async (author) => {
-                    const authorResponse = await fetch(`https://openlibrary.org${author.author.key}.json`);
-                    const authorData = await authorResponse.json();
-                    return authorData.name;
-                  })
-                )
-              : ['Desconhecido'],
+            authors: data.authors ? await Promise.all(
+              data.authors.map(async (author) => {
+                const authorResponse = await fetch(`https://openlibrary.org${author.author.key}.json`);
+                const authorData = await authorResponse.json();
+                return authorData.name;
+              })
+            ) : ['Desconhecido'],
             publisher: 'Open Library',
             publishedDate: data.created?.value || 'Desconhecida',
             pageCount: data.pages || 'Desconhecido',
@@ -70,16 +60,20 @@ const BookReviewPage = () => {
     fetchBookDetails();
   }, [bookId]);
 
-  const handleCreatePage = () => {
-    setIsPageCreated(true);
-  };
+  const handleAddToUserPage = (status) => {
+    const userBooks = JSON.parse(localStorage.getItem('userBooks')) || [];
+    const bookData = {
+      id: bookId,
+      title: bookDetails.title,
+      thumbnail: bookDetails.imageLinks?.thumbnail || '',
+      status, // "Lido" ou "Vou Ler"
+    };
 
-  const handleCommentSubmit = () => {
-    console.log('Comentário:', comment);
-    console.log('Classificação:', rating);
-    alert('Comentário enviado com sucesso!');
-    setComment('');
-    setRating(0);
+    // Salva no armazenamento local
+    localStorage.setItem('userBooks', JSON.stringify([...userBooks, bookData]));
+
+    // Redireciona para a página pessoal
+    navigate('/my-books');
   };
 
   if (!bookDetails) {
@@ -96,7 +90,7 @@ const BookReviewPage = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleCreatePage}
+            onClick={() => setIsPageCreated(true)}
             sx={{ marginTop: '20px' }}
           >
             Criar Página de Avaliação
@@ -128,23 +122,37 @@ const BookReviewPage = () => {
             <strong>Número de Páginas:</strong> {bookDetails.pageCount || 'Desconhecido'}
           </Typography>
 
-          {/* Botão para acessar o link do livro */}
-          {bookDetails.link ? (
-  <Box sx={{ marginTop: '20px' }}>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={() => window.open(bookDetails.link, '_blank')}
-    >
-      Leer el Libro
-    </Button>
-  </Box>
-) : (
-  <Typography variant="body2" color="error" sx={{ marginTop: '10px' }}>
-    Este libro no está disponible para lectura inmediata. Por favor, crea una cuenta en Open Library para acceder al contenido.
-  </Typography>
-)}
+          {/* Botões "Lido" e "Vou Ler" */}
+          <Box sx={{ marginTop: '20px' }}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleAddToUserPage('Lido')}
+              sx={{ marginRight: '10px' }}
+            >
+              Lido
+            </Button>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => handleAddToUserPage('Vou Ler')}
+            >
+              Vou Ler
+            </Button>
+          </Box>
 
+          {/* Botão para acessar o link do livro */}
+          {bookDetails.link && (
+            <Box sx={{ marginTop: '20px' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => window.open(bookDetails.link, '_blank')}
+              >
+                Ler o Livro
+              </Button>
+            </Box>
+          )}
 
           {/* Espaço para comentário e avaliação */}
           <Box sx={{ marginTop: '20px' }}>
@@ -169,7 +177,13 @@ const BookReviewPage = () => {
               variant="contained"
               color="secondary"
               sx={{ marginTop: '20px' }}
-              onClick={handleCommentSubmit}
+              onClick={() => {
+                console.log('Comentário:', comment);
+                console.log('Classificação:', rating);
+                alert('Comentário enviado com sucesso!');
+                setComment('');
+                setRating(0);
+              }}
             >
               Enviar Avaliação
             </Button>
