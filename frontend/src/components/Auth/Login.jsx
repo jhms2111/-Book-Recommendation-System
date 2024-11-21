@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types'; // Importe o PropTypes
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container } from '@mui/material';
@@ -22,12 +22,23 @@ const Login = ({ handleLogin }) => {
                 senha,
             });
 
-            console.log('Resposta do servidor:', response.data);
+            if (response.data && response.data.token) {
+                // Salvar o token JWT no localStorage
+                const token = response.data.token;
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('isAuthenticated', 'true');
 
-            if (response.data && response.data.message) {
-                setSuccess(response.data.message);
-                handleLogin(); // Atualiza o estado de autenticação
-                navigate('/'); // Redireciona para a página principal após login
+                // Atualizar mensagem de sucesso
+                setSuccess('Login bem-sucedido!');
+
+                // Chamar a função handleLogin para atualizar o estado de autenticação
+                handleLogin();
+
+                // Redirecionar para a página principal
+                navigate('/');
+            } else {
+                // Se o token não estiver presente na resposta
+                setError('Erro: Token JWT não recebido.');
             }
         } catch (err) {
             console.log('Erro ao fazer login:', err);
@@ -40,10 +51,10 @@ const Login = ({ handleLogin }) => {
     };
 
     const handleGoogleLogin = () => {
-        // Redireciona para a rota de autenticação do Google
+        // Redirecionar para a rota de autenticação do Google
         window.location.href = 'http://localhost:5000/auth/google';
     };
-    
+
     return (
         <Container maxWidth="sm">
             <h2>Login de Usuário</h2>
@@ -70,10 +81,22 @@ const Login = ({ handleLogin }) => {
                 <Button type="submit" variant="contained" color="primary" fullWidth>
                     Login
                 </Button>
-                <Button variant="outlined" color="secondary" fullWidth onClick={handleGoogleLogin} style={{ marginTop: '10px' }}>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    fullWidth
+                    onClick={handleGoogleLogin}
+                    style={{ marginTop: '10px' }}
+                >
                     Login com Google
                 </Button>
-                <Button variant="text" color="primary" fullWidth onClick={() => navigate('/signup')} style={{ marginTop: '10px' }}>
+                <Button
+                    variant="text"
+                    color="primary"
+                    fullWidth
+                    onClick={() => navigate('/signup')}
+                    style={{ marginTop: '10px' }}
+                >
                     Cadastrar
                 </Button>
                 {error && <Typography color="error">{error}</Typography>}
@@ -83,7 +106,6 @@ const Login = ({ handleLogin }) => {
     );
 };
 
-// Adicione a definição de tipos para props com PropTypes
 Login.propTypes = {
     handleLogin: PropTypes.func.isRequired,
 };

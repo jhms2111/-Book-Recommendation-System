@@ -1,4 +1,3 @@
-// src/App.js
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Auth/Login';
@@ -10,6 +9,7 @@ import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
+import Layout from './components/Header/Layout'; // Importa o Layout
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
@@ -40,12 +40,14 @@ const App = () => {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute */}
+                {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute e Layout */}
                 <Route
                     path="/"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <HomePage handleLogout={handleLogout} />
+                            <Layout>
+                                <HomePage handleLogout={handleLogout} />
+                            </Layout>
                         </ProtectedRoute>
                     }
                 />
@@ -57,7 +59,9 @@ const App = () => {
                     path="/search-books"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <BookSearchPage />
+                            <Layout>
+                                <BookSearchPage />
+                            </Layout>
                         </ProtectedRoute>
                     }
                 />
@@ -65,29 +69,32 @@ const App = () => {
                     path="/book/:bookId"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <BookDetailsPage />
+                            <Layout>
+                                <BookDetailsPage />
+                            </Layout>
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/book-review/:bookId"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <BookReviewPage />
+                            <Layout>
+                                <BookReviewPage />
+                            </Layout>
                         </ProtectedRoute>
                     }
                 />
-
-<Route 
-  path="/my-books" 
-  element={
-    <ProtectedRoute isAuthenticated={isAuthenticated}>
-      <UserBooksPage />
-    </ProtectedRoute>
-  }
-/>
-
+                <Route
+                    path="/my-books"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <UserBooksPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </Router>
     );

@@ -158,6 +158,11 @@ router.get('/api/user/books', authenticateUser, async (req, res) => {
     }
 });
 
+router.get('/api/test', (req, res) => {
+    res.send({ message: 'Rota de teste funcionando!' });
+});
+
+
 // Remover livro da lista do usuário
 router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
     const userId = req.user.id;
