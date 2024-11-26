@@ -1,51 +1,101 @@
-// src/pages/BookSearchPage.js
-import  { useState } from 'react';
+// src/pages/Books/BookSearchPage.js
+
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookList from '../../components/Books/BookList'; // Importando o componente da lista de livros
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function BookSearchPage() {
-  const [query, setQuery] = useState('');
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+const BookSearchPage = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [query, setQuery] = useState(new URLSearchParams(location.search).get('q') || '');  // Query da URL
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-// src/pages/BookSearchPage.js
-const searchBooks = async () => {
-  setLoading(true);
-  setError('');
-  try {
-    const response = await axios.get(`http://localhost:5000/api/books/search?q=${query}`);
+    // Função para capturar o input de busca
+    const handleSearchChange = (e) => {
+        setQuery(e.target.value);
+    };
 
-    console.log("Dados dos livros:", response.data); // Adicione este log
-    setBooks(response.data);
-  } catch (error) {
-    console.error(error); // log do erro para inspeção
-    setError('Erro ao buscar livros. Tente novamente.');
-  }
-  setLoading(false);
-}
+    // Função para lidar com a busca
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (query.trim()) {
+            navigate(`/search-books?q=${query}`);  // Navega para a URL com a query
+        }
+    };
 
+    useEffect(() => {
+        if (query) {
+            searchBooks(query);
+        }
+    }, [query]);
 
-  return (
-    <div>
-      <h1>Busca de Livros</h1>
-      <div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Digite o nome do livro"
-        />
-        <button onClick={searchBooks} disabled={loading || !query}>
-          {loading ? 'Buscando...' : 'Buscar'}
-        </button>
-      </div>
+    // Função de busca nas APIs
+    const searchBooks = async (searchQuery) => {
+        setLoading(true);
+        setError('');
+        try {
+            const [googleBooksRes, openLibraryRes] = await Promise.all([
+                axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=10`),
+                axios.get(`https://openlibrary.org/search.json?q=${searchQuery}`)
+            ]);
 
-      {error && <p>{error}</p>}
-      
-      <BookList books={books} /> {/* Renderiza a lista de livros */}
-    </div>
-  );
-}
+            const googleBooks = googleBooksRes.data.items || [];
+            const openLibraryBooks = openLibraryRes.data.docs || [];
+
+            // Combina os livros de ambas as APIs
+            const combinedBooks = [
+                ...googleBooks.map((book) => ({
+                    id: book.id,
+                    title: book.volumeInfo.title,
+                    authors: book.volumeInfo.authors || ['Desconhecido'],
+                    thumbnail: book.volumeInfo.imageLinks?.thumbnail,
+                    previewLink: book.volumeInfo.previewLink,
+                })),
+                ...openLibraryBooks.map((book) => ({
+                    id: book.key.replace('/works/', ''),
+                    title: book.title,
+                    authors: book.author_name || ['Desconhecido'],
+                    thumbnail: book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : '',
+                    previewLink: `https://openlibrary.org${book.key}`,
+                }))
+            ];
+
+            setBooks(combinedBooks);
+        
+            setError('Erro ao buscar livros.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Resultados da Busca</h1>
+            
+            {/* Formulário de busca */}
+            <form onSubmit={handleSearchSubmit}>
+                <input
+                    type="text"
+                    value={query}
+                    onChange={handleSearchChange}
+                    placeholder="Digite o nome do livro"
+                />
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Buscando...' : 'Buscar'}
+                </button>
+            </form>
+
+            {/* Exibição de erros */}
+            {error && <p>{error}</p>}
+
+            {/* Exibição de livros */}
+            {loading && <p>Carregando...</p>}
+            <BookList books={books} />
+        </div>
+    );
+};
 
 export default BookSearchPage;

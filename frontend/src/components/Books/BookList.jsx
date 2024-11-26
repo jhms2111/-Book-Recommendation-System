@@ -1,44 +1,50 @@
+// src/components/Books/BookList.js
+
 import PropTypes from 'prop-types';
-import './BookList.css';
+import { useNavigate } from 'react-router-dom';
 
 const BookList = ({ books }) => {
-  return (
-    <div className="bookshelf">
-      {books.map((book) => (
-        <div key={book.id || book.key} className="book-item">
-          <div className="book-cover">
-            {book.thumbnail ? (
-              <img src={book.thumbnail} alt={book.title} />
-            ) : book.cover_i ? (
-              <img
-                src={`https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`}
-                alt={book.title}
-                style={{ width: '100px', height: '150px', objectFit: 'cover' }}
-              />
-            ) : (
-              <img
-                src="https://via.placeholder.com/100x150.png?text=Sem+Capa"
-                alt="Sem capa"
-                style={{ width: '100px', height: '150px', objectFit: 'cover' }}
-              />
-            )}
-          </div>
-          <p className="book-title">{book.title}</p>
-        </div>
-      ))}
-    </div>
-  );
+    const navigate = useNavigate();
+
+    const handleBookClick = (bookId) => {
+        navigate(`/book-review/${bookId}`);
+    };
+
+    return (
+        <ul>
+            {books.map((book) => (
+                <li key={book.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    {book.thumbnail ? (
+                        <img
+                            src={book.thumbnail}
+                            alt={book.title || "Imagem não disponível"}
+                            style={{ marginRight: '10px', cursor: 'pointer', width: '50px', height: '75px' }}
+                            onClick={() => handleBookClick(book.id)}
+                        />
+                    ) : (
+                        <div style={{ width: '50px', height: '75px', marginRight: '10px', backgroundColor: '#ccc' }}></div>
+                    )}
+                    <div>
+                        <h3 onClick={() => handleBookClick(book.id)} style={{ cursor: 'pointer' }}>
+                            {book.title || "Título não disponível"}
+                        </h3>
+                        <p>{book.authors ? book.authors.join(', ') : "Autor desconhecido"}</p>
+                    </div>
+                </li>
+            ))}
+        </ul>
+    );
 };
 
 BookList.propTypes = {
-  books: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string,
-      thumbnail: PropTypes.string,
-      cover_i: PropTypes.number, // Adicionando o cover_i
-    })
-  ).isRequired,
+    books: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string,
+            authors: PropTypes.arrayOf(PropTypes.string),
+            thumbnail: PropTypes.string,
+        })
+    ).isRequired,
 };
 
 export default BookList;

@@ -8,23 +8,21 @@ const UserBooksPage = () => {
 
   useEffect(() => {
     const fetchUserBooks = async () => {
-      try {
-        const response = await axios.get('/api/user/books', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Token JWT
-          },
-        });
-
-        setBooks(response.data.books);
-      } catch (error) {
-        console.error('Erro ao buscar os livros do usuário:', error);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const response = await axios.get('/api/user/books', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
+            });
+            setBooks(response.data.books);
+        } catch (error) {
+            console.error('Erro ao buscar livros:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     fetchUserBooks();
-  }, []);
+}, []);
+
 
   if (loading) {
     return (
