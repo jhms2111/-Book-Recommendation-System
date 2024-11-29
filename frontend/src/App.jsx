@@ -1,4 +1,3 @@
-//app.jsx
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Auth/Login';
@@ -10,6 +9,8 @@ import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
+import PostForm from './components/Feed/PostForm'; // Novo: formulário para criar postagens
+import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import Layout from './components/Header/Layout'; // Importa o Layout
 
 const App = () => {
@@ -53,9 +54,10 @@ const App = () => {
                     }
                 />
 
+                {/* Rota de sucesso após login com o Google */}
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
 
-                {/* Outras rotas protegidas */}
+                {/* Rotas protegidas para busca de livros */}
                 <Route
                     path="/search-books"
                     element={
@@ -92,6 +94,28 @@ const App = () => {
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Layout>
                                 <UserBooksPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                {/* Rotas para Postagens */}
+                <Route
+                    path="/postar"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <PostForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/feed"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <Feed />
                             </Layout>
                         </ProtectedRoute>
                     }

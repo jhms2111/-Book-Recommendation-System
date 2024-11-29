@@ -3,9 +3,8 @@ const bcrypt = require('bcrypt'); // Para hash de senha
 const jwt = require('jsonwebtoken'); // Para geração e verificação de tokens JWT
 const User = require('../../../infrastructure/database/models/User');
 const authenticateUser = require('../middleware/authenticateUser'); // Middleware de autenticação
-const UserBook = require('../../../models/UserBook');
 
-const router = express.Router(); // Cria o roteador
+const router = express.Router();
 
 // Função para validar o formato do email
 const validateEmail = (email) => {
@@ -133,11 +132,15 @@ router.post('/api/user/books', authenticateUser, async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const userBook = new UserBook({ userId, bookId, title, thumbnail, status });
-        await userBook.save();
-        res.status(201).json({ message: 'Livro adicionado com sucesso!' });
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
+
+        user.books.push({ bookId, title, thumbnail, status });
+        await user.save();
+
+        res.status(201).json({ message: 'Livro adicionado com sucesso!', books: user.books });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao adicionar livro.' });
+        res.status(500).json({ error: 'Erro ao adicionar livro.', details: error });
     }
 });
 
@@ -146,21 +149,33 @@ router.get('/api/user/books', authenticateUser, async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const books = await UserBook.find({ userId });
-        res.status(200).json({ books });
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+        res.status(200).json({ books: user.books });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar livros do usuário.', details: error });
     }
 });
 
+// Testar funcionamento
+router.get('/api/test', (req, res) => {
+    res.send({ message: 'Rota de teste funcionando!' });
+});
+
 // Remover livro da lista do usuário
 router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
-    const { bookId } = req.params;
     const userId = req.user.id;
+    const { bookId } = req.params;
 
     try {
-        await UserBook.findOneAndDelete({ userId, bookId });
-        res.status(200).json({ message: 'Livro removido com sucesso!' });
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
+
+        user.books = user.books.filter((book) => book.bookId !== bookId);
+        await user.save();
+
+        res.status(200).json({ message: 'Livro removido com sucesso!', books: user.books });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao remover livro.', details: error });
     }

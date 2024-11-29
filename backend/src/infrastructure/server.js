@@ -8,6 +8,7 @@ const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // 
 require('../infrastructure/auth/passport');
 
 const booksRoutes = require('../adapters/controllers/booksRoutes'); // Importa as rotas de livros
+const postagemRoutes = require('../adapters/routers/postagemRoutes'); // Importa as rotas de postagens
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,12 +38,13 @@ mongoose.connect('mongodb://localhost:27017/BookRecommendationSystem')
 app.use(userRoutes);
 app.use(authRoutes); // Usa as rotas de autenticação corretamente (assumindo que authRoutes seja um router válido)
 
+// Usar as rotas de postagens
+app.use('/api', postagemRoutes); // Usa as rotas de postagens
+
 // Rota principal
 app.get('/', (req, res) => {
     res.send('API funcionando!');
 });
-
-app.use('/api', booksRoutes); // Usa as rotas de livros com o prefixo /api
 
 // Iniciar o servidor
 app.listen(PORT, () => {

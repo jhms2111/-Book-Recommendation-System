@@ -1,21 +1,13 @@
 const mongoose = require('mongoose');
 
-// Schema para um livro individual
-const BookSchema = new mongoose.Schema({
-  bookId: { type: String, required: true },
-  title: { type: String, required: true },
-  thumbnail: { type: String },
-  status: { type: String, enum: ['Lido', 'Vou Ler'], required: true },
+const userSchema = new mongoose.Schema({
+    nome: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    senha: { type: String, required: false },
+    googleId: { type: String },
 });
 
-// Schema para o usuário
-const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Salvo como hash
-  books: [BookSchema], // Livros associados ao usuário
-});
+// Verifica se o modelo já foi compilado, caso contrário, cria o modelo
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-const User = mongoose.model('User', UserSchema);
-
-module.exports = { User };
+module.exports = User;
