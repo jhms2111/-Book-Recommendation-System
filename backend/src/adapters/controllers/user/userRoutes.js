@@ -18,54 +18,98 @@ const isPasswordStrong = (senha) => {
     return strongPasswordRegex.test(senha);
 };
 
+
+
 // ** ROTAS DE AUTENTICAÇÃO **
 
-// Cadastro de usuário
-router.post('/api/usuarios', async (req, res) => {
-    const { nome, email, senha } = req.body;
+// src/routes/userRoutes.js
 
-    if (!nome || !email || !senha) {
+router.post('/api/usuarios', async (req, res) => {
+    const { nomeCadastrado, email, senha } = req.body;
+
+    // Verifique se todos os campos obrigatórios foram fornecidos
+    if (!nomeCadastrado || !email || !senha) {
         return res.status(400).send({ error: 'Todos os campos são obrigatórios.' });
     }
 
+    // Verificar formato do email
     if (!validateEmail(email)) {
         return res.status(400).send({ error: 'Formato de email inválido.' });
     }
 
+    // Verificar força da senha
     if (!isPasswordStrong(senha)) {
         return res.status(400).send({ error: 'Senha fraca. Deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula e um número.' });
     }
 
     try {
+        // Verificar se o email já está cadastrado
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send({ error: 'O email já está cadastrado.' });
+        }
+
+        // Criar o usuário e preencher o campo 'name' com 'nomeCadastrado'
         const hashedPassword = await bcrypt.hash(senha, 10);
-        const usuario = new User({ nome, email, senha: hashedPassword });
+        const usuario = new User({
+            nome: nomeCadastrado,  // Preenche o campo nome com o nomeCadastrado
+            nomeCadastrado,        // Nome para cadastro manual
+            email,
+            senha: hashedPassword,
+        });
+
+        // Log para verificar os dados do usuário antes de salvar
+        console.log('Usuário sendo criado:', usuario);
+
+        // Salva o usuário no banco de dados
         await usuario.save();
         res.status(201).send({ message: 'Usuário cadastrado com sucesso!' });
     } catch (error) {
-        res.status(400).send({ error: 'Erro ao cadastrar usuário', details: error });
+        console.error('Erro ao tentar cadastrar o usuário:', error);
+        res.status(500).send({ error: 'Erro interno no servidor', details: error.message });
     }
 });
 
-// Login de usuário
+
+
+
+
+
+
+
+
+
+
+
 router.post('/api/login', async (req, res) => {
     const { email, senha } = req.body;
 
     try {
         const usuario = await User.findOne({ email });
+
         if (!usuario) {
             return res.status(400).send({ error: 'Usuário não encontrado' });
         }
 
+        // Verificando a senha
         const match = await bcrypt.compare(senha, usuario.senha);
         if (!match) {
             return res.status(400).send({ error: 'Senha incorreta' });
         }
 
-        // Gerar um token JWT com id, name e email
+        // Verificando qual nome usar
+        // Usamos o nome vindo do Google (se disponível) ou o nome do banco de dados
+        const nomeUsuario = usuario.name || usuario.nomeCadastrado || usuario.nome;  // 'name' do Google, 'nomeCadastrado' ou 'nome'
+
+        // Gerar o token JWT com id, nome e email
         const token = jwt.sign(
-            { id: usuario._id, name: usuario.nome, email: usuario.email }, // Incluindo name e email no token
+            { 
+                id: usuario._id, 
+                name: nomeUsuario,  // 'name' do Google ou 'nomeCadastrado' do banco de dados
+                email: usuario.email 
+            },
             process.env.JWT_SECRET,  // Usa a chave secreta definida no .env
-            { expiresIn: '1h' } // Token expira em 1 hora
+            { expiresIn: '1h' }  // Token expira em 1 hora
         );
 
         res.send({ message: 'Login bem-sucedido', token, usuario });
@@ -73,6 +117,11 @@ router.post('/api/login', async (req, res) => {
         res.status(500).send({ error: 'Erro ao fazer login', details: error });
     }
 });
+
+
+
+
+
 
 
 // ** ROTAS PARA RECUPERAÇÃO DE SENHA **
@@ -125,25 +174,7 @@ router.post('/api/reset-password', async (req, res) => {
     }
 });
 
-// ** ROTAS PARA LIVROS DO USUÁRIO **
 
-// Adicionar livro à lista do usuário
-router.post('/api/user/books', authenticateUser, async (req, res) => {
-    const { bookId, title, thumbnail, status } = req.body;
-    const userId = req.user.id;
-
-    try {
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
-
-        user.books.push({ bookId, title, thumbnail, status });
-        await user.save();
-
-        res.status(201).json({ message: 'Livro adicionado com sucesso!', books: user.books });
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao adicionar livro.', details: error });
-    }
-});
 
 // Buscar livros do usuário
 router.get('/api/user/books', authenticateUser, async (req, res) => {
@@ -162,24 +193,6 @@ router.get('/api/user/books', authenticateUser, async (req, res) => {
 // Testar funcionamento
 router.get('/api/test', (req, res) => {
     res.send({ message: 'Rota de teste funcionando!' });
-});
-
-// Remover livro da lista do usuário
-router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
-    const userId = req.user.id;
-    const { bookId } = req.params;
-
-    try {
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).send({ error: 'Usuário não encontrado' });
-
-        user.books = user.books.filter((book) => book.bookId !== bookId);
-        await user.save();
-
-        res.status(200).json({ message: 'Livro removido com sucesso!', books: user.books });
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao remover livro.', details: error });
-    }
 });
 
 module.exports = router;

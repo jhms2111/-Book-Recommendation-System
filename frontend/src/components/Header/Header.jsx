@@ -10,9 +10,18 @@ const Header = () => {
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            const decodedToken = JSON.parse(atob(token.split('.')[1]));  // Decodificando o JWT
-            setUserName(decodedToken.nome);  // Armazenando o nome do usuário
-            setUserEmail(decodedToken.email); // Armazenando o email do usuário
+            // Decodifica o token JWT
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodificando o payload
+            console.log(decodedToken); // Verifique o conteúdo do decodedToken no console
+
+            // Verificar se 'name' ou 'nome' existe no token e atribuir ao estado
+            if (decodedToken.name) {
+                setUserName(decodedToken.name); // Se 'name' estiver presente
+            } else if (decodedToken.nome) {
+                setUserName(decodedToken.nome); // Se 'nome' estiver presente
+            }
+
+            setUserEmail(decodedToken.email); // Atribui o email ao estado
         }
     }, []);
 
@@ -29,8 +38,8 @@ const Header = () => {
             <Toolbar>
                 <Typography variant="h6" style={{ flexGrow: 1 }}>
                     Meu Aplicativo
-                    {userName && ` - Bem-vindo, ${userName}!`} {/* Exibindo o nome do usuário */}
-                    {userEmail && ` (Email: ${userEmail})`} {/* Exibindo o email do usuário */}
+                    {userName && ` - Bem-vindo, ${userName}!`}  {/* Exibe o nome do usuário */}
+                    {userEmail && ` (Email: ${userEmail})`}  {/* Exibe o email do usuário */}
                 </Typography>
                 <Button color="inherit" onClick={handleLogout}>
                     Logout

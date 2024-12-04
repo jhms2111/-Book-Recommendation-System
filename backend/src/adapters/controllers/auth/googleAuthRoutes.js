@@ -9,7 +9,7 @@ require('dotenv').config(); // Certifique-se de que as variáveis de ambiente es
 function generateAuthToken(user) {
     const payload = {
         id: user.id,
-        nome: user.nome,
+        name: user.name,
         email: user.email
     };
 
@@ -30,7 +30,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     // Dados do usuário autenticado
     const user = {
         id: req.user._id,
-        nome: req.user.nome,
+        name: req.user.name,
         email: req.user.email,
         googleId: req.user.googleId
     };
