@@ -61,10 +61,10 @@ router.post('/api/login', async (req, res) => {
             return res.status(400).send({ error: 'Senha incorreta' });
         }
 
-        // Gerar um token JWT
+        // Gerar um token JWT com id, name e email
         const token = jwt.sign(
-            { id: usuario._id, email: usuario.email },
-            process.env.JWT_SECRET, // Usa a chave secreta definida no .env
+            { id: usuario._id, name: usuario.nome, email: usuario.email }, // Incluindo name e email no token
+            process.env.JWT_SECRET,  // Usa a chave secreta definida no .env
             { expiresIn: '1h' } // Token expira em 1 hora
         );
 
@@ -73,6 +73,7 @@ router.post('/api/login', async (req, res) => {
         res.status(500).send({ error: 'Erro ao fazer login', details: error });
     }
 });
+
 
 // ** ROTAS PARA RECUPERAÇÃO DE SENHA **
 

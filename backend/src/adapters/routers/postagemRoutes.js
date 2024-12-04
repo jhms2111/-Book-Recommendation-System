@@ -14,4 +14,5 @@ router.post('/postagens', authenticateUser, upload.single('image'), postagemCont
 // Buscar postagens com paginação
 router.get('/postagens', postagemController.getPosts);
 
+
 module.exports = router;

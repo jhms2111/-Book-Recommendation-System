@@ -13,11 +13,15 @@ const postagemRoutes = require('../adapters/routers/postagemRoutes'); // Importa
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Usar CORS
-app.use(cors({
-    origin: 'http://localhost:5173', // Permitir apenas a origem do frontend
-    credentials: true // Permitir cookies e credenciais
-}));
+// Configuração do CORS
+const corsOptions = {
+    origin: 'http://localhost:5173', // URL do frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Se você estiver usando cookies ou outros mecanismos de autenticação
+  };
+  
+  app.use(cors(corsOptions)); // Use o CORS com as opções
 
 // Middleware para analisar o corpo das requisições
 app.use(express.json());
