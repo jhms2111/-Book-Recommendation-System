@@ -1,78 +1,72 @@
 import { useState } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';  // Importando PropTypes
 
-const CreatePost = () => {
-  const [content, setContent] = useState(''); // Armazena o conteúdo da postagem
-  const [image, setImage] = useState(null); // Armazena a imagem da postagem
-  const [error, setError] = useState(''); // Mensagens de erro
-  const [success, setSuccess] = useState(''); // Mensagens de sucesso
+const CreatePost = ({ setPosts }) => {  // Recebe a função setPosts como prop
+    const [content, setContent] = useState('');
+    const [image, setImage] = useState(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
-  // Função para enviar a postagem para o backend
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Previne o comportamento padrão de recarregar a página
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
 
-    if (!content) {
-      setError('Conteúdo da postagem é obrigatório');
-      return;
-    }
+        try {
+            // FormData para enviar dados com imagem
+            const formData = new FormData();
+            formData.append('content', content);
+            if (image) {
+                formData.append('image', image); // Se houver uma imagem, adiciona ao formulário
+            }
 
-    try {
-      const formData = new FormData();
-      formData.append('content', content);
-      if (image) {
-        formData.append('image', image); // Se houver uma imagem, anexa ao formulário
-      }
+            // Pega o token JWT do localStorage (onde ele foi salvo após o login)
+            const token = localStorage.getItem('authToken');
 
-      // Enviar a postagem para o backend
-      const response = await axios.post('http://localhost:5000/api/postagens', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Necessário para enviar imagens
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Certifique-se de que o token de autenticação esteja correto
+            // Envia a requisição POST para criar uma nova postagem
+            const response = await axios.post('http://localhost:5000/api/postagens', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Necessário para enviar imagens
+                    Authorization: `Bearer ${token}`, // Adiciona o token JWT no cabeçalho
+                },
+            });
+
+            // Se a postagem for criada com sucesso
+            setSuccess('Postagem criada com sucesso!');
+            setContent(''); // Limpa o conteúdo
+            setImage(null);  // Limpa a imagem
+
+            // Adiciona a nova postagem diretamente ao estado
+            setPosts(prevPosts => [response.data, ...prevPosts]);  // Adiciona a nova postagem no início da lista
+
+        } catch (err) {
+            setError('Erro ao criar postagem. Tente novamente.');
+            console.error('Erro ao criar postagem:', err);
         }
-      });
+    };
 
-      // Caso a postagem seja criada com sucesso, limpa o formulário e exibe uma mensagem
-      setSuccess('Postagem criada com sucesso!');
-      setContent('');
-      setImage(null); // Limpa o campo de imagem
-      setError(''); // Limpa o erro
-      console.log('Postagem criada:', response.data); // Log para verificar o que veio do backend
-    } catch (error) {
-      setError('Erro ao criar postagem. Tente novamente.');
-      console.error('Erro ao criar postagem:', error);
-    }
-  };
+    return (
+        <div>
+            <h2>Criar uma nova postagem</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
+            <form onSubmit={handleSubmit}>
+                <textarea
+                    placeholder="Escreva algo..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                />
+                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+                <button type="submit">Criar Postagem</button>
+            </form>
+        </div>
+    );
+};
 
-  return (
-    <div>
-      <h2>Criar uma nova postagem</h2>
-
-      {/* Exibe erro ou sucesso */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="O que você está pensando?"
-          rows="4"
-          cols="50"
-        />
-
-        <br />
-
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-          accept="image/*"
-        />
-
-        <br />
-        <button type="submit">Postar</button>
-      </form>
-    </div>
-  );
+// Validação das props
+CreatePost.propTypes = {
+    setPosts: PropTypes.func.isRequired,  // Garante que 'setPosts' é uma função obrigatória
 };
 
 export default CreatePost;

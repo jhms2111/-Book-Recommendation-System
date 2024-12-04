@@ -1,3 +1,5 @@
+// src/components/Feed/PostComment.jsx
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types'; // Importando PropTypes para validação
@@ -10,12 +12,8 @@ const PostComment = ({ postId }) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/postagens/${postId}/comments`);
             
-            // Se não houver comentários, adicionar um comentário fixo
-            if (response.data.length === 0) {
-                setComments([{ content: 'Seja o primeiro a comentar!' }]);
-            } else {
-                setComments(response.data);
-            }
+            // Atualiza o estado com os comentários recebidos da API
+            setComments(response.data);
         } catch (error) {
             console.error('Erro ao buscar comentários:', error);
         }
@@ -30,7 +28,7 @@ const PostComment = ({ postId }) => {
     return (
         <div>
             {comments.length === 0 ? (
-                <p>Não há comentários para exibir.</p> // Se não houver comentários
+                <p>Não há comentários para exibir.</p>
             ) : (
                 comments.map((comment, index) => (
                     <div key={index}>
