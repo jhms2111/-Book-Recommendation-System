@@ -30,9 +30,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Conexão com MongoDB
-mongoose.connect('mongodb://localhost:27017/BookRecommendationSystem')
+mongoose.connect('mongodb://localhost:27017/BookRecommendationSystem', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Conectado ao MongoDB'))
-    .catch(err => console.error('Erro ao conectar ao MongoDB', err));
+    .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+
 
 // Usar as rotas
 app.use(userRoutes);

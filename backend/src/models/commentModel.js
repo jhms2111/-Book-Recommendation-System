@@ -1,14 +1,10 @@
-// Exemplo do modelo de Comentário (commentModel.js)
+// models/commentModel.js
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
+const CommentSchema = new mongoose.Schema({
   content: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
-}, {
-  timestamps: true,
-});
+  postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Postagem', required: true },
+}, { timestamps: true });
 
-const Comment = mongoose.model('Comment', commentSchema);
-
-module.exports = Comment;
+module.exports = mongoose.model('Comment', CommentSchema);

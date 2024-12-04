@@ -1,28 +1,23 @@
-const express = require('express');
 const jwt = require('jsonwebtoken');
-const router = express.Router();  // Defina o router aqui
 
-// Middleware de autenticação
-const verifyToken = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1]; // Espera que o token venha no cabeçalho Authorization
+const authenticateUser = (req, res, next) => {
+    // Garantir que o token seja obtido do cabeçalho Authorization
+    const token = req.headers['authorization']?.split(' ')[1]; // Pega o token depois de 'Bearer'
+    
+    if (!token) {
+        return res.status(401).json({ error: 'Acesso não autorizado. Token ausente.' });
+    }
 
-  if (!token) {
-    return res.status(401).json({ message: 'Acesso negado. Token não fornecido.' });
-  }
+    try {
+        // Decodifica o token JWT
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decodifica o token usando a chave secreta
 
-  try {
-    const decoded = jwt.verify(token, 'seuSegredoAqui'); // Verifica a validade do token
-    req.user = decoded; // Decodifica o usuário e armazena no objeto req
-    next(); // Passa para o próximo middleware ou a rota
-  } catch (err) {
-    return res.status(403).json({ message: 'Token inválido' });
-  }
+        req.user = decoded; // Armazena o usuário decodificado no request (req.user)
+        next(); // Passa para o próximo middleware ou rota
+    } catch (error) {
+        console.error('Erro no middleware de autenticação:', error);
+        res.status(403).json({ error: 'Token inválido ou expirado.' });
+    }
 };
 
-// Rota para criar postagem, usando o middleware de autenticação
-router.post('/postagens', verifyToken, async (req, res) => {
-  // Lógica para criar postagem (com base na lógica do seu controlador)
-  res.send('Postagem criada');
-});
-
-module.exports = router; // Exporte o router para ser utilizado em outros arquivos
+module.exports = authenticateUser;

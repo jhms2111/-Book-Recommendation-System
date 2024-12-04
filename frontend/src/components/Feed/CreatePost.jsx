@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 const CreatePost = () => {
   const [content, setContent] = useState(''); // Armazena o conteúdo da postagem
@@ -22,15 +23,23 @@ const CreatePost = () => {
         formData.append('image', image); // Se houver uma imagem, anexa ao formulário
       }
 
+      // Enviar a postagem para o backend
+      const response = await axios.post('http://localhost:5000/api/postagens', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Necessário para enviar imagens
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Certifique-se de que o token de autenticação esteja correto
+        }
+      });
 
       // Caso a postagem seja criada com sucesso, limpa o formulário e exibe uma mensagem
       setSuccess('Postagem criada com sucesso!');
       setContent('');
       setImage(null); // Limpa o campo de imagem
-      setError('');
+      setError(''); // Limpa o erro
+      console.log('Postagem criada:', response.data); // Log para verificar o que veio do backend
     } catch (error) {
       setError('Erro ao criar postagem. Tente novamente.');
-      console.error(error);
+      console.error('Erro ao criar postagem:', error);
     }
   };
 
