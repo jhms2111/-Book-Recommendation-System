@@ -17,7 +17,7 @@ passport.use(new GoogleStrategy({
         let usuario = await User.findOne({ googleId: profile.id });
         if (!usuario) {
             usuario = new User({
-                nome: profile.displayName,
+                name: profile.displayName,
                 email: profile.emails[0].value,
                 googleId: profile.id // Armazena o googleId
             });
