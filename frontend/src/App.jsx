@@ -12,6 +12,7 @@ import UserBooksPage from './pages/Books/UserBooksPage';
 import PostForm from './components/Feed/PostForm'; // Novo: formulário para criar postagens
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import Layout from './components/Header/Layout'; // Importa o Layout
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null

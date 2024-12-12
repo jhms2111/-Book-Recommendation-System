@@ -1,8 +1,11 @@
+// //CreatePost.jsx
 import { useState } from 'react';
 import axios from 'axios';
-import PropTypes from 'prop-types';  // Importando PropTypes
+import PropTypes from 'prop-types';
+import { Form, Button, Alert, Container } from 'react-bootstrap';
+import './Feed.css';
 
-const CreatePost = ({ setPosts }) => {  // Recebe a função setPosts como prop
+const CreatePost = ({ setPosts }) => {
     const [content, setContent] = useState('');
     const [image, setImage] = useState(null);
     const [error, setError] = useState('');
@@ -14,32 +17,24 @@ const CreatePost = ({ setPosts }) => {  // Recebe a função setPosts como prop
         setSuccess('');
 
         try {
-            // FormData para enviar dados com imagem
             const formData = new FormData();
             formData.append('content', content);
             if (image) {
-                formData.append('image', image); // Se houver uma imagem, adiciona ao formulário
+                formData.append('image', image);
             }
 
-            // Pega o token JWT do localStorage (onde ele foi salvo após o login)
             const token = localStorage.getItem('authToken');
-
-            // Envia a requisição POST para criar uma nova postagem
             const response = await axios.post('http://localhost:5000/api/postagens', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Necessário para enviar imagens
-                    Authorization: `Bearer ${token}`, // Adiciona o token JWT no cabeçalho
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
-            // Se a postagem for criada com sucesso
             setSuccess('Postagem criada com sucesso!');
-            setContent(''); // Limpa o conteúdo
-            setImage(null);  // Limpa a imagem
-
-            // Adiciona a nova postagem diretamente ao estado
-            setPosts(prevPosts => [response.data, ...prevPosts]);  // Adiciona a nova postagem no início da lista
-
+            setContent('');
+            setImage(null);
+            setPosts((prevPosts) => [response.data, ...prevPosts]);
         } catch (err) {
             setError('Erro ao criar postagem. Tente novamente.');
             console.error('Erro ao criar postagem:', err);
@@ -47,26 +42,40 @@ const CreatePost = ({ setPosts }) => {  // Recebe a função setPosts como prop
     };
 
     return (
-        <div>
-            <h2>Criar uma nova postagem</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
-            <form onSubmit={handleSubmit}>
-                <textarea
-                    placeholder="Escreva algo..."
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-                <button type="submit">Criar Postagem</button>
-            </form>
-        </div>
+        <Container className="create-post-container">
+            <h2 style={{ marginBottom: '20px', fontWeight: 'bold' }}>Criar uma nova postagem</h2>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
+            <Form onSubmit={handleSubmit} className="create-post-form">
+                <Form.Group className="mb-3">
+                    <Form.Control
+                        as="textarea"
+                        rows={6}
+                        placeholder="Escreva algo..."
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        style={{ fontSize: '18px', padding: '20px', borderRadius: '12px', border: '1px solid #ced4da', resize: 'none' }}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label style={{ fontWeight: 'bold', fontSize: '16px' }}>Selecione uma imagem</Form.Label>
+                    <Form.Control type="file" onChange={(e) => setImage(e.target.files[0])} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #ced4da' }} />
+                </Form.Group>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    style={{ width: '100%', padding: '15px', fontSize: '20px', fontWeight: 'bold', borderRadius: '12px', background: '#007bff', border: 'none' }}
+                >
+                    Criar Postagem
+                </Button>
+            </Form>
+        </Container>
     );
 };
 
-// Validação das props
 CreatePost.propTypes = {
-    setPosts: PropTypes.func.isRequired,  // Garante que 'setPosts' é uma função obrigatória
+    setPosts: PropTypes.func.isRequired,
 };
 
 export default CreatePost;

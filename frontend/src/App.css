@@ -1,3 +1,10 @@
+html, body {
+    width: 100%;
+    overflow-x: hidden; /* Previne qualquer rolagem horizontal */
+}
+
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

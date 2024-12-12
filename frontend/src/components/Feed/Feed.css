@@ -1,0 +1,81 @@
+/* Feed.css */
+.feed-container {
+    width: 100%;
+    max-width: 1680px; /* Limite fixo máximo aumentado em 40% */
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Previne expansão lateral */
+}
+
+.post-card {
+    width: 100%;
+    max-width: 1120px; /* Define um limite máximo para cada postagem (aumentado 40%) */
+    margin: 1rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.post-content {
+    font-size: 1rem;
+    color: #555;
+    margin: 1rem 0;
+    max-width: 100%; 
+    white-space: pre-wrap; /* Mantém quebras de linha e espaços */
+    word-wrap: break-word; /* Compatibilidade antiga */
+    overflow-wrap: break-word; /* Moderno */
+}
+
+.post-user {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%; /* Limita a largura máxima */
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.no-posts {
+    text-align: center;
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.load-more-btn {
+    display: block;
+    width: 100%;
+    max-width: 1200px;  /* Limita largura do botão (aumentado 40%) */
+    margin: 2rem auto;
+    font-size: 1.2rem;
+    padding: 1rem;
+    font-weight: bold;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.load-more-btn:hover {
+    background: #0056b3;
+}
+
+.load-more-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
