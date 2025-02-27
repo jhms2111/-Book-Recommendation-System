@@ -17,15 +17,16 @@ const sliderSettings = {
       settings: { slidesToShow: 4, slidesToScroll: 4 },
     },
     {
-      breakpoint: 600,
-      settings: { slidesToShow: 2, slidesToScroll: 2 },
+      breakpoint: 768,
+      settings: { slidesToShow: 2, slidesToScroll: 2 }, // Reduzido para telas menores
     },
     {
       breakpoint: 480,
-      settings: { slidesToShow: 1, slidesToScroll: 1 },
+      settings: { slidesToShow: 1, slidesToScroll: 1 }, // Apenas 1 livro por vez em telas pequenas
     },
   ],
 };
+
 
 const OpenLibraryCarousel = () => {
   const [openLibraryBooks, setOpenLibraryBooks] = useState([]);

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Rating } from '@mui/material';
@@ -60,25 +61,46 @@ const BookReviewPage = () => {
     fetchBookDetails();
   }, [bookId]);
 
-  const handleAddToUserPage = (status) => {
-    const userBooks = JSON.parse(localStorage.getItem('userBooks')) || [];
-    const bookData = {
-      id: bookId,
-      title: bookDetails.title,
-      thumbnail: bookDetails.imageLinks?.thumbnail || '',
-      status, // "Lido" ou "Vou Ler"
-    };
+  const handleAddToUserPage = async (status) => {
+    try {
+        const token = localStorage.getItem("authToken"); // 🔥 Pegue o nome correto do token
 
-    // Salva no armazenamento local
-    localStorage.setItem('userBooks', JSON.stringify([...userBooks, bookData]));
+        console.log("🔍 Enviando token na requisição:", token);
 
-    // Redireciona para a página pessoal
-    navigate('/my-books');
-  };
+        if (!token) {
+            alert("Usuário não autenticado. Faça login novamente.");
+            return;
+        }
 
-  if (!bookDetails) {
-    return <Typography>Carregando informações do livro...</Typography>;
-  }
+        const bookData = {
+            bookId,
+            title: bookDetails.title,
+            thumbnail: bookDetails.imageLinks?.thumbnail || '',
+            status,
+        };
+
+        const response = await axios.post("http://localhost:5000/api/books", bookData, { // 🔥 Corrigido
+          headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+          },
+      });
+      
+
+        console.log("✅ Livro adicionado com sucesso!", response.data);
+
+        if (response.status === 201) {
+            alert("Livro adicionado com sucesso!");
+            navigate("/my-books");
+        }
+    } catch (error) {
+        console.error("❌ Erro ao adicionar o livro:", error.response ? error.response.data : error);
+        alert("Erro ao adicionar o livro. Tente novamente.");
+    }
+};
+
+  
+  
 
   return (
     <Box sx={{ padding: '20px', textAlign: 'center' }}>

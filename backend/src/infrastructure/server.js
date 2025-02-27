@@ -5,25 +5,28 @@ const passport = require('passport');
 const cors = require('cors');
 const userRoutes = require('../adapters/controllers/user/userRoutes');
 const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // Certifique-se de que esse é um router válido
-require('../infrastructure/auth/passport');
-
-const booksRoutes = require('../adapters/controllers/booksRoutes'); // Importa as rotas de livros
+const booksRoutes = require('../adapters/routers/bookRoutes'); // Corrigido o caminho do arquivo
+console.log("✅ booksRoutes foi carregado no server.js");
 const postagemRoutes = require('../adapters/routers/postagemRoutes'); // Importa as rotas de postagens
+
+
+
+require('../infrastructure/auth/passport');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Configuração do CORS
 const corsOptions = {
-    origin: 'http://localhost:5173', // URL do frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Se você estiver usando cookies ou outros mecanismos de autenticação
-  };
-  
-  app.use(cors(corsOptions)); // Use o CORS com as opções
+    origin: "*", // 🔥 Permite qualquer origem (substitua depois pelo endereço correto)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, 
+};
+app.use(cors(corsOptions));
 
-// Middleware para analisar o corpo das requisições
+
+// Middleware para analisar JSON corretamente
 app.use(express.json());
 
 // Configurar sessão
@@ -38,13 +41,13 @@ mongoose.connect('mongodb://localhost:27017/BookRecommendationSystem', { useNewU
     .then(() => console.log('Conectado ao MongoDB'))
     .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
-
 // Usar as rotas
+console.log("Carregando as rotas de livros...");
+app.use('/api/books', booksRoutes);
+  // Agora corretamente adicionado após express.json()
+app.use('/api', postagemRoutes);
 app.use(userRoutes);
-app.use(authRoutes); // Usa as rotas de autenticação corretamente (assumindo que authRoutes seja um router válido)
-
-// Usar as rotas de postagens
-app.use('/api', postagemRoutes); // Usa as rotas de postagens
+app.use(authRoutes); 
 
 // Rota principal
 app.get('/', (req, res) => {

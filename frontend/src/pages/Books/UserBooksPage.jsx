@@ -9,19 +9,32 @@ const UserBooksPage = () => {
   useEffect(() => {
     const fetchUserBooks = async () => {
       try {
-        const response = await axios.get('/api/user/books', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Token JWT
-          },
-        });
-
-        setBooks(response.data.books);
+          const token = localStorage.getItem("authToken"); // Use o nome correto do token
+      
+          if (!token) {
+              console.error("❌ Usuário não autenticado.");
+              return;
+          }
+      
+          console.log("🔐 Token enviado na requisição:", token);
+      
+          const response = await axios.get("http://localhost:5000/api/books", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+  
+          console.log("✅ Livros recuperados do backend:", response.data.books);
+  
+          setBooks(response.data.books);
       } catch (error) {
-        console.error('Erro ao buscar os livros do usuário:', error);
+          console.error("❌ Erro ao buscar os livros do usuário:", error);
       } finally {
-        setLoading(false);
+          setLoading(false);
       }
-    };
+  };
+  
+    
 
     fetchUserBooks();
   }, []);

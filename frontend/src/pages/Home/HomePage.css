@@ -13,6 +13,20 @@
     background-color: #e21010; /* Fundo escuro para contraste */
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Evita rolagem lateral */
+  background-color: #1c0101; /* Mantém o fundo consistente */
+}
+
+.container {
+  min-height: 100vh; /* Garante que a tela ocupe o espaço certo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 
 /* Estilos para o Banner */

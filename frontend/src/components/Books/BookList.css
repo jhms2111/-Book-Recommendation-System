@@ -45,3 +45,35 @@
     width: 80%; /* Título ocupa 80% da largura do livro */
   }
   
+  @media (max-width: 600px) {
+    .book-item {
+      width: 90px; /* Reduz o tamanho da capa */
+      padding: 5px; /* Ajuste no padding */
+    }
+  
+    .book-cover img {
+      width: 90px; /* Ajuste a largura da imagem */
+      height: 130px; /* Ajuste a altura da imagem */
+    }
+  
+    .book-title {
+      font-size: 0.6rem; /* Reduz o tamanho do texto */
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .book-item {
+      width: 80px;
+    }
+  
+    .book-cover img {
+      width: 80px;
+      height: 120px;
+    }
+  
+    .book-title {
+      font-size: 0.5rem;
+    }
+  }
+  

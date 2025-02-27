@@ -1,30 +1,38 @@
-// src/pages/BookSearchPage.js
-import  { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import BookList from '../../components/Books/BookList'; // Importando o componente da lista de livros
 
 function BookSearchPage() {
   const [query, setQuery] = useState('');
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]);  // Estado inicial é um array vazio
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-// src/pages/BookSearchPage.js
-const searchBooks = async () => {
-  setLoading(true);
-  setError('');
-  try {
-    const response = await axios.get(`http://localhost:5000/api/books/search?q=${query}`);
-
-    console.log("Dados dos livros:", response.data); // Adicione este log
-    setBooks(response.data);
-  } catch (error) {
-    console.error(error); // log do erro para inspeção
-    setError('Erro ao buscar livros. Tente novamente.');
-  }
-  setLoading(false);
-}
-
+  const searchBooks = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const googleBooksResponse = axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+      const openLibraryResponse = axios.get(`https://openlibrary.org/search.json?q=${query}`);
+  
+      // Aguarda ambas as respostas
+      const [googleBooksData, openLibraryData] = await Promise.all([googleBooksResponse, openLibraryResponse]);
+  
+      const googleBooks = googleBooksData.data.items || [];
+      const openLibraryBooks = openLibraryData.data.docs || [];
+  
+      // Mesclar os resultados (simples concatenação para o exemplo)
+      const allBooks = [...googleBooks, ...openLibraryBooks];
+  
+      // Processar os dados de ambos os serviços, como desejar
+      setBooks(allBooks); // Defina o estado com os livros encontrados
+    } catch (error) {
+      console.error(error);
+      setError('Erro ao buscar livros. Tente novamente.');
+    }
+    setLoading(false);
+  };
+  ;
 
   return (
     <div>
@@ -43,7 +51,8 @@ const searchBooks = async () => {
 
       {error && <p>{error}</p>}
       
-      <BookList books={books} /> {/* Renderiza a lista de livros */}
+      {/* 🔹 Garantindo que 'books' seja sempre um array */}
+      <BookList books={Array.isArray(books) ? books : []} />  
     </div>
   );
 }

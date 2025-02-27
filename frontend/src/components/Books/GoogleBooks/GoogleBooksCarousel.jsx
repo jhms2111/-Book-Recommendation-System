@@ -17,15 +17,17 @@ const sliderSettings = {
       settings: { slidesToShow: 4, slidesToScroll: 4 },
     },
     {
-      breakpoint: 600,
-      settings: { slidesToShow: 2, slidesToScroll: 2 },
+      breakpoint: 768,
+      settings: { slidesToShow: 2, slidesToScroll: 2 }, // Reduzido para telas menores
     },
     {
       breakpoint: 480,
-      settings: { slidesToShow: 1, slidesToScroll: 1 },
+      settings: { slidesToShow: 1, slidesToScroll: 1 }, // Apenas 1 livro por vez em telas pequenas
     },
   ],
 };
+
+
 
 const GoogleBooksCarousel = () => {
   const [books, setBooks] = useState([]);
@@ -53,16 +55,16 @@ const GoogleBooksCarousel = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '300px',
-          textAlign: 'center',
-        }}
-      >
+<Box
+  sx={{
+    width: '100%',  // Para evitar que o carrossel fique maior que a tela
+    maxWidth: '100vw',  // Não deixar ultrapassar a largura da tela
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+>
+
         <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" color="textSecondary">
           Carregando livros do Google Books...
@@ -118,16 +120,17 @@ const GoogleBooksCarousel = () => {
           {/* Capa do Livro */}
           {book.volumeInfo?.imageLinks?.thumbnail ? (
             <img
-              src={book.volumeInfo.imageLinks.thumbnail}
-              alt={book.volumeInfo?.title}
-              style={{
-                height: '150px',
-                width: '100px',
-                objectFit: 'cover',
-                margin: '0 auto',
-                display: 'block',
-              }}
-            />
+            src={book.volumeInfo.imageLinks.thumbnail}
+            alt={book.volumeInfo?.title}
+            style={{
+              height: '150px',
+              width: '100px',
+              objectFit: 'cover',
+              margin: '0 auto',
+              display: 'block',
+            }}
+          />
+          
           ) : (
             <Box
               sx={{
