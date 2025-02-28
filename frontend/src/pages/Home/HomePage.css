@@ -1,4 +1,4 @@
-/* src/pages/HomePage.css //*/
+/* src/pages/HomePage.css */
 
 :root {
     height: 100%;
@@ -11,6 +11,10 @@
     align-content: stretch;
     flex-wrap: wrap;
     background-color: #e21010; /* Fundo escuro para contraste */
+}
+
+element.style {
+  margin: 0px;
 }
 
 html, body {

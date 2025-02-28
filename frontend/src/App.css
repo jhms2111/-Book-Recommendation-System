@@ -47,3 +47,7 @@ html, body {
 .read-the-docs {
   color: #888;
 }
+
+element.style {
+  margin: 0px;
+}

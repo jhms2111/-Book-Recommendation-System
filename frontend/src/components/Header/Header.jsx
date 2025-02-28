@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -6,15 +6,15 @@ import { useState, useEffect } from 'react';
 const Header = () => {
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
             const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodificando o JWT
-            setUserName(decodedToken.name); // Armazenando o nome do usuário
-            setUserEmail(decodedToken.email); // Armazenando o email do usuário
+            setUserName(decodedToken.name);
+            setUserEmail(decodedToken.email);
         }
     }, []);
 
@@ -26,49 +26,113 @@ const Header = () => {
         navigate('/login');
     };
 
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
     };
 
     return (
-        <AppBar position="fixed" sx={{ backgroundColor: '#1c0101' }}> {/* Altere para a cor desejada */}
-            <Toolbar>
-                <Typography variant="h6" sx={{ flexGrow: 1, fontSize: '1rem', cursor: 'pointer' }} onClick={() => navigate('/')}> 
-                    Meu Aplicativo {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
-                </Typography>
-                
-                {/* Ícone de menu para mobile */}
-                <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-                    <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
-                        <MenuIcon />
-                    </IconButton>
-                </Box>
-                
-                {/* Menu de navegação para mobile */}
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                    <MenuItem onClick={() => { navigate('/'); handleMenuClose(); }}>Home</MenuItem>
-                    <MenuItem onClick={() => { navigate('/search-books'); handleMenuClose(); }}>Buscar Livros</MenuItem>
-                    <MenuItem onClick={() => { navigate('/my-books'); handleMenuClose(); }}>Meus Livros</MenuItem>
-                    <MenuItem onClick={() => { navigate('/postar'); handleMenuClose(); }}>Postar</MenuItem>
-                    <MenuItem onClick={() => { navigate('/feed'); handleMenuClose(); }}>Feed</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
+        <>
+            <AppBar position="fixed" sx={{ backgroundColor: '#1c0101' }}>
+                <Toolbar>
+                    <Typography 
+                        variant="h6" 
+                        sx={{ 
+                            flexGrow: 1, 
+                            fontSize: '1rem', 
+                            cursor: 'pointer', 
+                            fontFamily: '"Cinzel", serif', 
+                            fontWeight: 'bold' 
+                        }} 
+                        onClick={() => navigate('/')}
+                    > 
+                        BRS {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
+                    </Typography>
+                    
+                    {/* Ícone de menu para mobile */}
+                    <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+                        <IconButton edge="end" color="inherit" onClick={toggleMenu}>
+                            <MenuIcon />
+                        </IconButton>
+                    </Box>
 
-                {/* Botões de navegação para desktop */}
-                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
-                    <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Livros</Button>
-                    <Button color="inherit" onClick={() => navigate('/my-books')}>Meus Livros</Button>
-                    <Button color="inherit" onClick={() => navigate('/postar')}>Postar</Button>
-                    <Button color="inherit" onClick={() => navigate('/feed')}>Feed</Button>
-                    <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                    {/* Botões de navegação para desktop */}
+                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                        <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
+                        <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Livros</Button>
+                        <Button color="inherit" onClick={() => navigate('/my-books')}>Meus Livros</Button>
+                        <Button color="inherit" onClick={() => navigate('/postar')}>Postar</Button>
+                        <Button color="inherit" onClick={() => navigate('/feed')}>Feed</Button>
+                        <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+
+            {/* Menu suspenso cobrindo a tela toda no mobile */}
+            {menuOpen && (
+                <Box sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    backgroundColor: '#fff',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 50,
+                }}>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: '#1c0101' 
+                    }} onClick={() => { navigate('/'); toggleMenu(); }}>
+                        Home
+                    </Button>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: '#1c0101' 
+                    }} onClick={() => { navigate('/search-books'); toggleMenu(); }}>
+                        Buscar Livros
+                    </Button>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: '#1c0101' 
+                    }} onClick={() => { navigate('/my-books'); toggleMenu(); }}>
+                        Meus Livros
+                    </Button>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: '#1c0101' 
+                    }} onClick={() => { navigate('/postar'); toggleMenu(); }}>
+                        Postar
+                    </Button>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: '#1c0101' 
+                    }} onClick={() => { navigate('/feed'); toggleMenu(); }}>
+                        Feed
+                    </Button>
+                    <Button sx={{ 
+                        fontSize: '2rem', 
+                        fontWeight: 'bold', 
+                        fontFamily: '"Cinzel", serif', 
+                        color: 'red' 
+                    }} onClick={handleLogout}>
+                        Logout
+                    </Button>
                 </Box>
-            </Toolbar>
-        </AppBar>
+            )}
+        </>
     );
 };
 

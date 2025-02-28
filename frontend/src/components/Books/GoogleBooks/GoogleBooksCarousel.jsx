@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router-dom';
 
 const sliderSettings = {
   dots: true,
-  infinite: true,
+  infinite: false, // Desativa o loop infinito para manter a ordem
   speed: 500,
-  slidesToShow: 5,
-  slidesToScroll: 5,
+  slidesToShow: 8,
+  slidesToScroll: 8,
   responsive: [
     {
       breakpoint: 1024,
@@ -18,16 +18,21 @@ const sliderSettings = {
     },
     {
       breakpoint: 768,
-      settings: { slidesToShow: 2, slidesToScroll: 2 }, // Reduzido para telas menores
+      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Agora exibe 3 livros por linha em telas menores
     },
     {
       breakpoint: 480,
-      settings: { slidesToShow: 1, slidesToScroll: 1 }, // Apenas 1 livro por vez em telas pequenas
+      settings: {
+        slidesToShow: 3, // Ajustado para 3 livros por linha
+        slidesToScroll: 3,
+        arrows: false, // Remove os botões de rolagem no celular
+        centerMode: false,
+        variableWidth: false, // Garante alinhamento perfeito
+        rows: 2, // Exibe os livros em duas linhas
+      }, // Agora os livros ficarão ordenados corretamente em 2 linhas com 3 colunas
     },
   ],
 };
-
-
 
 const GoogleBooksCarousel = () => {
   const [books, setBooks] = useState([]);
@@ -104,18 +109,7 @@ const GoogleBooksCarousel = () => {
           }}
           onClick={() => navigate(`/book-review/${book.id}`)}
         >
-          {/* Nome do Livro */}
-          <Typography
-            variant="caption"
-            sx={{
-              display: 'block',
-              marginBottom: '5px',
-              fontSize: '10px',
-              color: '#555',
-            }}
-          >
-            {book.volumeInfo?.title || 'Título indisponível'}
-          </Typography>
+
 
           {/* Capa do Livro */}
           {book.volumeInfo?.imageLinks?.thumbnail ? (

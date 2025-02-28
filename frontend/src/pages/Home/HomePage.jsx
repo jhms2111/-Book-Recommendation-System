@@ -1,60 +1,54 @@
-import { useEffect } from 'react';
 import GoogleBooksCarousel from '../../components/Books/GoogleBooks/GoogleBooksCarousel';
 import OpenLibraryCarousel from '../../components/Books/GoogleBooks/OpenLibraryCarousel';
 import { Container, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 
-// Garante que não há margem no container principal
+// Estilos principais para organizar os carrosséis
 const MainContainer = styled(Container)({
   backgroundColor: '#1c0101',
-  padding: '0',
-  margin: '0', // Remove qualquer margem
+  padding: '10px', // Reduzi o padding para mobile
+  borderRadius: '8px',
   color: '#d2b48c',
   fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
-  width: '100vw',
-  boxSizing: 'border-box',
-  overflow: 'hidden',
+  minHeight: '100vh',
+  width: '100%',
+  maxWidth: '100vw', // Garante que não ultrapasse a largura da tela
+  overflowX: 'hidden',
+  marginTop: '50px', // Espaço extra para afastar do topo
+  '@media (max-width: 600px)': {
+    marginTop: '50px', // Mais espaço no mobile
+  },
 });
 
 const Section = styled(Box)({
+  marginBottom: '20px', // Reduzindo a margem para evitar espaços extras
   textAlign: 'center',
-  width: '100%',
-  maxWidth: '1200px',
+  width: '100%', // Para garantir que o conteúdo fique centralizado corretamente
 });
 
 const Title = styled(Typography)({
-  fontSize: '24px',
+  fontSize: '20px', // Reduzido para melhor encaixe em mobile
   fontWeight: 'bold',
   marginBottom: '15px',
   textAlign: 'center',
   '@media (max-width: 600px)': {
-    fontSize: '18px',
+    fontSize: '16px', // Ainda menor para telas menores
   },
 });
 
 const HomePage = () => {
-  // Garante que <main> tenha margin: 0px SEMPRE
-  useEffect(() => {
-    const mainElement = document.querySelector('main');
-    if (mainElement) {
-      mainElement.style.margin = '0px'; // Remove qualquer margem inline
-      mainElement.style.padding = '0px'; // Remove qualquer padding inline
-    }
-  }, []);
-
   return (
-    <MainContainer disableGutters>
+    <MainContainer>
       <Section>
-        <Title>Google Books</Title>
+        <Title></Title>
         <GoogleBooksCarousel />
       </Section>
       <Section>
-        <Title>Open Library Books</Title>
+        <Title></Title>
         <OpenLibraryCarousel />
       </Section>
     </MainContainer>

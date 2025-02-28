@@ -7,7 +7,7 @@
     gap: 16px; /* Espaço entre os livros */
     justify-content: center;
     padding: 20px;
-    background-color: #ffffff; /* Fundo mogno para um visual mais tradicional */
+    background-color: #1c0101; /* Fundo mogno para um visual mais tradicional */
   }
   
   
@@ -75,5 +75,20 @@
     .book-title {
       font-size: 0.5rem;
     }
+    .bookshelf {
+      padding: 20px;
+    }
+    
+    .book-item {
+      margin: 10px;
+    }
+    
+    .book-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 8px;
+    }
+    
   }
   
