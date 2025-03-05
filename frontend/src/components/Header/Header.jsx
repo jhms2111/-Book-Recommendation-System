@@ -60,7 +60,7 @@ const Header = () => {
                         <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
                         <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Livros</Button>
                         <Button color="inherit" onClick={() => navigate('/my-books')}>Meus Livros</Button>
-                        <Button color="inherit" onClick={() => navigate('/postar')}>Postar</Button>
+                        <Button color="inherit" onClick={() => navigate('/Ranking')}>Ranking</Button>
                         <Button color="inherit" onClick={() => navigate('/feed')}>Feed</Button>
                         <Button color="inherit" onClick={handleLogout}>Logout</Button>
                     </Box>
@@ -111,8 +111,8 @@ const Header = () => {
                         fontWeight: 'bold', 
                         fontFamily: '"Cinzel", serif', 
                         color: '#1c0101' 
-                    }} onClick={() => { navigate('/postar'); toggleMenu(); }}>
-                        Postar
+                    }} onClick={() => { navigate('/ranking'); toggleMenu(); }}>
+                        Ranking
                     </Button>
                     <Button sx={{ 
                         fontSize: '2rem', 

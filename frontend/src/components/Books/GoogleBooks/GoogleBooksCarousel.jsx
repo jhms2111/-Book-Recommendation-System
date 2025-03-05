@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const sliderSettings = {
   dots: true,
-  infinite: false, // Desativa o loop infinito para manter a ordem
+  infinite: false, // Mantém a ordem dos livros
   speed: 500,
   slidesToShow: 8,
   slidesToScroll: 8,
@@ -18,18 +18,18 @@ const sliderSettings = {
     },
     {
       breakpoint: 768,
-      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Agora exibe 3 livros por linha em telas menores
+      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Exibe 3 livros por linha em telas menores
     },
     {
       breakpoint: 480,
       settings: {
-        slidesToShow: 3, // Ajustado para 3 livros por linha
+        slidesToShow: 3,
         slidesToScroll: 3,
-        arrows: false, // Remove os botões de rolagem no celular
+        arrows: false, // Remove botões no mobile para melhor UX
         centerMode: false,
-        variableWidth: false, // Garante alinhamento perfeito
-        rows: 2, // Exibe os livros em duas linhas
-      }, // Agora os livros ficarão ordenados corretamente em 2 linhas com 3 colunas
+        variableWidth: false,
+        rows: 2, // Organiza os livros em 2 linhas no mobile
+      },
     },
   ],
 };
@@ -46,7 +46,6 @@ const GoogleBooksCarousel = () => {
           'https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=40'
         );
         const data = await response.json();
-
         setBooks(data.items || []);
       } catch (error) {
         console.error('Erro ao buscar livros do Google Books:', error);
@@ -60,16 +59,18 @@ const GoogleBooksCarousel = () => {
 
   if (loading) {
     return (
-<Box
-  sx={{
-    width: '100%',  // Para evitar que o carrossel fique maior que a tela
-    maxWidth: '100vw',  // Não deixar ultrapassar a largura da tela
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }}
->
-
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '100vw',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '300px',
+          textAlign: 'center',
+        }}
+      >
         <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" color="textSecondary">
           Carregando livros do Google Books...
@@ -109,38 +110,42 @@ const GoogleBooksCarousel = () => {
           }}
           onClick={() => navigate(`/book-review/${book.id}`)}
         >
-
-
-          {/* Capa do Livro */}
-          {book.volumeInfo?.imageLinks?.thumbnail ? (
-            <img
-            src={book.volumeInfo.imageLinks.thumbnail}
-            alt={book.volumeInfo?.title}
-            style={{
-              height: '150px',
-              width: '100px',
-              objectFit: 'cover',
-              margin: '0 auto',
-              display: 'block',
-            }}
-          />
-          
-          ) : (
-            <Box
-              sx={{
-                height: '150px',
-                width: '100px',
-                backgroundColor: '#f0f0f0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '10px',
-                color: '#aaa',
-              }}
-            >
-              Capa não disponível
+          {/* Adicionando Tooltip para mostrar o nome do livro */}
+          <Tooltip title={book.volumeInfo?.title || 'Título não disponível'} placement="top">
+            <Box>
+              {/* Capa do Livro */}
+              {book.volumeInfo?.imageLinks?.thumbnail ? (
+                <img
+                  src={book.volumeInfo.imageLinks.thumbnail}
+                  alt={book.volumeInfo?.title}
+                  style={{
+                    height: '150px',
+                    width: '100px',
+                    objectFit: 'cover',
+                    margin: '0 auto',
+                    display: 'block',
+                    borderRadius: '8px',
+                  }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    height: '150px',
+                    width: '100px',
+                    backgroundColor: '#f0f0f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '10px',
+                    color: '#aaa',
+                    borderRadius: '8px',
+                  }}
+                >
+                  Capa não disponível
+                </Box>
+              )}
             </Box>
-          )}
+          </Tooltip>
 
           {/* Selo de Gratuito */}
           {book.saleInfo?.saleability === 'FREE' && (
@@ -153,7 +158,7 @@ const GoogleBooksCarousel = () => {
                 fontWeight: 'bold',
                 fontSize: '10px',
                 marginTop: '10px',
-                display: 'inline-block', // Centraliza o selo abaixo da capa
+                display: 'inline-block',
               }}
             >
               Gratuito

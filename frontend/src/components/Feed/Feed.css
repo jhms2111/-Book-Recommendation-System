@@ -1,7 +1,7 @@
 /* Feed.css */
 .feed-container {
     width: 100%;
-    max-width: 1680px; /* Limite fixo máximo aumentado em 40% */
+    max-width: 1400px; /* Limite fixo máximo aumentado em 40% */
     min-height: 100vh;
     margin: 0 auto;
     padding: 2rem;
@@ -79,3 +79,5 @@
     background: #aaa;
     cursor: not-allowed;
 }
+
+

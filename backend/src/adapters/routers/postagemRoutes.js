@@ -1,18 +1,26 @@
-// src/routes/postagensRoutes.js
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });  // Defina o diretório de destino para o upload de arquivos
-
 const express = require('express');
 const postagemController = require('../controllers/postagemController');
-const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser'); // Middleware de autenticação
+
+console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
+
+const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser');
 
 const router = express.Router();
 
-// Criar postagem (rota protegida)
-router.post('/postagens', authenticateUser, upload.single('image'), postagemController.createPost);
+// Rota para criar postagens (postagem normal ou avaliação)
+router.post('/postagens', authenticateUser, postagemController.createPost);
 
-// Buscar postagens com paginação
+// Rota para obter todas as postagens (posts normais + avaliações)
 router.get('/postagens', postagemController.getPosts);
+
+// Criar uma avaliação de livro (REVIEW)
+router.post('/reviews', authenticateUser, postagemController.createPost);
+
+// Rota para buscar apenas avaliações de um livro
+router.get('/postagens/reviews/:bookId', postagemController.getBookReviews);
+
+router.get('/ranking', postagemController.getTopRatedBooks);
+
 
 
 module.exports = router;

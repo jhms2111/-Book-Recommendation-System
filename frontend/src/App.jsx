@@ -9,7 +9,7 @@ import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
-import PostForm from './components/Feed/PostForm'; // Novo: formulário para criar postagens
+import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -102,11 +102,11 @@ const App = () => {
                 
                 {/* Rotas para Postagens */}
                 <Route
-                    path="/postar"
+                    path="/ranking"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Layout>
-                                <PostForm />
+                                <RankingPage />
                             </Layout>
                         </ProtectedRoute>
                     }

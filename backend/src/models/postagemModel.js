@@ -1,21 +1,18 @@
-// postagemModel.js
-
 const mongoose = require('mongoose');
 
-// Define o schema para postagens
 const postagemSchema = new mongoose.Schema({
-    content: { type: String, required: true },
+    content: { type: String, required: true }, // Comentário do usuário
     userId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', // Refere-se ao modelo User
+        ref: 'User',
         required: true
     },
-    image: String,
-    likes: [mongoose.Schema.Types.ObjectId],
-    comments: [{ userId: mongoose.Schema.Types.ObjectId, content: String }],
+    type: { type: String, enum: ['post', 'review'], required: true },
+    bookId: { type: String, default: null }, // ID do livro
+    bookTitle: { type: String, default: null }, // 🔥 Agora garantimos que o título pode ser salvo!
+    rating: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
 
-// Modelo de Postagem
 module.exports = mongoose.model('Postagem', postagemSchema);

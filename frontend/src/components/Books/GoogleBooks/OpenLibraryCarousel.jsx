@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const sliderSettings = {
   dots: true,
-  infinite: false, // Desativa o loop infinito para manter a ordem
+  infinite: false,
   speed: 500,
   slidesToShow: 8,
   slidesToScroll: 8,
@@ -18,22 +18,21 @@ const sliderSettings = {
     },
     {
       breakpoint: 768,
-      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Agora exibe 3 livros por linha em telas menores
+      settings: { slidesToShow: 3, slidesToScroll: 3 },
     },
     {
       breakpoint: 480,
       settings: {
-        slidesToShow: 3, // Ajustado para 3 livros por linha
+        slidesToShow: 3,
         slidesToScroll: 3,
-        arrows: false, // Remove os botões de rolagem no celular
+        arrows: false,
         centerMode: false,
-        variableWidth: false, // Garante alinhamento perfeito
-        rows: 2, // Exibe os livros em duas linhas
-      }, // Agora os livros ficarão ordenados corretamente em 2 linhas com 3 colunas
+        variableWidth: false,
+        rows: 2,
+      },
     },
   ],
 };
-
 
 const OpenLibraryCarousel = () => {
   const [openLibraryBooks, setOpenLibraryBooks] = useState([]);
@@ -46,11 +45,10 @@ const OpenLibraryCarousel = () => {
         const response = await fetch('https://openlibrary.org/search.json?q=bestsellers');
         const data = await response.json();
 
-        // Filtrar livros com domínio público, gratuitos e em espanhol
         const filteredBooks = data.docs.filter((book) => {
-          const isPublicDomain = book.public_scan_b === true; // Verifica domínio público
-          const isFree = !!book.lending_edition_s || !!book.ia; // Verifica disponibilidade gratuita
-          const isSpanish = book.language?.includes('spa'); // Verifica se está em espanhol
+          const isPublicDomain = book.public_scan_b === true;
+          const isFree = !!book.lending_edition_s || !!book.ia;
+          const isSpanish = book.language?.includes('spa');
           return isPublicDomain && isFree && isSpanish;
         });
 
@@ -58,7 +56,7 @@ const OpenLibraryCarousel = () => {
       } catch (error) {
         console.error('Erro ao buscar livros do Open Library:', error);
       } finally {
-        setLoading(false); // Finaliza o carregamento
+        setLoading(false);
       }
     };
 
@@ -77,18 +75,13 @@ const OpenLibraryCarousel = () => {
           textAlign: 'center',
         }}
       >
-        <CircularProgress
-          size={60}
-          sx={{ color: '#007BFF', marginBottom: '20px' }}
-        />
-        {/* Agora o texto fica branco */}
+        <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" sx={{ color: '#FFFFFF' }}>
           Carregando livros gratuitos, de domínio público e em espanhol...
         </Typography>
       </Box>
     );
-}
-
+  }
 
   if (openLibraryBooks.length === 0) {
     return (
@@ -111,86 +104,88 @@ const OpenLibraryCarousel = () => {
   return (
     <Slider {...sliderSettings}>
       {openLibraryBooks.map((book) => (
-        <Box
-          key={book.key}
-          sx={{
-            padding: '10px',
-            textAlign: 'center',
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-          onClick={() => navigate(`/book-review/${book.key.replace('/works/', '')}`)}
-        >
- 
-
-          {/* Capa do Livro Padronizada */}
-          {book.cover_i ? (
-            <img
-              src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
-              alt={book.title}
-              style={{
-                height: '150px', // Altura padronizada
-                width: '100px', // Largura padronizada
-                objectFit: 'cover',
-                margin: '0 auto',
-                display: 'block',
-              }}
-            />
-          ) : (
-            <Box
-              sx={{
-                height: '150px',
-                width: '100px',
-                backgroundColor: '#f0f0f0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '10px',
-                color: '#aaa',
-              }}
-            >
-              Capa não disponível
-            </Box>
-          )}
-
-          {/* Selos Abaixo da Capa */}
+        <Tooltip key={book.key} title={book.title} placement="top">
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: '5px',
+              padding: '10px',
+              textAlign: 'center',
+              cursor: 'pointer',
+              position: 'relative',
             }}
+            onClick={() => navigate(`/book-review/${book.key.replace('/works/', '')}`)}
           >
-            {/* Selo de Gratuito */}
+            {/* Capa do Livro */}
+            {book.cover_i ? (
+              <img
+                src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
+                alt={book.title}
+                style={{
+                  height: '150px',
+                  width: '100px',
+                  objectFit: 'cover',
+                  margin: '0 auto',
+                  display: 'block',
+                  borderRadius: '8px',
+                }}
+              />
+            ) : (
+              <Box
+                sx={{
+                  height: '150px',
+                  width: '100px',
+                  backgroundColor: '#f0f0f0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '10px',
+                  color: '#aaa',
+                  borderRadius: '8px',
+                }}
+              >
+                Capa não disponível
+              </Box>
+            )}
+
+            {/* Selos de Identificação */}
             <Box
               sx={{
-                backgroundColor: 'green',
-                color: 'white',
-                padding: '2px 5px',
-                borderRadius: '3px',
-                fontWeight: 'bold',
-                fontSize: '10px', // Reduzido para ser discreto
-                marginBottom: '2px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginTop: '5px',
               }}
             >
-              Gratuito
-            </Box>
-            {/* Selo de Dominio Público */}
-            <Box
-              sx={{
-                backgroundColor: 'blue',
-                color: 'white',
-                padding: '2px 5px',
-                borderRadius: '3px',
-                fontWeight: 'bold',
-                fontSize: '10px', // Reduzido para ser discreto
-              }}
-            >
-              Dominio Público
+              {/* Selo de Gratuito */}
+              <Box
+                sx={{
+                  backgroundColor: 'green',
+                  color: 'white',
+                  padding: '2px 5px',
+                  borderRadius: '3px',
+                  fontWeight: 'bold',
+                  fontSize: '10px',
+                  marginBottom: '2px',
+                }}
+              >
+                Gratuito
+              </Box>
+
+              {/* Selo de Domínio Público */}
+              <Box
+                sx={{
+                  backgroundColor: 'blue',
+                  color: 'white',
+                  padding: '2px 5px',
+                  borderRadius: '3px',
+                  fontWeight: 'bold',
+                  fontSize: '10px',
+                }}
+              >
+                Domínio Público
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </Tooltip>
       ))}
     </Slider>
   );

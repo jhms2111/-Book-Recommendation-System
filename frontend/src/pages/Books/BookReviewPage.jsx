@@ -63,47 +63,84 @@ const BookReviewPage = () => {
 
   const handleAddToUserPage = async (status) => {
     try {
-        const token = localStorage.getItem("authToken"); // 🔥 Pegue o nome correto do token
+      const token = localStorage.getItem("authToken");
 
-        console.log("🔍 Enviando token na requisição:", token);
+      console.log("🔍 Enviando token na requisição:", token);
+
+      if (!token) {
+        alert("Usuário não autenticado. Faça login novamente.");
+        return;
+      }
+
+      const bookData = {
+        bookId,
+        title: bookDetails.title,
+        thumbnail: bookDetails.imageLinks?.thumbnail || '',
+        status,
+      };
+
+      const response = await axios.post("http://localhost:5000/api/books", bookData, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("✅ Livro adicionado com sucesso!", response.data);
+
+      if (response.status === 201) {
+        alert("Livro adicionado com sucesso!");
+        navigate("/my-books");
+      }
+    } catch (error) {
+      console.error("❌ Erro ao adicionar o livro:", error.response ? error.response.data : error);
+      alert("Erro ao adicionar o livro. Tente novamente.");
+    }
+  };
+
+  const handleSubmitReview = async () => {
+    try {
+        const token = localStorage.getItem('authToken');
 
         if (!token) {
-            alert("Usuário não autenticado. Faça login novamente.");
+            alert('Usuário não autenticado.');
             return;
         }
 
-        const bookData = {
+        const reviewData = {
+            content: comment,
             bookId,
-            title: bookDetails.title,
-            thumbnail: bookDetails.imageLinks?.thumbnail || '',
-            status,
+            bookTitle: bookDetails.title, // 🔥 Agora enviamos o nome do livro corretamente!
+            rating,
+            type: 'review'
         };
 
-        const response = await axios.post("http://localhost:5000/api/books", bookData, { // 🔥 Corrigido
-          headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-          },
-      });
-      
+        console.log("📩 Enviando review:", reviewData); // 🔍 Log para verificação
 
-        console.log("✅ Livro adicionado com sucesso!", response.data);
+        await axios.post('http://localhost:5000/api/postagens', reviewData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-        if (response.status === 201) {
-            alert("Livro adicionado com sucesso!");
-            navigate("/my-books");
-        }
+        alert('Comentário e avaliação enviados com sucesso!');
+        setComment('');
+        setRating(0);
     } catch (error) {
-        console.error("❌ Erro ao adicionar o livro:", error.response ? error.response.data : error);
-        alert("Erro ao adicionar o livro. Tente novamente.");
+        console.error('❌ Erro ao enviar avaliação:', error);
+        alert('Erro ao enviar avaliação. Tente novamente.');
     }
 };
 
-  
-  
+
+
+
+
+
 
   return (
-    <Box sx={{ padding: '20px', textAlign: 'center' }}>
+    <Box sx={{ padding: '20px', textAlign: 'center', marginTop: '95px' }}>
       {!isPageCreated ? (
         <Box>
           <Typography variant="h4" gutterBottom>
@@ -120,14 +157,15 @@ const BookReviewPage = () => {
         </Box>
       ) : (
         <Box>
-          <Typography variant="h4" gutterBottom>
-            Avaliação de: {bookDetails.title}
-          </Typography>
+          
           <img
             src={bookDetails.imageLinks?.thumbnail || ''}
             alt={bookDetails.title}
             style={{ height: '200px', margin: '20px 0' }}
           />
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', marginTop: '10px' }}>
+            {bookDetails.title}
+          </Typography>
           <Typography variant="body1" gutterBottom>
             {bookDetails.description}
           </Typography>
@@ -144,22 +182,14 @@ const BookReviewPage = () => {
             <strong>Número de Páginas:</strong> {bookDetails.pageCount || 'Desconhecido'}
           </Typography>
 
-          {/* Botões "Lido" e "Vou Ler" */}
+          {/* Botão "Lido" (Removido "Vou Ler") */}
           <Box sx={{ marginTop: '20px' }}>
             <Button
               variant="contained"
               color="success"
               onClick={() => handleAddToUserPage('Lido')}
-              sx={{ marginRight: '10px' }}
             >
               Lido
-            </Button>
-            <Button
-              variant="contained"
-              color="info"
-              onClick={() => handleAddToUserPage('Vou Ler')}
-            >
-              Vou Ler
             </Button>
           </Box>
 
@@ -199,16 +229,11 @@ const BookReviewPage = () => {
               variant="contained"
               color="secondary"
               sx={{ marginTop: '20px' }}
-              onClick={() => {
-                console.log('Comentário:', comment);
-                console.log('Classificação:', rating);
-                alert('Comentário enviado com sucesso!');
-                setComment('');
-                setRating(0);
-              }}
+              onClick={handleSubmitReview} // ✅ Agora a função é usada corretamente
             >
               Enviar Avaliação
             </Button>
+
           </Box>
 
           {/* Botão de voltar para a página inicial */}
