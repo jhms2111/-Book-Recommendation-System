@@ -11,9 +11,9 @@ const sliderSettings = {
   dots: true,
   infinite: false,
   speed: 500,
-  slidesToShow: 3, // 3 colunas visíveis
+  slidesToShow: 3, // 3 columnas visibles
   slidesToScroll: 3,
-  rows: 2, // Duas linhas de livros ao mesmo tempo
+  rows: 2, // Dos filas de libros al mismo tiempo
   arrows: false,
   centerMode: false,
   variableWidth: false,
@@ -51,7 +51,7 @@ const BookList = ({ books }) => {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    setIsRendered(true); // Força uma atualização para corrigir o erro no modo mobile do DevTools
+    setIsRendered(true); // Fuerza una actualización para corregir el error en el modo móvil de DevTools
   }, []);
 
   const handleBookClick = (book) => {
@@ -94,9 +94,9 @@ const BookList = ({ books }) => {
             book.volumeInfo?.imageLinks?.thumbnail ||
             (book.cover_i
               ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-              : 'https://via.placeholder.com/120x180.png?text=Sem+Capa')
+              : 'https://via.placeholder.com/120x180.png?text=Sin+Capa')
           }
-          alt={book.title || 'Título Desconhecido'}
+          alt={book.title || 'Título Desconocido'}
           style={{
             maxWidth: '100%',
             maxHeight: '100%',
@@ -119,7 +119,7 @@ const BookList = ({ books }) => {
           zIndex: 20,
         }}
       >
-        {book.title || 'Título Indisponível'}
+        {book.title || 'Título Indisponible'}
       </Typography>
     </Box>
   );
@@ -154,7 +154,7 @@ const BookList = ({ books }) => {
         )
       ) : (
         <Typography variant="h6" color="white" textAlign="center">
-          Nenhum livro encontrado
+          No se encontraron libros
         </Typography>
       )}
     </Box>

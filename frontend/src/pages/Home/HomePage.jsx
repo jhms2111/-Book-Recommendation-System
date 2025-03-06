@@ -1,12 +1,19 @@
 import GoogleBooksCarousel from '../../components/Books/GoogleBooks/GoogleBooksCarousel';
 import OpenLibraryCarousel from '../../components/Books/GoogleBooks/OpenLibraryCarousel';
+import EconomyBooksCarousel from '../../components/Books/GoogleBooks/EconomyBooksCarousel';
+import HealthBooksCarousel from '../../components/Books/GoogleBooks/HealthBooksCarousel';
+import RomanceBooksCarousel from '../../components/Books/GoogleBooks/RomanceBooksCarousel';
+import TechnologyBooksGoogleCarousel from '../../components/Books/GoogleBooks/TechnologyBooksGoogleCarousel';
+import PhilosophyBooksGoogleCarousel from '../../components/Books/GoogleBooks/PhilosophyBooksGoogleCarousel';
+import HistoryBooksOpenLibraryCarousel from '../../components/Books/GoogleBooks/HistoryBooksOpenLibraryCarousel';
+import CookingBooksOpenLibraryCarousel from '../../components/Books/GoogleBooks/CookingBooksOpenLibraryCarousel';
 import { Container, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 
-// Estilos principais para organizar os carrosséis
+// Estilos principales para organizar los carruseles
 const MainContainer = styled(Container)({
   backgroundColor: '#1c0101',
-  padding: '10px', // Reduzi o padding para mobile
+  padding: '10px', // Reducido el padding para móviles
   borderRadius: '8px',
   color: '#d2b48c',
   fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
@@ -16,27 +23,27 @@ const MainContainer = styled(Container)({
   alignItems: 'center',
   minHeight: '100vh',
   width: '100%',
-  maxWidth: '100vw', // Garante que não ultrapasse a largura da tela
+  maxWidth: '100vw', // Asegura que no supere el ancho de la pantalla
   overflowX: 'hidden',
-  marginTop: '50px', // Espaço extra para afastar do topo
+  marginTop: '50px', // Espacio extra para separarlo del encabezado
   '@media (max-width: 600px)': {
-    marginTop: '50px', // Mais espaço no mobile
+    marginTop: '50px', // Más espacio en móviles
   },
 });
 
 const Section = styled(Box)({
-  marginBottom: '20px', // Reduzindo a margem para evitar espaços extras
+  marginBottom: '20px', // Reduciendo el margen para evitar espacios extra
   textAlign: 'center',
-  width: '100%', // Para garantir que o conteúdo fique centralizado corretamente
+  width: '100%', // Para asegurar que el contenido se centre correctamente
 });
 
 const Title = styled(Typography)({
-  fontSize: '20px', // Reduzido para melhor encaixe em mobile
+  fontSize: '20px', // Reducido para mejor ajuste en móviles
   fontWeight: 'bold',
   marginBottom: '15px',
   textAlign: 'center',
   '@media (max-width: 600px)': {
-    fontSize: '16px', // Ainda menor para telas menores
+    fontSize: '16px', // Aún más pequeño para pantallas más pequeñas
   },
 });
 
@@ -44,12 +51,40 @@ const HomePage = () => {
   return (
     <MainContainer>
       <Section>
-        <Title></Title>
+        <Title>Populares</Title>
         <GoogleBooksCarousel />
       </Section>
       <Section>
-        <Title></Title>
+        <Title>Gratis</Title>
         <OpenLibraryCarousel />
+      </Section>
+      <Section>
+        <Title>Economía</Title>
+        <EconomyBooksCarousel />
+      </Section>
+      <Section>
+        <Title>Salud</Title>
+        <HealthBooksCarousel />
+      </Section>
+      <Section>
+        <Title>Romántico</Title>
+        <RomanceBooksCarousel />
+      </Section>
+      <Section>
+        <Title>Tecnología</Title>
+        <TechnologyBooksGoogleCarousel />
+      </Section>
+      <Section>
+        <Title>Filosofía</Title>
+        <PhilosophyBooksGoogleCarousel />
+      </Section>
+      <Section>
+        <Title>Historia</Title>
+        <HistoryBooksOpenLibraryCarousel />
+      </Section>
+      <Section>
+        <Title>Cocina</Title>
+        <CookingBooksOpenLibraryCarousel />
       </Section>
     </MainContainer>
   );

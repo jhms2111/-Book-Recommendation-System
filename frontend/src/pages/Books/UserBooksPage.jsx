@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from 'react-router-dom'; // ✅ Importando o hook de navegação
+import { useNavigate } from 'react-router-dom'; // ✅ Importando el hook de navegación
 
 const UserBooksPage = () => {
   const [books, setBooks] = useState([]);
   const [, setLoading] = useState(true);
-  const navigate = useNavigate(); // ✅ Hook para navegação
+  const navigate = useNavigate(); // ✅ Hook para navegación
 
   useEffect(() => {
     const fetchUserBooks = async () => {
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-          console.error('❌ Usuário não autenticado.');
+          console.error('❌ Usuario no autenticado.');
           return;
         }
 
@@ -24,7 +24,7 @@ const UserBooksPage = () => {
 
         setBooks(response.data.books);
       } catch (error) {
-        console.error('❌ Erro ao buscar os livros do usuário:', error);
+        console.error('❌ Error al buscar los libros del usuario:', error);
       } finally {
         setLoading(false);
       }
@@ -34,13 +34,13 @@ const UserBooksPage = () => {
   }, []);
 
   const handleRemoveBook = async (bookId) => {
-    const confirmDelete = window.confirm('Tem certeza que deseja deletar este livro?');
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este libro?');
     if (!confirmDelete) return;
 
     try {
       const token = localStorage.getItem('authToken');
       if (!token) {
-        console.error('❌ Usuário não autenticado.');
+        console.error('❌ Usuario no autenticado.');
         return;
       }
 
@@ -49,20 +49,20 @@ const UserBooksPage = () => {
       });
 
       if (response.status === 200) {
-        console.log('✅ Livro removido com sucesso!');
+        console.log('✅ Libro eliminado con éxito!');
         setBooks((prevBooks) => prevBooks.filter((book) => book.bookId !== bookId));
       } else {
-        console.error('⚠️ Erro ao remover livro:', response.data);
+        console.error('⚠️ Error al eliminar el libro:', response.data);
       }
     } catch (error) {
-      console.error('❌ Erro ao remover o livro:', error.response ? error.response.data : error);
+      console.error('❌ Error al eliminar el libro:', error.response ? error.response.data : error);
     }
   };
 
-  // ✅ Modificando para redirecionar para a página de avaliação
+  // ✅ Modificando para redirigir a la página de evaluación
   const handleBookClick = (book) => {
-    console.log(`📖 Redirecionando para avaliação do livro: ${book.bookId}`);
-    navigate(`/book-review/${book.bookId}`); // ✅ Agora redireciona para a página correta
+    console.log(`📖 Redirigiendo a la evaluación del libro: ${book.bookId}`);
+    navigate(`/book-review/${book.bookId}`); // ✅ Ahora redirige a la página correcta
   };
 
   return (
@@ -73,10 +73,10 @@ const UserBooksPage = () => {
       sx={{
         fontFamily: 'Georgia, serif',
         color: '#5A3E36',
-        marginTop: '0px', // 🔥 Move o título mais para cima
+        marginTop: '0px', // 🔥 Mueve el título más arriba
       }}
     >
-      📚 Minha Estante de Livros
+      📚 Mi Estante de Libros
     </Typography>
     <Box
       sx={{
@@ -95,7 +95,7 @@ const UserBooksPage = () => {
           <Box key={book.bookId} sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
             <Tooltip title={book.title} placement="top">
               <IconButton
-                onClick={() => handleBookClick(book)} // ✅ Agora chama a função que redireciona para a BookReviewPage
+                onClick={() => handleBookClick(book)} // ✅ Ahora llama a la función que redirige a la BookReviewPage
                 sx={{
                   background: '#8B5A2B',
                   color: '#FFF',

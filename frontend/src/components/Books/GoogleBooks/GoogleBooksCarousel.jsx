@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const sliderSettings = {
   dots: true,
-  infinite: false, // Mantém a ordem dos livros
+  infinite: false, // Mantiene el orden de los libros
   speed: 500,
   slidesToShow: 8,
   slidesToScroll: 8,
@@ -18,17 +18,17 @@ const sliderSettings = {
     },
     {
       breakpoint: 768,
-      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Exibe 3 livros por linha em telas menores
+      settings: { slidesToShow: 3, slidesToScroll: 3 }, // Muestra 3 libros por línea en pantallas más pequeñas
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 3,
         slidesToScroll: 3,
-        arrows: false, // Remove botões no mobile para melhor UX
+        arrows: false, // Elimina los botones en el móvil para una mejor experiencia de usuario
         centerMode: false,
         variableWidth: false,
-        rows: 2, // Organiza os livros em 2 linhas no mobile
+        rows: 2, // Organiza los libros en 2 filas en el móvil
       },
     },
   ],
@@ -48,7 +48,7 @@ const GoogleBooksCarousel = () => {
         const data = await response.json();
         setBooks(data.items || []);
       } catch (error) {
-        console.error('Erro ao buscar livros do Google Books:', error);
+        console.error('Error al buscar libros de Google Books:', error);
       } finally {
         setLoading(false);
       }
@@ -73,7 +73,7 @@ const GoogleBooksCarousel = () => {
       >
         <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" color="textSecondary">
-          Carregando livros do Google Books...
+          Cargando libros de Google Books...
         </Typography>
       </Box>
     );
@@ -91,7 +91,7 @@ const GoogleBooksCarousel = () => {
         }}
       >
         <Typography variant="h6" color="textSecondary">
-          Nenhum livro encontrado.
+          No se encontraron libros.
         </Typography>
       </Box>
     );
@@ -110,10 +110,10 @@ const GoogleBooksCarousel = () => {
           }}
           onClick={() => navigate(`/book-review/${book.id}`)}
         >
-          {/* Adicionando Tooltip para mostrar o nome do livro */}
-          <Tooltip title={book.volumeInfo?.title || 'Título não disponível'} placement="top">
+          {/* Agregando Tooltip para mostrar el nombre del libro */}
+          <Tooltip title={book.volumeInfo?.title || 'Título no disponible'} placement="top">
             <Box>
-              {/* Capa do Livro */}
+              {/* Portada del Libro */}
               {book.volumeInfo?.imageLinks?.thumbnail ? (
                 <img
                   src={book.volumeInfo.imageLinks.thumbnail}
@@ -141,13 +141,13 @@ const GoogleBooksCarousel = () => {
                     borderRadius: '8px',
                   }}
                 >
-                  Capa não disponível
+                  Portada no disponible
                 </Box>
               )}
             </Box>
           </Tooltip>
 
-          {/* Selo de Gratuito */}
+          {/* Sello de Gratuito */}
           {book.saleInfo?.saleability === 'FREE' && (
             <Box
               sx={{
@@ -161,7 +161,7 @@ const GoogleBooksCarousel = () => {
                 display: 'inline-block',
               }}
             >
-              Gratuito
+              Gratis
             </Box>
           )}
         </Box>

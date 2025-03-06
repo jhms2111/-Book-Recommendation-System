@@ -13,7 +13,7 @@ const RankingPage = () => {
                 setRanking(response.data);
                 setLoading(false);
             } catch (error) {
-                console.error("❌ Erro ao carregar ranking:", error);
+                console.error("❌ Error al cargar el ranking:", error);
                 setLoading(false);
             }
         };
@@ -28,7 +28,7 @@ const RankingPage = () => {
     return (
         <Box sx={{ padding: "20px", textAlign: "center", marginTop: "50px" }}>
             <Typography variant="h4" gutterBottom>
-                📚 **Top 10 Livros Mais Bem Avaliados**
+                📚 **Top 10 Libros Mejor Valorados**
             </Typography>
             <List>
                 {ranking.map((book, index) => (
@@ -43,7 +43,7 @@ const RankingPage = () => {
                                     <Typography sx={{ marginLeft: "10px" }}>({book.avgRating.toFixed(1)})</Typography>
                                 </Box>
                             }
-                            secondary={`📊 Avaliações: ${book.count}`} // Exibe a quantidade de avaliações
+                            secondary={`📊 Valoraciones: ${book.count}`} // Muestra la cantidad de valoraciones
                         />
                     </ListItem>
                 ))}

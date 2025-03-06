@@ -112,7 +112,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/feed"
+                    path="/comentarios"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Layout>

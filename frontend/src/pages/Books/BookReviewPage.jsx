@@ -21,12 +21,12 @@ const BookReviewPage = () => {
           const data = await response.json();
 
           setBookDetails({
-            title: data.volumeInfo.title || 'Título não disponível',
-            description: data.volumeInfo.description || 'Nenhum resumo disponível.',
-            authors: data.volumeInfo.authors || ['Desconhecido'],
-            publisher: data.volumeInfo.publisher || 'Desconhecida',
-            publishedDate: data.volumeInfo.publishedDate || 'Desconhecida',
-            pageCount: data.volumeInfo.pageCount || 'Desconhecido',
+            title: data.volumeInfo.title || 'Título no disponible',
+            description: data.volumeInfo.description || 'No hay resumen disponible.',
+            authors: data.volumeInfo.authors || ['Desconocido'],
+            publisher: data.volumeInfo.publisher || 'Desconocida',
+            publishedDate: data.volumeInfo.publishedDate || 'Desconocida',
+            pageCount: data.volumeInfo.pageCount || 'Desconocido',
             imageLinks: data.volumeInfo.imageLinks,
             link: data.volumeInfo.infoLink || data.volumeInfo.previewLink || null,
           });
@@ -35,18 +35,18 @@ const BookReviewPage = () => {
           const data = await response.json();
 
           setBookDetails({
-            title: data.title || 'Título não disponível',
-            description: data.description?.value || data.description || 'Nenhum resumo disponível.',
+            title: data.title || 'Título no disponible',
+            description: data.description?.value || data.description || 'No hay resumen disponible.',
             authors: data.authors ? await Promise.all(
               data.authors.map(async (author) => {
                 const authorResponse = await fetch(`https://openlibrary.org${author.author.key}.json`);
                 const authorData = await authorResponse.json();
                 return authorData.name;
               })
-            ) : ['Desconhecido'],
+            ) : ['Desconocido'],
             publisher: 'Open Library',
-            publishedDate: data.created?.value || 'Desconhecida',
-            pageCount: data.pages || 'Desconhecido',
+            publishedDate: data.created?.value || 'Desconocida',
+            pageCount: data.pages || 'Desconocido',
             imageLinks: {
               thumbnail: `https://covers.openlibrary.org/b/id/${data.covers?.[0]}-M.jpg`,
             },
@@ -54,7 +54,7 @@ const BookReviewPage = () => {
           });
         }
       } catch (error) {
-        console.error('Error fetching book details:', error);
+        console.error('Error al obtener detalles del libro:', error);
       }
     };
 
@@ -65,10 +65,10 @@ const BookReviewPage = () => {
     try {
       const token = localStorage.getItem("authToken");
 
-      console.log("🔍 Enviando token na requisição:", token);
+      console.log("🔍 Enviando token en la solicitud:", token);
 
       if (!token) {
-        alert("Usuário não autenticado. Faça login novamente.");
+        alert("Usuario no autenticado. Por favor, inicie sesión nuevamente.");
         return;
       }
 
@@ -86,15 +86,15 @@ const BookReviewPage = () => {
         },
       });
 
-      console.log("✅ Livro adicionado com sucesso!", response.data);
+      console.log("✅ Libro añadido con éxito!", response.data);
 
       if (response.status === 201) {
-        alert("Livro adicionado com sucesso!");
+        alert("¡Libro añadido con éxito!");
         navigate("/my-books");
       }
     } catch (error) {
-      console.error("❌ Erro ao adicionar o livro:", error.response ? error.response.data : error);
-      alert("Erro ao adicionar o livro. Tente novamente.");
+      console.error("❌ Error al añadir el libro:", error.response ? error.response.data : error);
+      alert("Error al añadir el libro. Intente nuevamente.");
     }
   };
 
@@ -103,19 +103,19 @@ const BookReviewPage = () => {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
-            alert('Usuário não autenticado.');
+            alert('Usuario no autenticado.');
             return;
         }
 
         const reviewData = {
             content: comment,
             bookId,
-            bookTitle: bookDetails.title, // 🔥 Agora enviamos o nome do livro corretamente!
+            bookTitle: bookDetails.title, // 🔥 Ahora enviamos el nombre del libro correctamente!
             rating,
             type: 'review'
         };
 
-        console.log("📩 Enviando review:", reviewData); // 🔍 Log para verificação
+        console.log("📩 Enviando reseña:", reviewData); // 🔍 Log para verificación
 
         await axios.post('http://localhost:5000/api/postagens', reviewData, {
             headers: {
@@ -124,27 +124,21 @@ const BookReviewPage = () => {
             }
         });
 
-        alert('Comentário e avaliação enviados com sucesso!');
+        alert('¡Comentario y evaluación enviados con éxito!');
         setComment('');
         setRating(0);
     } catch (error) {
-        console.error('❌ Erro ao enviar avaliação:', error);
-        alert('Erro ao enviar avaliação. Tente novamente.');
+        console.error('❌ Error al enviar la evaluación:', error);
+        alert('Error al enviar la evaluación. Intente nuevamente.');
     }
 };
-
-
-
-
-
-
 
   return (
     <Box sx={{ padding: '20px', textAlign: 'center', marginTop: '95px' }}>
       {!isPageCreated ? (
         <Box>
           <Typography variant="h4" gutterBottom>
-            Pronto para criar uma página de avaliação?
+            ¿Listo para escribir una reseña y valorar el libro?
           </Typography>
           <Button
             variant="contained"
@@ -152,7 +146,7 @@ const BookReviewPage = () => {
             onClick={() => setIsPageCreated(true)}
             sx={{ marginTop: '20px' }}
           >
-            Criar Página de Avaliação
+            Hacer una valoración
           </Button>
         </Box>
       ) : (
@@ -170,30 +164,30 @@ const BookReviewPage = () => {
             {bookDetails.description}
           </Typography>
           <Typography variant="body2" gutterBottom>
-            <strong>Autores:</strong> {bookDetails.authors?.join(', ') || 'Desconhecido'}
+            <strong>Autores:</strong> {bookDetails.authors?.join(', ') || 'Desconocido'}
           </Typography>
           <Typography variant="body2" gutterBottom>
-            <strong>Editora:</strong> {bookDetails.publisher || 'Desconhecida'}
+            <strong>Editorial:</strong> {bookDetails.publisher || 'Desconocida'}
           </Typography>
           <Typography variant="body2" gutterBottom>
-            <strong>Data de Publicação:</strong> {bookDetails.publishedDate || 'Desconhecida'}
+            <strong>Fecha de publicación:</strong> {bookDetails.publishedDate || 'Desconocida'}
           </Typography>
           <Typography variant="body2" gutterBottom>
-            <strong>Número de Páginas:</strong> {bookDetails.pageCount || 'Desconhecido'}
+            <strong>Número de Páginas:</strong> {bookDetails.pageCount || 'Desconocido'}
           </Typography>
 
-          {/* Botão "Lido" (Removido "Vou Ler") */}
+          {/* Botón "Guardar Libro" */}
           <Box sx={{ marginTop: '20px' }}>
             <Button
               variant="contained"
               color="success"
               onClick={() => handleAddToUserPage('Lido')}
             >
-              Lido
+              Guardar libro
             </Button>
           </Box>
 
-          {/* Botão para acessar o link do livro */}
+          {/* Botón para acceder al enlace del libro */}
           {bookDetails.link && (
             <Box sx={{ marginTop: '20px' }}>
               <Button
@@ -201,14 +195,14 @@ const BookReviewPage = () => {
                 color="primary"
                 onClick={() => window.open(bookDetails.link, '_blank')}
               >
-                Ler o Livro
+                Leer el libro
               </Button>
             </Box>
           )}
 
-          {/* Espaço para comentário e avaliação */}
+          {/* Espacio para comentario y evaluación */}
           <Box sx={{ marginTop: '20px' }}>
-            <Typography variant="h6">Deixe seu comentário:</Typography>
+            <Typography variant="h6">Deja tu comentario:</Typography>
             <TextField
               multiline
               rows={4}
@@ -218,7 +212,7 @@ const BookReviewPage = () => {
               fullWidth
               sx={{ marginBottom: '20px' }}
             />
-            <Typography variant="h6">Avalie o livro:</Typography>
+            <Typography variant="h6">Valora el libro:</Typography>
             <Rating
               name="rating"
               value={rating}
@@ -229,21 +223,21 @@ const BookReviewPage = () => {
               variant="contained"
               color="secondary"
               sx={{ marginTop: '20px' }}
-              onClick={handleSubmitReview} // ✅ Agora a função é usada corretamente
+              onClick={handleSubmitReview} // ✅ Ahora la función es usada correctamente
             >
-              Enviar Avaliação
+              Enviar evaluación
             </Button>
 
           </Box>
 
-          {/* Botão de voltar para a página inicial */}
+          {/* Botón de volver para la página inicial */}
           <Box sx={{ marginTop: '40px' }}>
             <Button
               variant="outlined"
               color="primary"
               onClick={() => navigate('/')}
             >
-              Voltar para a Página Inicial
+              Volver a la página de inicio
             </Button>
           </Box>
         </Box>

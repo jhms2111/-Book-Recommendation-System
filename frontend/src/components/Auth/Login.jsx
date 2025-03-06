@@ -29,15 +29,15 @@ const Login = ({ handleLogin }) => {
                 localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
 
-                setSuccess("✅ Login bem-sucedido!");
+                setSuccess("✅ ¡Inicio de sesión exitoso!");
                 handleLogin();
                 navigate("/");
             } else {
-                setError("⚠️ Erro: Token JWT não recebido.");
+                setError("⚠️ Error: No se recibió el token JWT.");
             }
         } catch (err) {
-            console.error("Erro ao fazer login:", err);
-            setError(err.response?.data?.error || "Erro ao se conectar ao servidor.");
+            console.error("Error al iniciar sesión:", err);
+            setError(err.response?.data?.error || "Error al conectar con el servidor.");
         }
     };
 
@@ -49,12 +49,12 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                    Bem-vindo
+                    Bienvenido
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
                         fullWidth
-                        label="Email"
+                        label="Correo Electrónico"
                         variant="outlined"
                         margin="normal"
                         value={email}
@@ -64,7 +64,7 @@ const Login = ({ handleLogin }) => {
                     />
                     <TextField
                         fullWidth
-                        label="Senha"
+                        label="Contraseña"
                         type={showPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -83,22 +83,22 @@ const Login = ({ handleLogin }) => {
                         }}
                     />
                     <Button type="submit" variant="contained" sx={styles.button}>
-                        Login
+                        Iniciar Sesión
                     </Button>
                     <Button
                         variant="outlined"
                         sx={styles.googleButton}
                         onClick={handleGoogleLogin}
-                        endIcon={<Google sx={{ color: "#fff" }} />} // 🔥 Ícone do Google no final
+                        endIcon={<Google sx={{ color: "#fff" }} />} // 🔥 Ícono de Google al final
                     >
                         Google
                     </Button>
 
                     <Button variant="text" onClick={() => navigate("/signup")} sx={styles.link}>
-                        Criar conta
+                        Crear cuenta
                     </Button>
                     <Button variant="text" onClick={() => navigate("/forgot-password")} sx={styles.forgotPassword}>
-                        Esqueci minha senha
+                        Olvidé mi contraseña
                     </Button>
                     {error && <Typography sx={styles.error}>{error}</Typography>}
                     {success && <Typography sx={styles.success}>{success}</Typography>}
@@ -114,7 +114,7 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        width: "100vw", // Garante que a tela fique fixa
+        width: "100vw", // Asegura que la pantalla se quede fija
         backgroundColor: "#1c0101",
     },
     card: {
@@ -125,19 +125,19 @@ const styles = {
         backdropFilter: "blur(12px)",
         textAlign: "center",
         width: "100%",
-        maxWidth: "400px", // 📱 Mantém 400px em dispositivos móveis
+        maxWidth: "400px", // 📱 Mantiene 400px en dispositivos móviles
 
         minHeight: "400px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
 
-        // 🔽 Ajuste para telas maiores
+        // 🔽 Ajuste para pantallas más grandes
         "@media (min-width: 768px)": {
-            maxWidth: "350px", // 📺 Reduz para tablets e notebooks médios
+            maxWidth: "350px", // 📺 Reduce para tabletas y computadoras portátiles medianas
         },
         "@media (min-width: 1024px)": {
-            maxWidth: "380px", // 🖥️ Reduz ainda mais para desktops grandes
+            maxWidth: "380px", // 🖥️ Reduce aún más para escritorios grandes
         },
     },
     title: {
@@ -182,15 +182,15 @@ const styles = {
         backgroundColor: "transparent",
         border: "2px solid white",
         color: "#fff",
-        padding: "8px 16px", // 🔽 Reduz padding para menor largura
+        padding: "8px 16px", // 🔽 Reduce el padding para menor ancho
         borderRadius: "8px",
         fontSize: "16px",
         fontWeight: "bold",
-        width: "auto", // 🔥 Faz com que o botão tenha tamanho mínimo necessário
+        width: "auto", // 🔥 Hace que el botón tenga el tamaño mínimo necesario
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "8px", // Espaçamento entre o texto e o ícone
+        gap: "8px", // Espaciado entre el texto y el ícono
         "&:hover": {
             backgroundColor: "rgba(255, 255, 255, 0.2)",
         },

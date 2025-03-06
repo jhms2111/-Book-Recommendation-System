@@ -21,7 +21,7 @@ const Signup = () => {
         setSuccess("");
 
         if (senha !== confirmSenha) {
-            setError("As senhas não coincidem.");
+            setError("Las contraseñas no coinciden.");
             return;
         }
 
@@ -40,7 +40,7 @@ const Signup = () => {
             if (err.response && err.response.data) {
                 setError(err.response.data.error);
             } else {
-                setError("Erro ao se conectar ao servidor. Tente novamente mais tarde.");
+                setError("Error al conectarse al servidor. Intente nuevamente más tarde.");
             }
         }
     };
@@ -49,12 +49,12 @@ const Signup = () => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                    Criar Conta
+                    Crear Cuenta
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
                         fullWidth
-                        label="Nome"
+                        label="Nombre"
                         variant="outlined"
                         margin="normal"
                         value={name}
@@ -64,7 +64,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Email"
+                        label="Correo Electrónico"
                         variant="outlined"
                         margin="normal"
                         value={email}
@@ -74,7 +74,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Senha"
+                        label="Contraseña"
                         type={showPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -94,7 +94,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Confirme sua Senha"
+                        label="Confirma tu Contraseña"
                         type={showConfirmPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -113,12 +113,12 @@ const Signup = () => {
                         }}
                     />
                     <Button type="submit" variant="contained" sx={styles.button}>
-                        Cadastrar
+                        Registrarse
                     </Button>
                     <Typography sx={styles.linkText}>
-                        Já tem uma conta?{" "}
+                        ¿Ya tienes una cuenta?{" "}
                         <Button variant="text" onClick={() => navigate("/login")} sx={styles.loginLink}>
-                            Faça login
+                            Iniciar sesión
                         </Button>
                     </Typography>
                     {error && <Typography sx={styles.error}>{error}</Typography>}
@@ -146,19 +146,19 @@ const styles = {
         backdropFilter: "blur(12px)",
         textAlign: "center",
         width: "100%",
-        maxWidth: "320px", // Mantém o tamanho original para mobile
+        maxWidth: "320px", // Mantiene el tamaño original para móviles
         
         minHeight: "450px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
 
-        // 🔥 Reduz a largura do formulário apenas em telas maiores
+        // 🔥 Reduz el tamaño del formulario solo en pantallas más grandes
         "@media (min-width: 768px)": {  
-            maxWidth: "280px", // Ajuste para telas médias e grandes
+            maxWidth: "280px", // Ajuste para tabletas y portátiles medianas
         },
         "@media (min-width: 1024px)": {  
-            maxWidth: "380px", // Ajuste ainda menor para desktops grandes
+            maxWidth: "380px", // Ajuste aún más para escritorios grandes
         },
     },
     title: {
@@ -226,8 +226,6 @@ const styles = {
         fontSize: "14px",
         fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
     },
-    
 };
-
 
 export default Signup;

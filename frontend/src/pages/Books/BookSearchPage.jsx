@@ -21,7 +21,7 @@ const SearchContainer = styled(Container)({
 const BookListContainer = styled(Box)({
   width: '100%',
   marginTop: '20px',
-  backgroundColor: '#1c0101', // Mantendo a cor de fundo da página
+  backgroundColor: '#1c0101', // Manteniendo el color de fondo de la página
   padding: '20px',
   borderRadius: '8px',
   display: 'flex',
@@ -77,7 +77,7 @@ function BookSearchPage() {
       setBooks(allBooks);
     } catch (error) {
       console.error(error);
-      setError('Erro ao buscar livros. Tente novamente.');
+      setError('Error al buscar libros. Intente nuevamente.');
     }
     setLoading(false);
   };
@@ -85,13 +85,13 @@ function BookSearchPage() {
   return (
     <SearchContainer>
       <Title variant="h3" gutterBottom>
-        Busca de Livros
+        Búsqueda de Libros
       </Title>
       <SearchInput
         variant="outlined"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Digite o nome do livro"
+        placeholder="Escriba el nombre del libro"
       />
       <SearchButton onClick={searchBooks} disabled={loading || !query}>
         {loading ? <CircularProgress size={24} /> : 'Buscar'}

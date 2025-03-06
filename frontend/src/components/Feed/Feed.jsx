@@ -22,7 +22,7 @@ const Feed = () => {
       const postsData = await Promise.all(response.data.map(async (post) => {
         if (post.type === 'review' && !post.bookTitle) {
           try {
-            let bookTitle = 'Livro desconhecido';
+            let bookTitle = 'Libro desconocido';
             if (!post.bookId.includes('OL')) {
               const googleResponse = await axios.get(`https://www.googleapis.com/books/v1/volumes/${post.bookId}`);
               bookTitle = googleResponse.data.volumeInfo?.title || bookTitle;
@@ -32,7 +32,7 @@ const Feed = () => {
             }
             return { ...post, bookTitle };
           } catch (error) {
-            console.error('Erro ao buscar nome do livro:', error);
+            console.error('Error al buscar el nombre del libro:', error);
           }
         }
         return post;
@@ -41,14 +41,14 @@ const Feed = () => {
       setPosts((prevPosts) => (isLoadMore ? [...prevPosts, ...postsData] : postsData));
       setHasMore(response.data.length > 0);
     } catch (error) {
-      console.error('Erro ao buscar postagens:', error);
+      console.error('Error al buscar publicaciones:', error);
     }
     setLoading(false);
   };
 
   const formatDateTime = (dateTime) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Date(dateTime).toLocaleDateString('pt-BR', options);
+    return new Date(dateTime).toLocaleDateString('es-ES', options);
   };
 
   const loadMore = () => {
@@ -98,7 +98,7 @@ const Feed = () => {
                 
                 {post.type === 'review' && post.bookTitle && (
                   <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#444' }}>
-                    Avaliação do livro:
+                    Reseña del libro:
                     <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF', marginLeft: '5px' }}>
                       {post.bookTitle}
                     </Link>
@@ -116,18 +116,18 @@ const Feed = () => {
                 )}
                 
                 <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '10px' }}>
-                  Publicado em: {formatDateTime(post.createdAt)}
+                  Publicado en: {formatDateTime(post.createdAt)}
                 </Card.Text>
               </Card.Body>
             </Card>
           ))
         ) : (
-          <p className="no-posts">Não há postagens para exibir.</p>
+          <p className="no-posts">No hay publicaciones para mostrar.</p>
         )}
       </div>
       {hasMore && (
         <Button className="load-more-btn" onClick={loadMore} disabled={loading} variant="success" size="lg" style={{ borderRadius: '25px', padding: '15px 20px', fontSize: '18px', marginTop: '20px' }}>
-          {loading ? <Spinner animation="border" size="sm" /> : 'Carregar Mais'}
+          {loading ? <Spinner animation="border" size="sm" /> : 'Cargar Más'}
         </Button>
       )}
     </Container>

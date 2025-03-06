@@ -54,7 +54,7 @@ const OpenLibraryCarousel = () => {
 
         setOpenLibraryBooks(filteredBooks);
       } catch (error) {
-        console.error('Erro ao buscar livros do Open Library:', error);
+        console.error('Error al buscar libros de Open Library:', error);
       } finally {
         setLoading(false);
       }
@@ -77,7 +77,7 @@ const OpenLibraryCarousel = () => {
       >
         <CircularProgress size={60} sx={{ color: '#007BFF', marginBottom: '20px' }} />
         <Typography variant="h6" sx={{ color: '#FFFFFF' }}>
-          Carregando livros gratuitos, de domínio público e em espanhol...
+          Cargando libros gratuitos, de dominio público y en español...
         </Typography>
       </Box>
     );
@@ -95,7 +95,7 @@ const OpenLibraryCarousel = () => {
         }}
       >
         <Typography variant="h6" color="textSecondary">
-          Nenhum livro encontrado com os critérios especificados.
+          No se encontraron libros con los criterios especificados.
         </Typography>
       </Box>
     );
@@ -114,7 +114,7 @@ const OpenLibraryCarousel = () => {
             }}
             onClick={() => navigate(`/book-review/${book.key.replace('/works/', '')}`)}
           >
-            {/* Capa do Livro */}
+            {/* Portada del Libro */}
             {book.cover_i ? (
               <img
                 src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
@@ -142,11 +142,11 @@ const OpenLibraryCarousel = () => {
                   borderRadius: '8px',
                 }}
               >
-                Capa não disponível
+                Portada no disponible
               </Box>
             )}
 
-            {/* Selos de Identificação */}
+            {/* Sellos de Identificación */}
             <Box
               sx={{
                 display: 'flex',
@@ -155,7 +155,7 @@ const OpenLibraryCarousel = () => {
                 marginTop: '5px',
               }}
             >
-              {/* Selo de Gratuito */}
+              {/* Sello de Gratuito */}
               <Box
                 sx={{
                   backgroundColor: 'green',
@@ -167,10 +167,10 @@ const OpenLibraryCarousel = () => {
                   marginBottom: '2px',
                 }}
               >
-                Gratuito
+                Gratis
               </Box>
 
-              {/* Selo de Domínio Público */}
+              {/* Sello de Dominio Público */}
               <Box
                 sx={{
                   backgroundColor: 'blue',
@@ -181,7 +181,7 @@ const OpenLibraryCarousel = () => {
                   fontSize: '10px',
                 }}
               >
-                Domínio Público
+                Dominio Público
               </Box>
             </Box>
           </Box>
