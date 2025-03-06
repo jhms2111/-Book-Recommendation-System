@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt'); // Para hash de senha
+const bcrypt = require('bcryptjs'); // Para hash de senha
 const jwt = require('jsonwebtoken'); // Para geração e verificação de tokens JWT
 const User = require('../../../infrastructure/database/models/User');
 const authenticateUser = require('../middleware/authenticateUser'); // Middleware de autenticação
