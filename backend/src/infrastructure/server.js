@@ -4,10 +4,10 @@ const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
 const userRoutes = require('../adapters/controllers/user/userRoutes');
-const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // Certifique-se de que esse é um router válido
-const booksRoutes = require('../adapters/routers/bookRoutes'); // Corrigido o caminho do arquivo
+const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes');
+const booksRoutes = require('../adapters/routers/bookRoutes');
 console.log("✅ booksRoutes foi carregado no server.js");
-const postagemRoutes = require('../adapters/routers/postagemRoutes'); // Importa as rotas de postagens
+const postagemRoutes = require('../adapters/routers/postagemRoutes');
 
 require('../infrastructure/auth/passport');
 
@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Configuração do CORS
 const corsOptions = {
-    origin: 'https://meu-frontend.vercel.app', // 🔥 Permite qualquer origem (substitua depois pelo endereço correto)
+    origin: 'https://book-recommendation-system-jhms2111s-projects.vercel.app', // Atualizado para o link do frontend
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, 
@@ -44,7 +44,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 // Usar as rotas
 console.log("Carregando as rotas de livros...");
-app.use('/api/books', booksRoutes); // Agora corretamente adicionado após express.json()
+app.use('/api/books', booksRoutes);
 app.use('/api', postagemRoutes);
 app.use(userRoutes);
 app.use(authRoutes); 
