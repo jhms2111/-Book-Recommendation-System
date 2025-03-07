@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 // Configuração do CORS
 const corsOptions = {
-    origin: "https://book-recommendation-system-omega.vercel.app/", // 🔥 Permite qualquer origem (substitua depois pelo endereço correto)
+    origin: "https://book-recommendation-system-omega.vercel.app", // 🔥 Permite qualquer origem (substitua depois pelo endereço correto)
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, 
