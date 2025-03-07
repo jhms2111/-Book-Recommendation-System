@@ -1,6 +1,6 @@
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Rating } from '@mui/material';
 
 const BookReviewPage = () => {
@@ -65,8 +65,6 @@ const BookReviewPage = () => {
     try {
       const token = localStorage.getItem("authToken");
 
-      console.log("🔍 Enviando token en la solicitud:", token);
-
       if (!token) {
         alert("Usuario no autenticado. Por favor, inicie sesión nuevamente.");
         return;
@@ -79,14 +77,13 @@ const BookReviewPage = () => {
         status,
       };
 
-      const response = await axios.post("http://localhost:5000/api/books", bookData, {
+      // URL de produção para adicionar o livro
+      const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/books", bookData, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-
-      console.log("✅ Libro añadido con éxito!", response.data);
 
       if (response.status === 201) {
         alert("¡Libro añadido con éxito!");
@@ -115,9 +112,8 @@ const BookReviewPage = () => {
             type: 'review'
         };
 
-        console.log("📩 Enviando reseña:", reviewData); // 🔍 Log para verificación
-
-        await axios.post('http://localhost:5000/api/postagens', reviewData, {
+        // Enviar review para o backend na URL de produção
+        await axios.post('https://book-recommendation-system-9uba.onrender.com/api/postagens', reviewData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -131,7 +127,7 @@ const BookReviewPage = () => {
         console.error('❌ Error al enviar la evaluación:', error);
         alert('Error al enviar la evaluación. Intente nuevamente.');
     }
-};
+  };
 
   return (
     <Box sx={{ padding: '20px', textAlign: 'center', marginTop: '95px' }}>
@@ -151,7 +147,6 @@ const BookReviewPage = () => {
         </Box>
       ) : (
         <Box>
-          
           <img
             src={bookDetails.imageLinks?.thumbnail || ''}
             alt={bookDetails.title}
@@ -187,7 +182,7 @@ const BookReviewPage = () => {
             </Button>
           </Box>
 
-          {/* Botón para acceder al enlace del libro */}
+          {/* Botón para acessar o link do livro */}
           {bookDetails.link && (
             <Box sx={{ marginTop: '20px' }}>
               <Button
@@ -200,7 +195,7 @@ const BookReviewPage = () => {
             </Box>
           )}
 
-          {/* Espacio para comentario y evaluación */}
+          {/* Espaço para comentário e avaliação */}
           <Box sx={{ marginTop: '20px' }}>
             <Typography variant="h6">Deja tu comentario:</Typography>
             <TextField
@@ -223,14 +218,13 @@ const BookReviewPage = () => {
               variant="contained"
               color="secondary"
               sx={{ marginTop: '20px' }}
-              onClick={handleSubmitReview} // ✅ Ahora la función es usada correctamente
+              onClick={handleSubmitReview}
             >
               Enviar evaluación
             </Button>
-
           </Box>
 
-          {/* Botón de volver para la página inicial */}
+          {/* Botão de voltar para a página inicial */}
           <Box sx={{ marginTop: '40px' }}>
             <Button
               variant="outlined"

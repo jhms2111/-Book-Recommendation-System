@@ -13,12 +13,13 @@ const Feed = () => {
   const fetchPosts = async (isLoadMore = false) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/postagens?page=${page}&limit=5`, {
+      // Alterar URL para o seu backend no Render
+      const response = await axios.get(`https://book-recommendation-system-9uba.onrender.com/api/postagens?page=${page}&limit=5`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-  
+
       const postsData = await Promise.all(response.data.map(async (post) => {
         if (post.type === 'review' && !post.bookTitle) {
           try {
@@ -37,7 +38,7 @@ const Feed = () => {
         }
         return post;
       }));
-  
+
       setPosts((prevPosts) => (isLoadMore ? [...prevPosts, ...postsData] : postsData));
       setHasMore(response.data.length > 0);
     } catch (error) {

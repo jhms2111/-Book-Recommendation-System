@@ -26,11 +26,13 @@ const Signup = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:5000/api/usuarios", {
+            // Atualizando a URL de requisição para o backend hospedado no Render
+            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/usuarios", {
                 name,
                 email,
                 senha,
             });
+
             setSuccess(response.data.message);
             setName("");
             setEmail("");

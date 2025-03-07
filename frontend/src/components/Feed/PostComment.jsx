@@ -1,5 +1,3 @@
-// src/components/Feed/PostComment.jsx
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types'; // Importando PropTypes para validação
@@ -10,8 +8,13 @@ const PostComment = ({ postId }) => {
     // Função para buscar os comentários de uma postagem
     const fetchComments = async (postId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/postagens/${postId}/comments`);
-            
+            // Atualizando a URL para o backend hospedado no Render
+            const response = await axios.get(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}/comments`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Adicionando o token JWT
+                }
+            });
+
             // Atualiza o estado com os comentários recebidos da API
             setComments(response.data);
         } catch (error) {

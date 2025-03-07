@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Container, Box, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
 
-
 const Login = ({ handleLogin }) => {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
@@ -20,7 +19,8 @@ const Login = ({ handleLogin }) => {
         setSuccess("");
 
         try {
-            const response = await axios.post("http://localhost:5000/api/login", {
+            // Atualizando a URL de requisição para o backend hospedado no Render
+            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
@@ -42,7 +42,8 @@ const Login = ({ handleLogin }) => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://localhost:5000/auth/google";
+        // Atualizando a URL de redirecionamento para o Google OAuth no backend hospedado no Render
+        window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
     };
 
     return (
@@ -89,7 +90,7 @@ const Login = ({ handleLogin }) => {
                         variant="outlined"
                         sx={styles.googleButton}
                         onClick={handleGoogleLogin}
-                        endIcon={<Google sx={{ color: "#fff" }} />} // 🔥 Ícono de Google al final
+                        endIcon={<Google sx={{ color: "#fff" }} />}
                     >
                         Google
                     </Button>
