@@ -39,11 +39,10 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     const authToken = generateAuthToken(user);
 
     // Redireciona para o front-end com o token como parâmetro
-    res.redirect(`book-recommendation-system-git-main-jhms2111s-projects.vercel.app/auth/success?token=${authToken}`);
-});ook-recommendation-system-weld.vercel.app
+    res.redirect(`https://book-recommendation-system-weld.vercel.app/auth/success?token=${authToken}`);
+});
 
 module.exports = router;
-
 
 
 //https://console.cloud.google.com/apis/credentials/oauthclient/462938419440-fq5819gf7jf5hdm137mi24ad4ktjgce1.apps.googleusercontent.com?project=liquid-anchor-440817-c9
