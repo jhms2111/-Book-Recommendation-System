@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Container, Box, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
-
 
 const Login = ({ handleLogin }) => {
     const [email, setEmail] = useState("");
@@ -13,6 +12,14 @@ const Login = ({ handleLogin }) => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
+
+    // Verifica se há um token no localStorage e redireciona
+    useEffect(() => {
+        const authToken = localStorage.getItem("authToken");
+        if (authToken) {
+            navigate("/"); // Se o token existir, o usuário já está autenticado
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -91,7 +98,7 @@ const Login = ({ handleLogin }) => {
                         onClick={handleGoogleLogin}
                         endIcon={<Google sx={{ color: "#fff" }} />} // 🔥 Ícone do Google no final
                     >
-                        Google
+                        Login com Google
                     </Button>
 
                     <Button variant="text" onClick={() => navigate("/signup")} sx={styles.link}>
@@ -107,6 +114,12 @@ const Login = ({ handleLogin }) => {
         </Box>
     );
 };
+
+Login.propTypes = {
+    handleLogin: PropTypes.func.isRequired,
+};
+
+
 
 const styles = {
     container: {
