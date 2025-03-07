@@ -24,7 +24,7 @@ const CreatePost = ({ setPosts }) => {
             }
 
             const token = localStorage.getItem('authToken');
-            const response = await axios.post('http://localhost:5000/api/postagens', formData, {
+            const response = await axios.post('https://book-recommendation-system-9uba.onrender.com/api/postagens', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`,

@@ -39,7 +39,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     const authToken = generateAuthToken(user);
 
     // Redireciona para o front-end com o token como parâmetro
-    res.redirect(`https://book-recommendation-system-jhms2111s-projects.vercel.app/auth/success?token=${authToken}`);
+    res.redirect(`book-recommendation-system-weld.vercel.app/auth/success?token=${authToken}`);
 });
 
 module.exports = router;

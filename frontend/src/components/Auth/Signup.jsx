@@ -27,7 +27,7 @@ const Signup = () => {
 
         try {
             // Atualizando a URL de requisição para o backend hospedado no Render
-            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/usuarios", {
+            const response = await axios.post("https://book-recommendation-system-git-main-jhms2111s-projects.vercel.app/api/usuarios", {
                 name,
                 email,
                 senha,
