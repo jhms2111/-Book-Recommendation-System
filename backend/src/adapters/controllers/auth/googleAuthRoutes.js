@@ -39,7 +39,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     const authToken = generateAuthToken(user);
 
     // Redireciona para o front-end com o token como parâmetro
-    res.redirect(`https://book-recommendation-system-9uba.onrender.com/auth/success?token=${authToken}`);
+    res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
 });
 
 
