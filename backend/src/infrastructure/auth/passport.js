@@ -12,7 +12,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
+    callbackURL: 'http://book-recommendation-system-9uba.onrender.com/auth/google/callback', // URI correto
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let usuario = await User.findOne({ googleId: profile.id });

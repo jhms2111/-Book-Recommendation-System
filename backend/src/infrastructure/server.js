@@ -26,16 +26,12 @@ app.use(cors(corsOptions));
 // Middleware para analisar JSON corretamente
 app.use(express.json());
 
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET ? "EXISTS" : "MISSING");
+
+
 // Configurar sessão
 app.use(session({ secret: 'seuSegredo', resave: false, saveUninitialized: true }));
-
-
-// Configuração de sessão para Passport
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'chave-super-secreta',
-  resave: false,
-  saveUninitialized: true
-}));
 
 // Inicializar Passport
 app.use(passport.initialize());
