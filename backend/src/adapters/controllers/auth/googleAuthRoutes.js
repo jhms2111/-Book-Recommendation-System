@@ -28,21 +28,23 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/login'
 }), async (req, res) => {
     try {
-        console.log("Usuário autenticado:", req.user); // <-- Depuração
+        console.log("Usuário autenticado:", req.user); // Debug para ver se req.user existe
 
-        // Verifica se o usuário foi realmente autenticado
+        // Verifica se req.user foi preenchido corretamente
         if (!req.user) {
-            console.error("Erro: Usuário não autenticado.");
+            console.error("Erro: req.user está indefinido!");
             return res.status(500).send("Erro interno: Usuário não autenticado.");
         }
 
-        // Define o usuário antes de gerar o token
+        // Define os dados do usuário corretamente
         const user = {
-            id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-            googleId: req.user.googleId
+            id: req.user._id || req.user.id,  // Dependendo do modelo, pode ser _id ou id
+            name: req.user.name || req.user.displayName,
+            email: req.user.email || req.user.emails?.[0]?.value,
+            googleId: req.user.googleId || req.user.id
         };
+
+        console.log("Usuário extraído:", user); // Depuração para verificar os dados
 
         // Gera o token apenas se o usuário existir
         const authToken = generateAuthToken(user);
@@ -53,12 +55,6 @@ router.get('/auth/google/callback', passport.authenticate('google', {
         return res.status(500).send("Erro ao autenticar com o Google.");
     }
 });
-
-
-    // Gera um token de autenticação usando JWT
-    const authToken = generateAuthToken(user);
-
-
 
 
 
