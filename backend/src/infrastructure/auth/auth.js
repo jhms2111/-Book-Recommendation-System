@@ -1,16 +1,37 @@
-// middleware/auth.js
+const express = require('express');
+const passport = require('passport');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-function authenticateToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1]; // Espera-se um header "Authorization: Bearer TOKEN"
+const router = express.Router();
 
-    if (!token) return res.sendStatus(401); // Sem token
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403); // Token inválido
-        req.user = user;
-        next();
-    });
+// Função para gerar um token JWT
+function generateAuthToken(user) {
+    return jwt.sign(
+        { id: user.id, name: user.name, email: user.email },
+        process.env.JWT_SECRET, // Usa a chave secreta definida no .env
+        { expiresIn: '1h' }
+    );
 }
 
-module.exports = authenticateToken;
+// Rota para autenticação com Google
+router.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile', 'email']
+}));
+
+// Callback após autenticação
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        if (!req.user) {
+            return res.redirect('/login');
+        }
+
+        const authToken = generateAuthToken(req.user);
+
+        // Redireciona para o frontend com o token JWT
+        res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
+    }
+);
+
+module.exports = router;

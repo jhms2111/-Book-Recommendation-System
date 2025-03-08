@@ -8,8 +8,7 @@ const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // 
 const booksRoutes = require('../adapters/routers/bookRoutes'); // Corrigido o caminho do arquivo
 console.log("✅ booksRoutes foi carregado no server.js");
 const postagemRoutes = require('../adapters/routers/postagemRoutes'); // Importa as rotas de postagens
-require('dotenv').config();
-console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET ? "✅ Definido" : "❌ NÃO DEFINIDO!");
+
 require('../infrastructure/auth/passport');
 
 const app = express();
@@ -29,6 +28,14 @@ app.use(express.json());
 
 // Configurar sessão
 app.use(session({ secret: 'seuSegredo', resave: false, saveUninitialized: true }));
+
+
+// Configuração de sessão para Passport
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'chave-super-secreta',
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Inicializar Passport
 app.use(passport.initialize());
