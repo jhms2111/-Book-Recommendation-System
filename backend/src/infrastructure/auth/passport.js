@@ -9,9 +9,10 @@ const credentials = {
 };
 
 passport.use(new GoogleStrategy({
-    clientID: credentials.clientID,
-    clientSecret: credentials.clientSecret,
-    callbackURL: "https://book-recommendation-system-9uba.onrender.com/auth/google/callback", // URL de produção
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET, // <-- Aqui deve estar correto!
+    callbackURL: process.env.GOOGLE_REDIRECT_URI,
+    session: false
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let usuario = await User.findOne({ googleId: profile.id });
