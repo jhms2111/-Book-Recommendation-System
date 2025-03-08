@@ -3,16 +3,15 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../dataBase/models/User');
 require('dotenv').config();
 
-// Verificação se as variáveis de ambiente estão definidas
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error("❌ ERRO: GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET não estão definidos!");
-    process.exit(1); // Encerra o processo se as credenciais não estiverem configuradas
-}
-
-passport.use(new GoogleStrategy({
+const credentials = {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://book-recommendation-system-9uba.onrender.com/auth/google/callback', // URI correto
+};
+
+passport.use(new GoogleStrategy({
+    clientID: credentials.clientID,
+    clientSecret: credentials.clientSecret,
+    callbackURL: '/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let usuario = await User.findOne({ googleId: profile.id });
@@ -20,7 +19,7 @@ passport.use(new GoogleStrategy({
             usuario = new User({
                 name: profile.displayName,
                 email: profile.emails[0].value,
-                googleId: profile.id
+                googleId: profile.id // Armazena o googleId
             });
             await usuario.save();
         }
@@ -35,12 +34,6 @@ passport.serializeUser((usuario, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-    try {
-        const usuario = await User.findById(id);
-        done(null, usuario);
-    } catch (error) {
-        done(error);
-    }
+    const usuario = await User.findById(id);
+    done(null, usuario);
 });
-
-module.exports = passport;
