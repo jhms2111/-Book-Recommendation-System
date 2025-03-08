@@ -27,33 +27,19 @@ router.get('/auth/google', passport.authenticate('google', {
 router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/login'
 }), async (req, res) => {
-    try {
-        console.log("Usuário autenticado:", req.user); // Debug para ver se req.user existe
+    // Dados do usuário autenticado
+    const user = {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        googleId: req.user.googleId
+    };
 
-        // Verifica se req.user foi preenchido corretamente
-        if (!req.user) {
-            console.error("Erro: req.user está indefinido!");
-            return res.status(500).send("Erro interno: Usuário não autenticado.");
-        }
+    // Gera um token de autenticação usando JWT
+    const authToken = generateAuthToken(user);
 
-        // Define os dados do usuário corretamente
-        const user = {
-            id: req.user._id || req.user.id,  // Dependendo do modelo, pode ser _id ou id
-            name: req.user.name || req.user.displayName,
-            email: req.user.email || req.user.emails?.[0]?.value,
-            googleId: req.user.googleId || req.user.id
-        };
-
-        console.log("Usuário extraído:", user); // Depuração para verificar os dados
-
-        // Gera o token apenas se o usuário existir
-        const authToken = generateAuthToken(user);
-
-        res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
-    } catch (err) {
-        console.error("Erro no callback do Google OAuth:", err);
-        return res.status(500).send("Erro ao autenticar com o Google.");
-    }
+    // Redireciona para o front-end com o token como parâmetro
+    res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
 });
 
 
