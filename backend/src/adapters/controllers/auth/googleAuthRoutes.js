@@ -27,20 +27,33 @@ router.get('/auth/google', passport.authenticate('google', {
 router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/login'
 }), async (req, res) => {
-    // Dados do usuário autenticado
-    const user = {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        googleId: req.user.googleId
-    };
+    try {
+        if (!req.user) {
+            console.error("Erro: Usuário não autenticado.");
+            return res.status(500).send("Erro interno: Usuário não autenticado.");
+        }
+
+        const user = {
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            googleId: req.user.googleId
+        };
+
+        const authToken = generateAuthToken(user);
+
+        res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
+    } catch (err) {
+        console.error("Erro no callback do Google OAuth:", err);
+        return res.status(500).send("Erro ao autenticar com o Google.");
+    }
+});
+
 
     // Gera um token de autenticação usando JWT
     const authToken = generateAuthToken(user);
 
-    // Redireciona para o front-end com o token como parâmetro
-    res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
-});
+
 
 
 
