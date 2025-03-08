@@ -28,11 +28,15 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/login'
 }), async (req, res) => {
     try {
+        console.log("Usuário autenticado:", req.user); // <-- Depuração
+
+        // Verifica se o usuário foi realmente autenticado
         if (!req.user) {
             console.error("Erro: Usuário não autenticado.");
             return res.status(500).send("Erro interno: Usuário não autenticado.");
         }
 
+        // Define o usuário antes de gerar o token
         const user = {
             id: req.user._id,
             name: req.user.name,
@@ -40,6 +44,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
             googleId: req.user.googleId
         };
 
+        // Gera o token apenas se o usuário existir
         const authToken = generateAuthToken(user);
 
         res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
