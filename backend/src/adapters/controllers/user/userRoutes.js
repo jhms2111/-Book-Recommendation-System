@@ -183,7 +183,7 @@ router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
 });
 
 // 🔹 Rota para listar todos os usuários (Somente admin pode acessar)
-router.get("/api/users", authenticateUser, isAdmin, async (req, res) => {
+router.get("/users", authenticateUser, isAdmin, async (req, res) => {
     try {
         const users = await User.find({}, "-senha"); // Remove a senha da resposta
         res.json(users);
@@ -193,7 +193,7 @@ router.get("/api/users", authenticateUser, isAdmin, async (req, res) => {
 });
 
 // 🔹 Exemplo de rota para deletar um usuário (apenas admin)
-router.delete("/api/users/:id", authenticateUser, isAdmin, async (req, res) => {
+router.delete("/users/:id", authenticateUser, isAdmin, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
         res.json({ message: "Usuário deletado com sucesso!" });
