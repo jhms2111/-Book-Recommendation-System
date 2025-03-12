@@ -1,5 +1,7 @@
 const express = require('express');
 const postagemController = require('../controllers/postagemController');
+const isAdmin = require('../../middlewares/isAdmin');
+
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
