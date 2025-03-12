@@ -119,16 +119,22 @@ const getBookReviews = async (req, res) => {
 };
 
 
-exports.deletePost = async (postId) => {
+const deletePost = async (postId) => {
     try {
+        console.log(`🔍 Tentando deletar postagem com ID: ${postId}`);
+
         const post = await Postagem.findById(postId);
         if (!post) {
-            return { status: 404, message: "Postagem não encontrada" };
+            console.error("❌ ERRO: Postagem não encontrada no banco de dados");
+            return null;
         }
+
         await Postagem.findByIdAndDelete(postId);
-        return { status: 200, message: "Postagem deletada com sucesso!" };
+        console.log("✅ Postagem removida do banco de dados!");
+        return post;
     } catch (error) {
-        throw new Error("Erro ao deletar postagem: " + error.message);
+        console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
+        throw new Error("Erro ao excluir postagem.");
     }
 };
 
