@@ -24,34 +24,73 @@ const App = () => {
     useEffect(() => {
         const checkAuth = () => {
             const token = localStorage.getItem("token");
-
+    
             if (token) {
                 try {
-                    const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o JWT
-                    setUserRole(payload.role); // Obtém a role do usuário
-                    setIsAuthenticated(true);
+                    // 🔹 Verifica se o token tem o formato correto (3 partes separadas por ".")
+                    const parts = token.split(".");
+                    if (parts.length !== 3) {
+                        throw new Error("Formato de token inválido");
+                    }
+    
+                    // 🔹 Decodifica o payload do JWT
+                    const payload = JSON.parse(atob(parts[1]));
+    
+                    // 🔹 Verifica se o payload tem a role antes de definir o estado
+                    if (payload.role) {
+                        setUserRole(payload.role);
+                        setIsAuthenticated(true);
+                    } else {
+                        throw new Error("Payload inválido no token");
+                    }
                 } catch (error) {
                     console.error("Erro ao decodificar o token:", error);
                     setIsAuthenticated(false);
                     setUserRole(null);
+                    localStorage.removeItem("token"); // 🔥 Remove o token inválido
                 }
             } else {
                 setIsAuthenticated(false);
                 setUserRole(null);
             }
-
+    
             setLoading(false);
         };
-
+    
         checkAuth();
     }, []);
+    
 
     const handleLogin = (token) => {
-        localStorage.setItem('token', token);
-        setIsAuthenticated(true);
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        setUserRole(payload.role);
+        if (!token || typeof token !== "string") {
+            console.error("Token inválido recebido:", token);
+            return;
+        }
+    
+        localStorage.setItem("token", token);
+    
+        try {
+            const parts = token.split(".");
+            if (parts.length !== 3) {
+                throw new Error("Formato de token inválido");
+            }
+    
+            const payload = JSON.parse(atob(parts[1]));
+    
+            if (payload.role) {
+                setUserRole(payload.role);
+                setIsAuthenticated(true);
+            } else {
+                throw new Error("Payload inválido no token");
+            }
+        } catch (error) {
+            console.error("Erro ao processar o token:", error);
+            setIsAuthenticated(false);
+            setUserRole(null);
+            localStorage.removeItem("token"); // 🔥 Remove o token inválido
+        }
     };
+    
 
     const handleLogout = () => {
         setIsAuthenticated(false);
