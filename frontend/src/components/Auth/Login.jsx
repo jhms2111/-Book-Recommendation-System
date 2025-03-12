@@ -13,34 +13,56 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona//
+    // Verifica se o usuário já está autenticado e redireciona
     useEffect(() => {
-        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
+        const token = localStorage.getItem("authToken");
+        
         if (token) {
-            navigate("/"); 
+            // Tenta validar o token com a API
+            axios.post("https://book-recommendation-system-9uba.onrender.com/api/validate-token", { token })
+                .then(response => {
+                    // Se o token for válido, redireciona de acordo com a role do usuário
+                    const role = response.data.role;
+                    if (role === 'admin') {
+                        navigate("/admin");
+                    } else {
+                        navigate("/");
+                    }
+                })
+                .catch(() => {
+                    // Se a validação do token falhar, limpa o token e deixa o usuário na tela de login
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("isAuthenticated");
+                    localStorage.removeItem("role");
+                });
+                
         }
     }, [navigate]);
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-    
+
         try {
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
-    
+
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
-                localStorage.setItem("role", response.data.usuario.role); // 🔥 Armazena a role
-    
+                localStorage.setItem("role", response.data.usuario.role); // Salva o papel do usuário (admin, etc.)
+
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
                 handleLogin();
-                navigate("/");
+
+                if (response.data.usuario.role === 'admin') {
+                    navigate("/admin");  // Redireciona para admin se o usuário for admin
+                } else {
+                    navigate("/");  // Caso contrário, redireciona para a página principal
+                }
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
             }
@@ -49,7 +71,6 @@ const Login = ({ handleLogin }) => {
             setError(err.response?.data?.error || "Error al conectarse con el servidor.");
         }
     };
-    
 
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
@@ -59,7 +80,7 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
+                    BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
