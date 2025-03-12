@@ -68,7 +68,7 @@ const Login = ({ handleLogin }) => {
     
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://localhost:5000/auth/google";
+        window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
     };
 
     if (loading) {
