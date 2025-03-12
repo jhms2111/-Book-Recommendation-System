@@ -49,19 +49,19 @@ const AdminPage = () => {
     // 🔥 Função para deletar usuário
     const handleDeleteUser = async () => {
         if (!selectedUser) return;
-        
+    
         try {
             const token = localStorage.getItem("authToken");
-
-            axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/users/${selectedUser._id}`, {
+    
+            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/users/${selectedUser._id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+    
             alert("Usuário excluído com sucesso!");
-
-            // Atualiza a lista de usuários após a exclusão
-            setUsers(users.filter(user => user._id !== selectedUser._id));
-
+    
+            // 🔹 Em vez de filtrar manualmente, recarregamos a lista de usuários
+            fetchUsers();
+    
         } catch (error) {
             console.error("Erro ao excluir usuário:", error);
             alert("Erro ao excluir usuário.");
@@ -69,6 +69,7 @@ const AdminPage = () => {
             handleCloseDialog();
         }
     };
+    
 
     return (
         <Container>
