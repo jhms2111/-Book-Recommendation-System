@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const ProtectedRoute = ({ children, isAuthenticated }) => {
     if (!isAuthenticated) {
         console.log('Usuário não autenticado, redirecionando para login...');
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" replace/>;
     }
     console.log('Usuário autenticado, permitindo acesso à rota.');
     return children;
