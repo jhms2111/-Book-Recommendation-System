@@ -44,7 +44,7 @@ const UserBooksPage = () => {
         return;
       }
 
-      const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/books/${bookId}`, {
+      const response = await axios.delete(`http://localhost:5000/api/books/${bookId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

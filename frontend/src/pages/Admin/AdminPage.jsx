@@ -17,7 +17,7 @@ const AdminPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/users", {
+                const response = await axios.get("http://localhost:5000/users", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

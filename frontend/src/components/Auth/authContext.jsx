@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   // Função de login
   const login = async (email, senha) => {
     try {
-      const res = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", { email, senha });
+      const res = await axios.post("http://localhost:5000/api/login", { email, senha });
       const { token, usuario } = res.data;
 
       setToken(token);
