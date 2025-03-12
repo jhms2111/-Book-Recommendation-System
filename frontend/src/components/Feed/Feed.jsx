@@ -1,96 +1,153 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Box, Typography, CircularProgress, List, ListItem, Rating } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Card, Button, Spinner } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import './Feed.css';
 
-const RankingPage = () => {
-    const [ranking, setRanking] = useState([]);
-    const [loading, setLoading] = useState(true);
+const Feed = () => {
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-    useEffect(() => {
-        const fetchRanking = async () => {
-            try {
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/ranking");
-                setRanking(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("❌ Error loading ranking:", error);
-                setLoading(false);
+  const fetchPosts = async (isLoadMore = false) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`https://book-recommendation-system-9uba.onrender.com/api/postagens?page=${page}&limit=5`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
+
+      const postsData = await Promise.all(response.data.map(async (post) => {
+        if (post.type === 'review' && !post.bookTitle) {
+          try {
+            let bookTitle = 'Libro desconocido';
+            if (!post.bookId.includes('OL')) {
+              const googleResponse = await axios.get(`https://www.googleapis.com/books/v1/volumes/${post.bookId}`);
+              bookTitle = googleResponse.data.volumeInfo?.title || bookTitle;
+            } else {
+              const openLibraryResponse = await axios.get(`https://openlibrary.org/works/${post.bookId}.json`);
+              bookTitle = openLibraryResponse.data.title || bookTitle;
             }
-        };
+            return { ...post, bookTitle };
+          } catch (error) {
+            console.error('Error al buscar el nombre del libro:', error);
+          }
+        }
+        return post;
+      }));
 
-        fetchRanking();
-    }, []);
-
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <CircularProgress />
-            </Box>
-        );
+      setPosts((prevPosts) => (isLoadMore ? [...prevPosts, ...postsData] : postsData));
+      setHasMore(response.data.length > 0);
+    } catch (error) {
+      console.error('Error al buscar publicaciones:', error);
     }
+    setLoading(false);
+  };
 
-    return (
-        <Box sx={{ padding: "20px", textAlign: "center", marginTop: "30px" }}>
-            <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: "20px", fontSize: { xs: "18px", md: "24px" } }}>
-                📚 Top 10 Best Rated Books
-            </Typography>
-            <List sx={{ maxWidth: "600px", margin: "0 auto" }}>
-                {ranking.map((book, index) => (
-                    <ListItem 
-                        key={book._id.bookId} 
-                        sx={{ 
-                            display: "flex", 
-                            flexDirection: "column", // Ensures everything is stacked for mobile
-                            alignItems: "center",
-                            padding: "10px 0",
-                            borderBottom: "1px solid #ddd",
-                            textAlign: "center" // Ensures text is always centered
-                        }}
-                    >
-                        {/* Rank and Clickable Book Title */}
-                        <Typography 
-                            variant="h6" 
-                            sx={{ 
-                                fontWeight: "bold", 
-                                fontSize: { xs: "16px", md: "18px" }, 
-                                wordWrap: "break-word", // Allows long titles to break into new lines
-                                overflowWrap: "break-word", 
-                                maxWidth: "90%" // Ensures text does not overflow on mobile
-                            }}
-                        >
-                            #{index + 1}{" "}
-                            <Link 
-                                to={`/book-review/${book._id.bookId}`} 
-                                style={{ textDecoration: "none", color: "#007BFF" }}
-                            >
-                                {book._id.bookTitle}
-                            </Link>
-                        </Typography>
+  const formatDateTime = (dateTime) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateTime).toLocaleDateString('es-ES', options);
+  };
 
-                        {/* Stars - Now positioned below the title on mobile */}
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "5px" }}>
-                            <Rating value={book.avgRating} precision={0.1} readOnly />
-                            <Typography sx={{ marginLeft: "8px", fontSize: { xs: "12px", md: "14px" } }}>
-                                ({book.avgRating.toFixed(1)})
-                            </Typography>
-                        </Box>
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
-                        {/* Number of Reviews */}
-                        <Typography 
-                            sx={{ 
-                                fontSize: { xs: "12px", md: "14px" }, 
-                                color: "#666", 
-                                marginTop: "5px"
-                            }}
-                        >
-                            📊 {book.count} reviews
-                        </Typography>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
+  useEffect(() => {
+    fetchPosts(page > 1);
+  }, [page]);
+
+  return (
+    <Container className="feed-container" style={{ 
+      width: '100vw',
+      maxWidth: '1200px',
+      minHeight: '80vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'center',
+      overflowX: 'hidden',
+      backgroundColor: '#1c0101',
+      color: 'white',
+      fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
+      paddingTop: '80px'
+    }}>
+      <div style={{ flexGrow: 1, overflowY: 'auto' }}>
+        {loading && page === 1 ? (
+          <Spinner animation="border" size="lg" />
+        ) : posts.length > 0 ? (
+          posts.map((post) => (
+            <Card className="post-card" key={post._id} style={{
+              minHeight: '350px', // 🔥 Aumentei um pouco a altura do card para dar mais espaço
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              overflow: 'hidden',
+              backgroundColor: '#1c0101',
+              color: 'white',
+              fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
+              border: '3px solid white',
+              borderRadius: '10px',
+              padding: '15px',
+              marginTop: '20px'
+            }}>
+            
+              <Card.Body style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                <Card.Title className="post-user" style={{ fontSize: '18px', fontWeight: 'bold', color: 'white' }}>
+                  {post.userId?.name}
+                </Card.Title>
+
+                {post.type === 'review' && post.bookTitle && (
+                  <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>
+                    Reseña del libro: 
+                    <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF', marginLeft: '5px' }}>
+                      {post.bookTitle}
+                    </Link>
+                  </Card.Subtitle>
+                )}
+
+                <Card.Text className="post-content" style={{ 
+                  fontSize: '16px', 
+                  color: 'white', 
+                  flexGrow: 1, 
+                  overflowY: 'auto', // 🔥 Agora o conteúdo grande rola dentro do quadro
+                  minHeight: '200px', // 🔥 Aumentei um pouco a altura inicial do comentário
+                  maxHeight: '220px', // 🔥 Mantive um limite para evitar que cresça demais
+                  paddingRight: '10px',
+                  border: '1px solid white', // 🔥 Mantendo a borda fina
+                  padding: '12px', // 🔥 Ajustando o padding para conforto visual
+                  borderRadius: '5px' // 🔥 Bordas arredondadas
+                }}>
+                  {post.content}
+                </Card.Text>
+
+                <div style={{ marginTop: 'auto', paddingTop: '10px' }}> {/* 🔥 Isso empurra as estrelas e a data para o final */}
+                  {post.type === 'review' && post.rating !== null && (
+                    <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
+                      {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
+                    </div>
+                  )}
+
+                  <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '5px' }}>
+                    Publicado en: {formatDateTime(post.createdAt)}
+                  </Card.Text>
+                </div>
+
+              </Card.Body>
+            </Card>
+          ))
+        ) : (
+          <p className="no-posts">No hay publicaciones para mostrar.</p>
+        )}
+      </div>
+      {hasMore && (
+        <Button className="load-more-btn" onClick={loadMore} disabled={loading} variant="success" size="lg" style={{ borderRadius: '25px', padding: '15px 20px', fontSize: '18px', marginTop: '20px' }}>
+          {loading ? <Spinner animation="border" size="sm" /> : 'Cargar Más'}
+        </Button>
+      )}
+    </Container>
+  );
 };
 
-export default RankingPage;
+export default Feed;
