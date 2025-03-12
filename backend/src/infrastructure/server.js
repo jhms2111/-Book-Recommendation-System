@@ -3,11 +3,16 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
-const userRoutes = require('../adapters/controllers/user/userRoutes'); // 🔹 Certifique-se de que esse arquivo existe
-const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // 🔹 Certifique-se de que esse é um router válido
-const booksRoutes = require('../adapters/routers/bookRoutes'); // 🔹 Corrigido o caminho do arquivo
+
+// 🔹 Certifique-se de que este arquivo contém a rota POST /login
+const loginRoutes = require('../adapters/controllers/auth/authRoutes'); 
+
+// 🔹 Importação correta dos arquivos de rota
+const userRoutes = require('../adapters/controllers/user/userRoutes'); 
+const authRoutes = require('../adapters/controllers/auth/googleAuthRoutes'); // Certifique-se de que esse é um router válido
+const booksRoutes = require('../adapters/routers/bookRoutes'); 
 console.log("✅ booksRoutes foi carregado no server.js");
-const postagemRoutes = require('../adapters/routers/postagemRoutes'); // 🔹 Importa as rotas de postagens
+const postagemRoutes = require('../adapters/routers/postagemRoutes'); 
 
 require('../infrastructure/auth/passport');
 
@@ -16,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 // 🔹 Configuração do CORS para permitir requisições do frontend (Vercel)
 const corsOptions = {
-    origin: "https://book-recommendation-system-omega.vercel.app", // 🔥 Substitua depois pelo domínio correto do frontend
+    origin: "https://book-recommendation-system-omega.vercel.app", 
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, 
@@ -44,8 +49,11 @@ console.log("Carregando as rotas...");
 // 🔹 Agora as rotas possuem o prefixo correto para garantir que funcionem
 app.use('/api/books', booksRoutes); 
 app.use('/api/postagens', postagemRoutes); 
-app.use('/api/users', userRoutes); // 🔥 Antes estava sem "/api", agora está correto!
+app.use('/api/users', userRoutes); 
 app.use('/api/auth', authRoutes); 
+
+// 🔹 🔥 GARANTINDO QUE O LOGIN FUNCIONA 🔥
+app.use('/api', loginRoutes); // 🔥 Isso garante que POST /api/login funcione!
 
 // 🔹 Rota de teste para verificar se o servidor está rodando
 app.get('/', (req, res) => {
