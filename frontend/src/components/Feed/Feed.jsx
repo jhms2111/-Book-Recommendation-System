@@ -18,7 +18,7 @@ const Feed = () => {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-  
+
       const postsData = await Promise.all(response.data.map(async (post) => {
         if (post.type === 'review' && !post.bookTitle) {
           try {
@@ -37,7 +37,7 @@ const Feed = () => {
         }
         return post;
       }));
-  
+
       setPosts((prevPosts) => (isLoadMore ? [...prevPosts, ...postsData] : postsData));
       setHasMore(response.data.length > 0);
     } catch (error) {
@@ -79,7 +79,7 @@ const Feed = () => {
         ) : posts.length > 0 ? (
           posts.map((post) => (
             <Card className="post-card" key={post._id} style={{
-              minHeight: '320px', // 🔥 Agora os quadros ficarão maiores
+              minHeight: '320px',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
@@ -98,30 +98,34 @@ const Feed = () => {
                 </Card.Title>
 
                 {post.type === 'review' && post.bookTitle && (
-                  <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {post.rating !== null && (
-                      <span className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
-                        {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
-                      </span>
-                    )}
-                    <span>Reseña del libro:</span>
-                    <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF' }}>
+                  <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>
+                    Reseña del libro: 
+                    <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF', marginLeft: '5px' }}>
                       {post.bookTitle}
                     </Link>
                   </Card.Subtitle>
                 )}
 
-
-                <Card.Text className="post-content" style={{ fontSize: '16px', color: 'white', flexGrow: 1, overflowY: 'auto', maxHeight: '150px', paddingRight: '10px' }}>
+                <Card.Text className="post-content" style={{ 
+                  fontSize: '16px', 
+                  color: 'white', 
+                  flexGrow: 1, 
+                  overflowY: 'auto', 
+                  maxHeight: '150px', 
+                  paddingRight: '10px',
+                  border: '1px solid white', // 🔥 Borda fina ao redor do comentário
+                  padding: '10px',
+                  borderRadius: '5px' // 🔥 Bordas arredondadas para suavizar o visual
+                }}>
                   {post.content}
                 </Card.Text>
-                
+
                 {post.type === 'review' && post.rating !== null && (
-                  <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
+                  <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px', marginTop: '10px' }}>
                     {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
                   </div>
                 )}
-                
+
                 <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '10px' }}>
                   Publicado en: {formatDateTime(post.createdAt)}
                 </Card.Text>
