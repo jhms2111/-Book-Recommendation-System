@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("../infrastructure/dataBase/models/User"); // Importa o modelo de usuário para buscar no banco
+const User = require("../../../infrastructure/dataBase/models/User"); // Importa o modelo de usuário para buscar no banco
+
 
 const authenticateUser = async (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1]; // Pega o token JWT do cabeçalho
