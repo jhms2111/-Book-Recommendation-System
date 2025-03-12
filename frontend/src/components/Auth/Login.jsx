@@ -13,7 +13,7 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona
+    // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
         const authToken = localStorage.getItem("authToken");
         if (authToken) {
