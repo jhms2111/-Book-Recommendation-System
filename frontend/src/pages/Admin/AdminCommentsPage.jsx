@@ -46,7 +46,7 @@ const AdminCommentsPage = () => {
                 return;
             }
 
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/postagens/${postId}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
