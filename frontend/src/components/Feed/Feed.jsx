@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Card, Button, Spinner, Rating } from 'react-bootstrap'; // Importa o Rating do MUI
+import { Container, Card, Button, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './Feed.css';
 
@@ -18,7 +18,7 @@ const Feed = () => {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-
+  
       const postsData = await Promise.all(response.data.map(async (post) => {
         if (post.type === 'review' && !post.bookTitle) {
           try {
@@ -37,7 +37,7 @@ const Feed = () => {
         }
         return post;
       }));
-
+  
       setPosts((prevPosts) => (isLoadMore ? [...prevPosts, ...postsData] : postsData));
       setHasMore(response.data.length > 0);
     } catch (error) {
@@ -111,8 +111,7 @@ const Feed = () => {
                 
                 {post.type === 'review' && post.rating !== null && (
                   <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
-                    <Rating value={post.rating} precision={0.1} readOnly />
-                    <span style={{ marginLeft: '10px' }}>{post.rating} de 5</span>
+                    {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
                   </div>
                 )}
                 
