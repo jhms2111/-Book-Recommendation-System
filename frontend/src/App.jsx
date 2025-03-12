@@ -18,13 +18,11 @@ import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false) // Inicialmente null
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            setIsAuthenticated(true);
-        }
+        const token = localStorage.getItem('isAuthenticated');
+        setIsAuthenticated(token === 'true');
     }, []);
 
     const handleLogin = () => {
