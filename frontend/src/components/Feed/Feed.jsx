@@ -79,10 +79,10 @@ const Feed = () => {
         ) : posts.length > 0 ? (
           posts.map((post) => (
             <Card className="post-card" key={post._id} style={{
-              minHeight: '400px', // 🔥 Aumentei a altura do quadro geral
+              minHeight: '350px', // 🔥 Aumentei um pouco a altura do card para dar mais espaço
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between', // 🔥 Mantém a data e estrelas no final
+              justifyContent: 'space-between',
               overflow: 'hidden',
               backgroundColor: '#1c0101',
               color: 'white',
@@ -111,24 +111,25 @@ const Feed = () => {
                   fontSize: '16px', 
                   color: 'white', 
                   flexGrow: 1, 
-                  overflowY: 'auto', 
-                  minHeight: '180px', // 🔥 Aumentei a altura do comentário
+                  overflowY: 'auto', // 🔥 Agora o conteúdo grande rola dentro do quadro
+                  minHeight: '200px', // 🔥 Aumentei um pouco a altura inicial do comentário
+                  maxHeight: '220px', // 🔥 Mantive um limite para evitar que cresça demais
                   paddingRight: '10px',
-                  border: '1px solid white', // 🔥 Borda fina ao redor do comentário
-                  padding: '15px', // 🔥 Aumentei o padding para mais conforto na leitura
-                  borderRadius: '5px' // 🔥 Bordas arredondadas para suavizar o visual
+                  border: '1px solid white', // 🔥 Mantendo a borda fina
+                  padding: '12px', // 🔥 Ajustando o padding para conforto visual
+                  borderRadius: '5px' // 🔥 Bordas arredondadas
                 }}>
                   {post.content}
                 </Card.Text>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '10px' }}>
+                <div style={{ marginTop: 'auto', paddingTop: '10px' }}> {/* 🔥 Isso empurra as estrelas e a data para o final */}
                   {post.type === 'review' && post.rating !== null && (
                     <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
                       {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
                     </div>
                   )}
 
-                  <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '10px' }}>
+                  <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '5px' }}>
                     Publicado en: {formatDateTime(post.createdAt)}
                   </Card.Text>
                 </div>
