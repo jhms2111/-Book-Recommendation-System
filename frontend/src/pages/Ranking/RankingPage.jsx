@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Typography, CircularProgress, List, ListItem, Rating } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const RankingPage = () => {
     const [ranking, setRanking] = useState([]);
@@ -40,25 +41,31 @@ const RankingPage = () => {
                         key={book._id.bookId} 
                         sx={{ 
                             display: "flex", 
-                            flexDirection: "column", // Ensures everything is stacked for mobile
+                            flexDirection: "column", // Stacks elements on mobile
                             alignItems: "center",
                             padding: "10px 0",
                             borderBottom: "1px solid #ddd",
-                            textAlign: "center" // Ensures text is always centered
+                            textAlign: "center"
                         }}
                     >
-                        {/* Rank and Book Title */}
+                        {/* Rank and Clickable Book Title */}
                         <Typography 
                             variant="h6" 
                             sx={{ 
                                 fontWeight: "bold", 
                                 fontSize: { xs: "16px", md: "18px" }, 
-                                wordWrap: "break-word", // Allows long titles to break into new lines
+                                wordWrap: "break-word",
                                 overflowWrap: "break-word", 
-                                maxWidth: "90%" // Ensures text does not overflow on mobile
+                                maxWidth: "90%"
                             }}
                         >
-                            #{index + 1} {book._id.bookTitle}
+                            #{index + 1}{" "}
+                            <Link 
+                                to={`/book-review/${book._id.bookId}`} 
+                                style={{ textDecoration: "none", color: "#007BFF", fontWeight: "bold" }}
+                            >
+                                {book._id.bookTitle}
+                            </Link>
                         </Typography>
 
                         {/* Stars - Now positioned below the title on mobile */}
