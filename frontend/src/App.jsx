@@ -13,6 +13,7 @@ import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import AdminPage from './pages/Admin/AdminPage';
 import ProtectedAdminRoute from "./components/Auth/ProtectedAdminRoute";
+import AdminCommentsPage from './pages/Admin/AdminCommentsPage';
 
 
 import Layout from './components/Header/Layout'; // Importa o Layout
@@ -60,7 +61,7 @@ const App = () => {
                 />
 
 <Route
-    path="/admin"
+    path="/admin/usersadmin"
     element={
         <ProtectedAdminRoute>
             <Layout>
@@ -69,6 +70,18 @@ const App = () => {
         </ProtectedAdminRoute>
     }
 />
+
+<Route
+    path="/admin/comentariosadmin"
+    element={
+        <ProtectedAdminRoute>
+            <Layout>
+                <AdminCommentsPage />
+            </Layout>
+        </ProtectedAdminRoute>
+    }
+/>
+
 
 
 
