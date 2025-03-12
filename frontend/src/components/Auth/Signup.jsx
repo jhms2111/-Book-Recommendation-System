@@ -1,5 +1,3 @@
-// src/components/Signup.js
-
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -23,18 +21,16 @@ const Signup = () => {
         setSuccess("");
 
         if (senha !== confirmSenha) {
-            setError("Las contraseñas no coinciden.");
+            setError("As senhas não coincidem.");
             return;
         }
 
         try {
-            // Atualizando a URL de requisição para o backend hospedado no Render
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/usuarios", {
                 name,
                 email,
                 senha,
             });
-
             setSuccess(response.data.message);
             setName("");
             setEmail("");
@@ -44,7 +40,7 @@ const Signup = () => {
             if (err.response && err.response.data) {
                 setError(err.response.data.error);
             } else {
-                setError("Error al conectarse al servidor. Intente nuevamente más tarde.");
+                setError("Erro ao se conectar ao servidor. Tente novamente mais tarde.");
             }
         }
     };
@@ -53,12 +49,12 @@ const Signup = () => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                    Crear Cuenta
+                    Criar Conta
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
                         fullWidth
-                        label="Nombre"
+                        label="Nome"
                         variant="outlined"
                         margin="normal"
                         value={name}
@@ -68,7 +64,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Correo Electrónico"
+                        label="Email"
                         variant="outlined"
                         margin="normal"
                         value={email}
@@ -78,7 +74,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Contraseña"
+                        label="Senha"
                         type={showPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -98,7 +94,7 @@ const Signup = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Confirma tu Contraseña"
+                        label="Confirme sua Senha"
                         type={showConfirmPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -117,12 +113,12 @@ const Signup = () => {
                         }}
                     />
                     <Button type="submit" variant="contained" sx={styles.button}>
-                        Registrarse
+                        Cadastrar
                     </Button>
                     <Typography sx={styles.linkText}>
-                        ¿Ya tienes una cuenta?{" "}
+                        Já tem uma conta?{" "}
                         <Button variant="text" onClick={() => navigate("/login")} sx={styles.loginLink}>
-                            Iniciar sesión
+                            Faça login
                         </Button>
                     </Typography>
                     {error && <Typography sx={styles.error}>{error}</Typography>}
@@ -132,7 +128,6 @@ const Signup = () => {
         </Box>
     );
 };
-
 
 const styles = {
     container: {
@@ -151,19 +146,19 @@ const styles = {
         backdropFilter: "blur(12px)",
         textAlign: "center",
         width: "100%",
-        maxWidth: "320px", // Mantiene el tamaño original para móviles
+        maxWidth: "320px", // Mantém o tamanho original para mobile
         
         minHeight: "450px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
 
-        // 🔥 Reduz el tamaño del formulario solo en pantallas más grandes
+        // 🔥 Reduz a largura do formulário apenas em telas maiores
         "@media (min-width: 768px)": {  
-            maxWidth: "280px", // Ajuste para tabletas y portátiles medianas
+            maxWidth: "280px", // Ajuste para telas médias e grandes
         },
         "@media (min-width: 1024px)": {  
-            maxWidth: "380px", // Ajuste aún más para escritorios grandes
+            maxWidth: "380px", // Ajuste ainda menor para desktops grandes
         },
     },
     title: {
@@ -231,6 +226,8 @@ const styles = {
         fontSize: "14px",
         fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
     },
+    
 };
+
 
 export default Signup;
