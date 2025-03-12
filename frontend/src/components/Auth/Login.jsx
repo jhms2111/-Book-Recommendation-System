@@ -15,11 +15,12 @@ const Login = ({ handleLogin }) => {
 
     // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
-        const authToken = localStorage.getItem("authToken");
-        if (authToken) {
-            navigate("/"); // Se o token existir, o usuário já está autenticado
+        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
+        if (token) {
+            navigate("/"); 
         }
     }, [navigate]);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,7 +34,7 @@ const Login = ({ handleLogin }) => {
             });
 
             if (response.data && response.data.token) {
-                localStorage.setItem("authToken", response.data.token);
+                localStorage.setItem("token", response.data.token); // 🔥 Garante que o token está sendo salvo corretamente!
                 localStorage.setItem("isAuthenticated", "true");
 
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
