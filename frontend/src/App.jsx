@@ -18,7 +18,7 @@ import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
+    const [isAuthenticated, setIsAuthenticated] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('isAuthenticated');
@@ -40,6 +40,7 @@ const App = () => {
         return <div>Carregando...</div>;
     }
 
+    
     return (
         <Router>
             <Routes>

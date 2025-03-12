@@ -4,10 +4,16 @@ import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const ProtectedRoute = ({ children, isAuthenticated }) => {
+    if (isAuthenticated === null) {
+        // Se o estado isAuthenticated ainda estiver indefinido (null), não redireciona imediatamente
+        return <div>Carregando...</div>;
+    }
+
     if (!isAuthenticated) {
         console.log('Usuário não autenticado, redirecionando para login...');
-        return <Navigate to="/login" replace/>;
+        return <Navigate to="/login" replace />;
     }
+
     console.log('Usuário autenticado, permitindo acesso à rota.');
     return children;
 };
