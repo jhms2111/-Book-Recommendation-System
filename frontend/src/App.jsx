@@ -1,5 +1,3 @@
-// App.jsx
-
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Auth/Login';
@@ -11,27 +9,27 @@ import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
-import RankingPage from './pages/Ranking/RankingPage';
+import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import Layout from './components/Header/Layout'; // Importa o Layout
-import AdminPage from './components/Admin/AdminPage'; // Importa a página de administração
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        setIsAuthenticated(!!token); // Verifica se o token existe
+        const token = localStorage.getItem('isAuthenticated');
+        setIsAuthenticated(token === 'true');
     }, []);
 
     const handleLogin = () => {
         setIsAuthenticated(true);
+        localStorage.setItem('isAuthenticated', 'true');
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
-        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
     };
 
     if (isAuthenticated === null) {
@@ -50,8 +48,8 @@ const App = () => {
                     path="/"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
-                                <HomePage />
+                            <Layout>
+                                <HomePage handleLogout={handleLogout} />
                             </Layout>
                         </ProtectedRoute>
                     }
@@ -65,7 +63,7 @@ const App = () => {
                     path="/search-books"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <BookSearchPage />
                             </Layout>
                         </ProtectedRoute>
@@ -75,7 +73,7 @@ const App = () => {
                     path="/book/:bookId"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <BookDetailsPage />
                             </Layout>
                         </ProtectedRoute>
@@ -85,7 +83,7 @@ const App = () => {
                     path="/book-review/:bookId"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <BookReviewPage />
                             </Layout>
                         </ProtectedRoute>
@@ -95,19 +93,19 @@ const App = () => {
                     path="/my-books"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <UserBooksPage />
                             </Layout>
                         </ProtectedRoute>
                     }
                 />
-
+                
                 {/* Rotas para Postagens */}
                 <Route
                     path="/ranking"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <RankingPage />
                             </Layout>
                         </ProtectedRoute>
@@ -117,20 +115,8 @@ const App = () => {
                     path="/comentarios"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout handleLogout={handleLogout}>
+                            <Layout>
                                 <Feed />
-                            </Layout>
-                        </ProtectedRoute>
-                    }
-                />
-
-                {/* Rota para página de administração */}
-                <Route
-                    path="/admin"
-                    element={
-                        <ProtectedRoute isAuthenticated={isAuthenticated} isAdmin>
-                            <Layout handleLogout={handleLogout}>
-                                <AdminPage />
                             </Layout>
                         </ProtectedRoute>
                     }
