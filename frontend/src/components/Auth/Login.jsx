@@ -26,17 +26,18 @@ const Login = ({ handleLogin }) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-
+    
         try {
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
-
+    
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token); // 🔥 Garante que o token está sendo salvo corretamente!
+                localStorage.setItem("token", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
-
+                localStorage.setItem("role", response.data.usuario.role); // 🔥 Armazena a role
+    
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
                 handleLogin();
                 navigate("/");
@@ -48,6 +49,7 @@ const Login = ({ handleLogin }) => {
             setError(err.response?.data?.error || "Error al conectarse con el servidor.");
         }
     };
+    
 
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
