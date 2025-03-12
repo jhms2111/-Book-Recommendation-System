@@ -79,9 +79,10 @@ const Feed = () => {
         ) : posts.length > 0 ? (
           posts.map((post) => (
             <Card className="post-card" key={post._id} style={{
-              minHeight: '320px',
+              minHeight: '400px', // 🔥 Aumentei a altura do quadro geral
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'space-between', // 🔥 Mantém a data e estrelas no final
               overflow: 'hidden',
               backgroundColor: '#1c0101',
               color: 'white',
@@ -111,24 +112,27 @@ const Feed = () => {
                   color: 'white', 
                   flexGrow: 1, 
                   overflowY: 'auto', 
-                  maxHeight: '150px', 
+                  minHeight: '180px', // 🔥 Aumentei a altura do comentário
                   paddingRight: '10px',
                   border: '1px solid white', // 🔥 Borda fina ao redor do comentário
-                  padding: '10px',
+                  padding: '15px', // 🔥 Aumentei o padding para mais conforto na leitura
                   borderRadius: '5px' // 🔥 Bordas arredondadas para suavizar o visual
                 }}>
                   {post.content}
                 </Card.Text>
 
-                {post.type === 'review' && post.rating !== null && (
-                  <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px', marginTop: '10px' }}>
-                    {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
-                  </div>
-                )}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '10px' }}>
+                  {post.type === 'review' && post.rating !== null && (
+                    <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
+                      {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
+                    </div>
+                  )}
 
-                <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '10px' }}>
-                  Publicado en: {formatDateTime(post.createdAt)}
-                </Card.Text>
+                  <Card.Text className="post-date" style={{ fontSize: '14px', color: 'white', marginTop: '10px' }}>
+                    Publicado en: {formatDateTime(post.createdAt)}
+                  </Card.Text>
+                </div>
+
               </Card.Body>
             </Card>
           ))
