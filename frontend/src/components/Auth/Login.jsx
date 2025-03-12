@@ -13,7 +13,7 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona//
+    // Verifica se há um token no localStorage e redireciona
     useEffect(() => {
         const authToken = localStorage.getItem("authToken");
         if (authToken) {
@@ -36,9 +36,19 @@ const Login = ({ handleLogin }) => {
                 localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
 
+                // Recupera o role do usuário (admin ou não)
+                const userRole = response.data.role;
+                localStorage.setItem("role", userRole);
+
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
                 handleLogin();
-                navigate("/");
+
+                // Redireciona baseado no role
+                if (userRole === "admin") {
+                    navigate("/admin"); // Se for admin, vai para a página de admin
+                } else {
+                    navigate("/"); // Caso contrário, vai para a página principal
+                }
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
             }
@@ -56,7 +66,7 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
+                    BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
