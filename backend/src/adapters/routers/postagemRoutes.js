@@ -10,6 +10,16 @@ const router = express.Router();
 // 🔹 Usuário autenticado pode visualizar postagens (feed normal)
 router.get('/postagens', authenticateUser, postagemController.getPosts);
 
+// 🔹 Admin pode visualizar postagens (interface separada no frontend)
+router.get('/api/postagens', authenticateUser, isAdmin, async (req, res) => {
+    try {
+        const postagens = await postagemController.getPosts(); 
+        res.json(postagens);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar postagens.", details: error });
+    }
+});
+
 // 🔹 Usuários autenticados podem criar postagens (posts normais ou avaliações)
 router.post('/postagens', authenticateUser, postagemController.createPost);
 

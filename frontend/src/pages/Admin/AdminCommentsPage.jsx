@@ -21,7 +21,7 @@ const AdminCommentsPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/postagens", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/postagens", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
