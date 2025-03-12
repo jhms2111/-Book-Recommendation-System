@@ -13,7 +13,7 @@ import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import AdminPage from './pages/Admin/AdminPage';
 import ProtectedAdminRoute from "./components/Auth/ProtectedAdminRoute";
-import AdminCommentsPage from './pages/Admin/AdminCommentsPage';
+
 
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -70,16 +70,7 @@ const App = () => {
     }
 />
 
-<Route
-    path="/comentariosadmin"
-    element={
-        <ProtectedAdminRoute>
-            <Layout>
-                <AdminCommentsPage />
-            </Layout>
-        </ProtectedAdminRoute>
-    }
-/>
+
 
                 {/* Rota de sucesso após login com o Google */}
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
