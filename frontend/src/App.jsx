@@ -6,55 +6,48 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AuthSuccess from './components/Auth/AuthSuccess';
 import BookSearchPage from './pages/Books/BookSearchPage';
 import BookDetailsPage from './pages/Books/BookDetailsPage';
-import HomePage from './pages/Home/HomePage';
-import BookReviewPage from './pages/Books/BookReviewPage';
+import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
+import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
-import RankingPage from './pages/Ranking/RankingPage';
-import Feed from './components/Feed/Feed';
-import Layout from './components/Header/Layout';
-import AdminPage from "./pages/Admin/AdminPage"; // 🔥 Novo: Página do Admin
-import AdminRoute from "./components/Auth/AdminRoute"; // 🔥 Novo: Proteção da rota Admin
+import RankingPage from './pages/Ranking/RankingPage'
+import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminRoute from "./components/Auth/AdminRoute";
+import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [userRole, setUserRole] = useState(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        setIsAuthenticated(token === 'true');
 
-        // 🔥 Obtendo a role do usuário no token (apenas se houver token)
-        if (token) {
-            try {
-                const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o token JWT
-                setUserRole(payload.role); // Define a role do usuário
-            } catch (error) {
-                console.error("Erro ao decodificar o token:", error);
-                setUserRole(null);
-            }
-        }
+
+    useEffect(() => {
+        const token = localStorage.getItem("isAuthenticated");
+        const role = localStorage.getItem("userRole"); // Pegamos a role salva no login
+        setIsAuthenticated(token === "true");
+        setUserRole(role);
     }, []);
 
-    const handleLogin = (token) => {
-        setIsAuthenticated(true);
-        localStorage.setItem('token', token);
 
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            setUserRole(payload.role); // Define a role do usuário ao logar
-        } catch (error) {
-            console.error("Erro ao processar o token:", error);
-        }
+
+
+    const handleLogin = () => {
+        setIsAuthenticated(true);
+        setUserRole(localStorage.getItem("userRole")); // Atualiza a role do usuário ao logar
+        localStorage.setItem("isAuthenticated", "true");
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
         setUserRole(null);
-        localStorage.removeItem('token');
+        localStorage.removeItem("isAuthenticated");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("token");
     };
 
     if (isAuthenticated === null) {
+        // Renderiza um indicador de carregamento enquanto o estado é carregado
         return <div>Carregando...</div>;
     }
 
@@ -64,7 +57,7 @@ const App = () => {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                {/* 🔹 Rota protegida principal */}
+                {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute e Layout */}
                 <Route
                     path="/"
                     element={
@@ -76,10 +69,21 @@ const App = () => {
                     }
                 />
 
-                {/* 🔹 Rota de sucesso após login com o Google */}
+                <Route
+                    path="/admin"
+                    element={
+                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
+                            <Layout>
+                                <AdminDashboard />
+                            </Layout>
+                        </AdminRoute>
+                    }
+                />
+
+                {/* Rota de sucesso após login com o Google */}
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
 
-                {/* 🔹 Rotas protegidas para livros */}
+                {/* Rotas protegidas para busca de livros */}
                 <Route
                     path="/search-books"
                     element={
@@ -121,7 +125,7 @@ const App = () => {
                     }
                 />
 
-                {/* 🔹 Rotas para postagens */}
+                {/* Rotas para Postagens */}
                 <Route
                     path="/ranking"
                     element={
@@ -140,18 +144,6 @@ const App = () => {
                                 <Feed />
                             </Layout>
                         </ProtectedRoute>
-                    }
-                />
-
-                {/* 🔥 🔹 Nova Rota protegida para Admin */}
-                <Route
-                    path="/admin"
-                    element={
-                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
-                            <Layout>
-                                <AdminPage />
-                            </Layout>
-                        </AdminRoute>
                     }
                 />
             </Routes>
