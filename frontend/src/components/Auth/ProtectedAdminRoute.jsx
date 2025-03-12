@@ -7,12 +7,12 @@ const ProtectedAdminRoute = ({ children }) => {
 
     if (!isAuthenticated) {
         console.log("Usuário não autenticado, redirecionando para login...");
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" replace />;
     }
 
     if (role !== "admin") {
         console.log("Usuário não é admin, redirecionando para a home...");
-        return <Navigate to="/" />;
+        return <Navigate to="/" replace />;
     }
 
     return children;
