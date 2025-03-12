@@ -11,16 +11,26 @@ import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componen
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
+import AdminPage from "./pages/Admin/AdminPage";
+import AdminRoute from "./components/Auth/AdminRoute"; // 🔥 Novo Middleware
+
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('isAuthenticated');
-        setIsAuthenticated(token === 'true');
+        const token = localStorage.getItem("token");
+        if (token) {
+            const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o JWT
+            setUserRole(payload.role); // Obtém a role do usuário
+        }
     }, []);
+    
 
     const handleLogin = () => {
         setIsAuthenticated(true);
@@ -40,6 +50,17 @@ const App = () => {
     return (
         <Router>
             <Routes>
+
+                <Route
+                    path="/admin"
+                    element={
+                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
+                            <AdminPage />
+                        </AdminRoute>
+                    }
+                />
+
+
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 

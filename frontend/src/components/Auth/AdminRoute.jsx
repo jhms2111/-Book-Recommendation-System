@@ -1,20 +1,17 @@
 import { Navigate } from "react-router-dom";
-import PropTypes from "prop-types"; // Importa PropTypes
+import PropTypes from "prop-types";
 
-const AdminRoute = ({ isAuthenticated, user, children }) => {
-    // Verifica se o usuário está autenticado e se é admin
-    if (!isAuthenticated || user?.role !== "admin") {
-        return <Navigate to="/" />; // Redireciona para a Home se não for admin
+const AdminRoute = ({ isAuthenticated, userRole, children }) => {
+    if (!isAuthenticated || userRole !== "admin") {
+        return <Navigate to="/" />;
     }
     return children;
 };
 
-// ✅ Adicionando validação das props para evitar warnings do ESLint
+// 🔹 Validação das props com PropTypes
 AdminRoute.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
-    user: PropTypes.shape({
-        role: PropTypes.string, // Valida que role é uma string
-    }),
+    userRole: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
 };
 
