@@ -5,8 +5,6 @@ const isAdmin = require('../../middlewares/isAdmin'); // Certifique-se de import
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
-const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser');
-
 const router = express.Router();
 
 // Rota para criar postagens (postagem normal ou avaliação)
@@ -23,7 +21,7 @@ router.get('/postagens/reviews/:bookId', postagemController.getBookReviews);
 
 router.get('/ranking', postagemController.getTopRatedBooks);
 
-console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
+
 
 // 🔹 Rota para obter TODAS as postagens e avaliações (somente para ADMIN)
 router.get('/comentariosadmin', authenticateUser, isAdmin, async (req, res) => {
@@ -50,8 +48,3 @@ router.delete('/comentariosadmin/:id', authenticateUser, isAdmin, async (req, re
 module.exports = router;
 
 
-
-
-
-
-module.exports = router;
