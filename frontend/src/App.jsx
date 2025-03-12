@@ -24,33 +24,40 @@ const App = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode(token); // Decodifica o token para obter o ID do usuário
-                const userId = decoded?.id; // Verifica se o ID existe no token
-
-                if (!userId) {
-                    console.warn("⚠️ O token não contém um ID de usuário.");
-                    setIsAuthenticated(false);
-                    return;
-                }
-
-                axios.get(`https://book-recommendation-system-9uba.onrender.com/api/users/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                }).then(res => {
-                    console.log("✅ Usuário autenticado:", res.data);
-                    setUser(res.data);
-                    setIsAuthenticated(true);
-                }).catch(() => {
-                    setIsAuthenticated(false);
-                });
-            } catch (error) {
-                console.error("❌ Erro ao decodificar o token:", error);
-                setIsAuthenticated(false);
-            }
-        } else {
+        if (!token) {
+            console.warn("⚠️ Nenhum token encontrado, redirecionando...");
             setIsAuthenticated(false);
+            return;
         }
+
+        let userId = null; // 🔹 Define userId fora do try para evitar erro de escopo
+
+        try {
+            const decoded = jwtDecode(token);
+            userId = decoded?.id;
+
+            if (!userId) {
+                console.warn("⚠️ O token não contém um ID de usuário.");
+                setIsAuthenticated(false);
+                return;
+            }
+        } catch (error) {
+            console.error("❌ Erro ao decodificar o token:", error);
+            setIsAuthenticated(false);
+            return;
+        }
+
+        axios.get(`https://book-recommendation-system-9uba.onrender.com/api/users/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(res => {
+            console.log("✅ Usuário autenticado:", res.data);
+            setUser(res.data);
+            setIsAuthenticated(true);
+        }).catch(() => {
+            console.error("❌ Erro ao buscar usuário.");
+            setIsAuthenticated(false);
+        });
+
     }, []);
 
     const handleLogin = () => {
