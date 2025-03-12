@@ -56,7 +56,7 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                    Sistema de Recomendación de Libros <span style={{ fontSize: "22px", color: "#aaa" }}>(BRS)</span>
+                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField

@@ -45,7 +45,7 @@ const Header = () => {
                         }} 
                         onClick={() => navigate('/')}
                     > 
-                        BRS {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
+                        BookTrove {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
                     </Typography>
                     
                     {/* Ícono de menú para móviles */}
