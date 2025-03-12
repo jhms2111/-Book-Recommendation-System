@@ -11,86 +11,42 @@ import BookReviewPage from './pages/Books/BookReviewPage';
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage';
 import Feed from './components/Feed/Feed';
-import AdminPage from "./pages/Admin/AdminPage";
-import AdminRoute from "./components/Auth/AdminRoute";
 import Layout from './components/Header/Layout';
+import AdminPage from "./pages/Admin/AdminPage"; // 🔥 Novo: Página do Admin
+import AdminRoute from "./components/Auth/AdminRoute"; // 🔥 Novo: Proteção da rota Admin
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // 🔥 Agora começa como false
+    const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [userRole, setUserRole] = useState(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkAuth = () => {
-            const token = localStorage.getItem("token");
-    
-            if (token) {
-                try {
-                    // 🔹 Verifica se o token tem o formato correto (3 partes separadas por ".")
-                    const parts = token.split(".");
-                    if (parts.length !== 3) {
-                        throw new Error("Formato de token inválido");
-                    }
-    
-                    // 🔹 Decodifica o payload do JWT
-                    const payload = JSON.parse(atob(parts[1]));
-    
-                    // 🔹 Verifica se o payload tem a role antes de definir o estado
-                    if (payload.role) {
-                        setUserRole(payload.role);
-                        setIsAuthenticated(true);
-                    } else {
-                        throw new Error("Payload inválido no token");
-                    }
-                } catch (error) {
-                    console.error("Erro ao decodificar o token:", error);
-                    setIsAuthenticated(false);
-                    setUserRole(null);
-                    localStorage.removeItem("token"); // 🔥 Remove o token inválido
-                }
-            } else {
-                setIsAuthenticated(false);
+        const token = localStorage.getItem("token");
+        setIsAuthenticated(token === 'true');
+
+        // 🔥 Obtendo a role do usuário no token (apenas se houver token)
+        if (token) {
+            try {
+                const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o token JWT
+                setUserRole(payload.role); // Define a role do usuário
+            } catch (error) {
+                console.error("Erro ao decodificar o token:", error);
                 setUserRole(null);
             }
-    
-            setLoading(false);
-        };
-    
-        checkAuth();
+        }
     }, []);
-    
 
     const handleLogin = (token) => {
-        if (!token || typeof token !== "string") {
-            console.error("Token inválido recebido:", token);
-            return;
-        }
-    
-        localStorage.setItem("token", token);
-    
+        setIsAuthenticated(true);
+        localStorage.setItem('token', token);
+
         try {
-            const parts = token.split(".");
-            if (parts.length !== 3) {
-                throw new Error("Formato de token inválido");
-            }
-    
-            const payload = JSON.parse(atob(parts[1]));
-    
-            if (payload.role) {
-                setUserRole(payload.role);
-                setIsAuthenticated(true);
-            } else {
-                throw new Error("Payload inválido no token");
-            }
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            setUserRole(payload.role); // Define a role do usuário ao logar
         } catch (error) {
             console.error("Erro ao processar o token:", error);
-            setIsAuthenticated(false);
-            setUserRole(null);
-            localStorage.removeItem("token"); // 🔥 Remove o token inválido
         }
     };
-    
 
     const handleLogout = () => {
         setIsAuthenticated(false);
@@ -98,28 +54,17 @@ const App = () => {
         localStorage.removeItem('token');
     };
 
-    if (loading) {
-        return <div className="loading-screen">🔄 Carregando...</div>;
+    if (isAuthenticated === null) {
+        return <div>Carregando...</div>;
     }
 
     return (
         <Router>
             <Routes>
-                {/* 🔥 Protegendo a Rota de Admin */}
-                <Route
-                    path="/admin"
-                    element={
-                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
-                            <AdminPage />
-                        </AdminRoute>
-                    }
-                />
-
-                {/* 🔐 Login e Cadastro */}
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                {/* 🔐 Rota Protegida para HomePage */}
+                {/* 🔹 Rota protegida principal */}
                 <Route
                     path="/"
                     element={
@@ -131,10 +76,10 @@ const App = () => {
                     }
                 />
 
-                {/* 🔐 Rota de Sucesso do Google */}
-                <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={handleLogin} />} />
+                {/* 🔹 Rota de sucesso após login com o Google */}
+                <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
 
-                {/* 🔐 Rotas Protegidas */}
+                {/* 🔹 Rotas protegidas para livros */}
                 <Route
                     path="/search-books"
                     element={
@@ -175,8 +120,8 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-                
-                {/* 🔐 Rotas para Postagens */}
+
+                {/* 🔹 Rotas para postagens */}
                 <Route
                     path="/ranking"
                     element={
@@ -195,6 +140,18 @@ const App = () => {
                                 <Feed />
                             </Layout>
                         </ProtectedRoute>
+                    }
+                />
+
+                {/* 🔥 🔹 Nova Rota protegida para Admin */}
+                <Route
+                    path="/admin"
+                    element={
+                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
+                            <Layout>
+                                <AdminPage />
+                            </Layout>
+                        </AdminRoute>
                     }
                 />
             </Routes>
