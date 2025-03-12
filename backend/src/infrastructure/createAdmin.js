@@ -24,7 +24,7 @@ mongoose.connect(mongoURI, {
 // Função para criar o admin
 async function createAdmin() {
     try {
-        const existingAdmin = await User.findOne({ email: "admin@exemplo.com" });
+        const existingAdmin = await User.findOne({ email: "admin11@exemplo.com" });
         if (existingAdmin) {
             console.log("✅ Usuário admin já existe.");
             mongoose.connection.close();
@@ -35,7 +35,7 @@ async function createAdmin() {
 
         const adminUser = new User({
             name: "Administrador",
-            email: "admin@exemplo.com",
+            email: "admin11@exemplo.com",
             senha: hashedPassword,
             role: "admin",
         });
