@@ -8,7 +8,7 @@ const AdminDashboard = () => {
         const fetchUsers = async () => {
             try {
                 const token = localStorage.getItem("token"); // Obtém o token
-                const res = await axios.get("https://seuprojeto.onrender.com/api/users", {
+                const res = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/users", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUsers(res.data);
