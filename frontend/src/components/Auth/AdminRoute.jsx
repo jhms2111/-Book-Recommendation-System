@@ -6,7 +6,7 @@ const AdminRoute = ({ isAuthenticated, userRole, children }) => {
         return <Navigate to="/login" />;
     }
 
-    if (userRole !== "admin") {
+    if (!userRole || userRole !== "admin") {
         return <Navigate to="/" />;
     }
 

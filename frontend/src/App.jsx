@@ -23,20 +23,32 @@ const App = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem("isAuthenticated");
-        const role = localStorage.getItem("userRole"); // Pegamos a role salva no login
-        setIsAuthenticated(token === "true");
-        setUserRole(role);
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("userRole");
+    
+        if (token) {
+            setIsAuthenticated(true);
+            setUserRole(role);
+        } else {
+            setIsAuthenticated(false);
+            setUserRole(null);
+        }
     }, []);
+    
 
 
 
 
     const handleLogin = () => {
-        setIsAuthenticated(true);
-        setUserRole(localStorage.getItem("userRole")); // Atualiza a role do usuário ao logar
-        localStorage.setItem("isAuthenticated", "true");
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("userRole");
+    
+        if (token) {
+            setIsAuthenticated(true);
+            setUserRole(role);
+        }
     };
+    
 
     const handleLogout = () => {
         setIsAuthenticated(false);
