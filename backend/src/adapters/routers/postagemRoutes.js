@@ -1,5 +1,7 @@
 const express = require('express');
 const postagemController = require('../controllers/postagemController');
+const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser');
+const isAdmin = require('../../middlewares/isAdmin'); // Certifique-se de importar
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
@@ -20,13 +22,6 @@ router.post('/reviews', authenticateUser, postagemController.createPost);
 router.get('/postagens/reviews/:bookId', postagemController.getBookReviews);
 
 router.get('/ranking', postagemController.getTopRatedBooks);
-
-const express = require('express');
-const postagemController = require('../controllers/postagemController');
-const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser');
-const isAdmin = require('../../middlewares/isAdmin'); // Certifique-se de importar
-
-
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
