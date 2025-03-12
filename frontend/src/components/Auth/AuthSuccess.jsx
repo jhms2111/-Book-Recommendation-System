@@ -27,11 +27,12 @@ const AuthSuccess = ({ setIsAuthenticated }) => {
             // Se não houver token na URL, redireciona para a página de login
             navigate('/login');
         }
-    }, [location, navigate, setIsAuthenticated]); // A dependência de setIsAuthenticated pode causar problema de loop se for alterada no meio
+    }, [location, navigate, setIsAuthenticated]);
 
     return null; // Este componente não precisa renderizar nada
 };
 
+// Define os tipos esperados para os props
 AuthSuccess.propTypes = {
     setIsAuthenticated: PropTypes.func.isRequired,
 };
