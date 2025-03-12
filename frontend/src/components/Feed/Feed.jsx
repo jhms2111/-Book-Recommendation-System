@@ -77,39 +77,45 @@ const Feed = () => {
         {loading && page === 1 ? (
           <Spinner animation="border" size="lg" />
         ) : posts.length > 0 ? (
-          posts.map((post) => (
-            <Card className="post-card" key={post._id} style={{ 
-              height: '250px', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              overflow: 'hidden', 
-              backgroundColor: '#1c0101', 
-              color: 'white', 
-              fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
-              border: '3px solid white',
-              borderRadius: '10px',
-              padding: '10px',
-              marginTop: '20px'
-            }}>
-              <Card.Body style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                <Card.Title className="post-user" style={{ fontSize: '18px', fontWeight: 'bold', color: 'white' }}>
-                  {post.userId?.name}
-                </Card.Title>
-                
-                {post.type === 'review' && post.bookTitle && (
-                  <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#444' }}>
-                    Reseña del libro:
-                    <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF', marginLeft: '5px' }}>
-                      {post.bookTitle}
-                    </Link>
-                  </Card.Subtitle>
-                )}
-                
-                <Card.Text className="post-content" style={{ fontSize: '16px', color: 'white', flexGrow: 1, overflowY: 'auto', maxHeight: '150px', paddingRight: '10px' }}>
-                  {post.content}
-                </Card.Text>
-                
-                {post.type === 'review' && post.rating !== null && (
+            posts.map((post) => (
+              <Card className="post-card" key={post._id} style={{
+                height: '250px',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+                backgroundColor: '#1c0101',
+                color: 'white',
+                fontFamily: '"Baskerville", "Palatino Linotype", "Garamond", serif',
+                border: '3px solid white',
+                borderRadius: '10px',
+                padding: '10px',
+                marginTop: '20px'
+              }}>
+                <Card.Body style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Card.Title className="post-user" style={{ fontSize: '18px', fontWeight: 'bold', color: 'white' }}>
+                    {post.userId?.name}
+                  </Card.Title>
+
+                  {post.type === 'review' && post.bookTitle && (
+                    <Card.Subtitle className="post-book" style={{ fontSize: '16px', fontWeight: 'bold', color: '#444', display: 'flex', alignItems: 'center' }}>
+                      {post.rating !== null && (
+                        <span className="post-rating" style={{ color: '#f39c12', fontSize: '18px', marginRight: '8px' }}>
+                          {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
+                        </span>
+                      )}
+                      <span>Reseña del libro:</span>
+                      <Link to={`/book-review/${post.bookId}`} style={{ textDecoration: 'none', color: '#007BFF', marginLeft: '5px' }}>
+                        {post.bookTitle}
+                      </Link>
+                    </Card.Subtitle>
+                  )}
+
+
+                  <Card.Text className="post-content" style={{ fontSize: '16px', color: 'white', flexGrow: 1, overflowY: 'auto', maxHeight: '150px', paddingRight: '10px' }}>
+                    {post.content}
+                  </Card.Text>
+
+                  {post.type === 'review' && post.rating !== null && (
                   <div className="post-rating" style={{ color: '#f39c12', fontSize: '18px' }}>
                     {'★'.repeat(post.rating) + '☆'.repeat(5 - post.rating)}
                   </div>
