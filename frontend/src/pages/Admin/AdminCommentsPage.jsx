@@ -21,7 +21,7 @@ const AdminCommentsPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/comentariosadmin", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/admin/postagens", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -46,7 +46,7 @@ const AdminCommentsPage = () => {
                 return;
             }
 
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/comentariosadmin/${postId}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/postagens/${postId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
