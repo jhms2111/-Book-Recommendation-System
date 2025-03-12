@@ -46,8 +46,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 console.log("Carregando as rotas de livros...");
 app.use('/api/books', booksRoutes); // Agora corretamente adicionado após express.json()
 app.use('/api', postagemRoutes);
-app.use('/api', userRoutes); // 🔥 Agora todas as rotas dentro de userRoutes terão prefixo "/api"
-
+app.use(userRoutes);
 app.use(authRoutes); 
 
 // Rota principal
