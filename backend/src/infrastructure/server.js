@@ -48,7 +48,6 @@ app.use('/api/books', booksRoutes); // Agora corretamente adicionado após expre
 app.use('/api', postagemRoutes);
 app.use('/api', userRoutes); // 🔥 Agora todas as rotas dentro de userRoutes terão prefixo "/api"
 
-app.use(userRoutes);
 app.use(authRoutes); 
 
 // Rota principal
