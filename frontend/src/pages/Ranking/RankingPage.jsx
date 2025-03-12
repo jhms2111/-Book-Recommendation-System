@@ -13,7 +13,7 @@ const RankingPage = () => {
                 setRanking(response.data);
                 setLoading(false);
             } catch (error) {
-                console.error("❌ Error al cargar el ranking:", error);
+                console.error("❌ Error loading ranking:", error);
                 setLoading(false);
             }
         };
@@ -32,7 +32,7 @@ const RankingPage = () => {
     return (
         <Box sx={{ padding: "20px", textAlign: "center", marginTop: "30px" }}>
             <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: "20px", fontSize: { xs: "18px", md: "24px" } }}>
-                📚 Top 10 Libros Mejor Valorados
+                📚 Top 10 Best Rated Books
             </Typography>
             <List sx={{ maxWidth: "600px", margin: "0 auto" }}>
                 {ranking.map((book, index) => (
@@ -40,60 +40,44 @@ const RankingPage = () => {
                         key={book._id.bookId} 
                         sx={{ 
                             display: "flex", 
-                            justifyContent: "space-between", 
+                            flexDirection: "column", // Ensures everything is stacked for mobile
                             alignItems: "center",
                             padding: "10px 0",
                             borderBottom: "1px solid #ddd",
-                            flexWrap: "wrap"
+                            textAlign: "center" // Ensures text is always centered
                         }}
                     >
-                        {/* Número e Nome do Livro */}
-                        <Box sx={{ 
-                            display: "flex", 
-                            alignItems: "center", 
-                            width: { xs: "100%", md: "60%" }, 
-                            textAlign: "left",
-                            fontSize: { xs: "14px", md: "18px" }
-                        }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    fontWeight: "bold", 
-                                    fontSize: { xs: "14px", md: "18px" }, 
-                                    whiteSpace: "nowrap", 
-                                    overflow: "hidden", 
-                                    textOverflow: "ellipsis" 
-                                }}
-                            >
-                                #{index + 1} {book._id.bookTitle}
-                            </Typography>
-                        </Box>
+                        {/* Rank and Book Title */}
+                        <Typography 
+                            variant="h6" 
+                            sx={{ 
+                                fontWeight: "bold", 
+                                fontSize: { xs: "16px", md: "18px" }, 
+                                wordWrap: "break-word", // Allows long titles to break into new lines
+                                overflowWrap: "break-word", 
+                                maxWidth: "90%" // Ensures text does not overflow on mobile
+                            }}
+                        >
+                            #{index + 1} {book._id.bookTitle}
+                        </Typography>
 
-                        {/* Estrelas e Média */}
-                        <Box sx={{ 
-                            display: "flex", 
-                            alignItems: "center", 
-                            justifyContent: "center", 
-                            width: { xs: "100%", md: "40%" }, 
-                            marginTop: { xs: "5px", md: "0" } 
-                        }}>
+                        {/* Stars - Now positioned below the title on mobile */}
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "5px" }}>
                             <Rating value={book.avgRating} precision={0.1} readOnly />
                             <Typography sx={{ marginLeft: "8px", fontSize: { xs: "12px", md: "14px" } }}>
                                 ({book.avgRating.toFixed(1)})
                             </Typography>
                         </Box>
 
-                        {/* Quantidade de Avaliações */}
+                        {/* Number of Reviews */}
                         <Typography 
                             sx={{ 
                                 fontSize: { xs: "12px", md: "14px" }, 
                                 color: "#666", 
-                                width: "100%", 
-                                textAlign: "center", 
                                 marginTop: "5px"
                             }}
                         >
-                            📊 {book.count} valoraciones
+                            📊 {book.count} reviews
                         </Typography>
                     </ListItem>
                 ))}
