@@ -16,6 +16,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminRoute from './components/Auth/AdminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -24,14 +25,29 @@ const App = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            axios.get('https://book-recommendation-system-9uba.onrender.com/api/user/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            }).then(res => {
-                setUser(res.data);
-                setIsAuthenticated(true);
-            }).catch(() => {
+            try {
+                const decoded = jwtDecode(token); // Decodifica o token para obter o ID do usuário
+                const userId = decoded?.id; // Verifica se o ID existe no token
+
+                if (!userId) {
+                    console.warn("⚠️ O token não contém um ID de usuário.");
+                    setIsAuthenticated(false);
+                    return;
+                }
+
+                axios.get(`https://book-recommendation-system-9uba.onrender.com/api/users/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                }).then(res => {
+                    console.log("✅ Usuário autenticado:", res.data);
+                    setUser(res.data);
+                    setIsAuthenticated(true);
+                }).catch(() => {
+                    setIsAuthenticated(false);
+                });
+            } catch (error) {
+                console.error("❌ Erro ao decodificar o token:", error);
                 setIsAuthenticated(false);
-            });
+            }
         } else {
             setIsAuthenticated(false);
         }
@@ -45,6 +61,7 @@ const App = () => {
     const handleLogout = () => {
         setIsAuthenticated(false);
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('token');
     };
 
     if (isAuthenticated === null) {
