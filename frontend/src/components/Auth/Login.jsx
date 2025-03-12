@@ -17,55 +17,43 @@ const Login = ({ handleLogin }) => {
     // Verifica se o usuário já está autenticado e redireciona
     useEffect(() => {
         const token = localStorage.getItem("authToken");
-
+        const role = localStorage.getItem("role"); // Lê o role do localStorage
+    
         if (token) {
-            // Tenta validar o token com a API
-            axios.get("https://book-recommendation-system-9uba.onrender.com/api/validate-token", {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Envia o token corretamente
-                }
-            })
-            .then(response => {
-                const role = response.data.role;
-                if (role === 'admin') {
-                    navigate("/admin");
-                } else {
-                    navigate("/");
-                }
-            })
-            .catch(() => {
-                // Se a validação do token falhar, limpa o token e deixa o usuário na tela de login
-                localStorage.removeItem("authToken");
-                localStorage.removeItem("isAuthenticated");
-                localStorage.removeItem("role");
-                setLoading(false); // Redefine o loading para false se falhar a autenticação
-            });
+            // Verifica o role antes de redirecionar
+            if (role === 'admin') {
+                navigate("/admin"); // Redireciona para /admin se o usuário for admin
+            } else {
+                navigate("/"); // Caso contrário, redireciona para a página principal
+            }
         } else {
-            setLoading(false); // Se não houver token, podemos continuar com a renderização
+            setLoading(false); // Se não houver token, a página de login será exibida
         }
     }, [navigate]);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-
+    
         try {
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
-
+    
             if (response.data && response.data.token) {
                 localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
-                localStorage.setItem("role", response.data.usuario.role); // Salva o papel do usuário (admin, etc.)
-
+                localStorage.setItem("role", response.data.usuario.role); // Salva o papel do usuário
+    
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
                 handleLogin();
-
+    
+                // Redireciona para a página correta dependendo do role
                 if (response.data.usuario.role === 'admin') {
-                    navigate("/admin");  // Redireciona para admin se o usuário for admin
+                    navigate("/admin"); // Redireciona para a página de admin se o usuário for admin
                 } else {
                     navigate("/");  // Caso contrário, redireciona para a página principal
                 }
@@ -77,6 +65,7 @@ const Login = ({ handleLogin }) => {
             setError(err.response?.data?.error || "Error al conectarse con el servidor.");
         }
     };
+    
 
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
