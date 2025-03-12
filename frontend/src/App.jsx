@@ -6,34 +6,20 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AuthSuccess from './components/Auth/AuthSuccess';
 import BookSearchPage from './pages/Books/BookSearchPage';
 import BookDetailsPage from './pages/Books/BookDetailsPage';
-import HomePage from './pages/Home/HomePage';
-import BookReviewPage from './pages/Books/BookReviewPage';
+import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
+import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
-import RankingPage from './pages/Ranking/RankingPage';
-import Feed from './components/Feed/Feed';
-import Layout from './components/Header/Layout';
-import AdminDashboard from './pages/Admin/AdminDashboard';
+import RankingPage from './pages/Ranking/RankingPage'
+import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
+import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
-import jwtDecode from 'jwt-decode';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [userRole, setUserRole] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setIsAuthenticated(true);
-                setUserRole(decoded.role);
-            } catch (error) {
-                console.error("Erro ao decodificar token:", error);
-                setIsAuthenticated(false);
-            }
-        } else {
-            setIsAuthenticated(false);
-        }
+        const token = localStorage.getItem('isAuthenticated');
+        setIsAuthenticated(token === 'true');
     }, []);
 
     const handleLogin = () => {
@@ -43,11 +29,11 @@ const App = () => {
 
     const handleLogout = () => {
         setIsAuthenticated(false);
-        setUserRole(null);
-        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
     };
 
     if (isAuthenticated === null) {
+        // Renderiza um indicador de carregamento enquanto o estado é carregado
         return <div>Carregando...</div>;
     }
 
@@ -57,15 +43,84 @@ const App = () => {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                <Route path="/" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><HomePage handleLogout={handleLogout} /></Layout></ProtectedRoute>} />
+                {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute e Layout */}
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <HomePage handleLogout={handleLogout} />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Rota de sucesso após login com o Google */}
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
-                <Route path="/search-books" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><BookSearchPage /></Layout></ProtectedRoute>} />
-                <Route path="/book/:bookId" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><BookDetailsPage /></Layout></ProtectedRoute>} />
-                <Route path="/book-review/:bookId" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><BookReviewPage /></Layout></ProtectedRoute>} />
-                <Route path="/my-books" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><UserBooksPage /></Layout></ProtectedRoute>} />
-                <Route path="/ranking" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><RankingPage /></Layout></ProtectedRoute>} />
-                <Route path="/comentarios" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><Feed /></Layout></ProtectedRoute>} />
-                <Route path="/admin" element={userRole === "admin" ? <Layout><AdminDashboard /></Layout> : <Navigate to="/" />} />
+
+                {/* Rotas protegidas para busca de livros */}
+                <Route
+                    path="/search-books"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <BookSearchPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/book/:bookId"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <BookDetailsPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/book-review/:bookId"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <BookReviewPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/my-books"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <UserBooksPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                
+                {/* Rotas para Postagens */}
+                <Route
+                    path="/ranking"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <RankingPage />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/comentarios"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <Layout>
+                                <Feed />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </Router>
     );
