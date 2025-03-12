@@ -118,6 +118,21 @@ const getBookReviews = async (req, res) => {
     }
 };
 
+
+exports.deletePost = async (postId) => {
+    try {
+        const post = await Postagem.findById(postId);
+        if (!post) {
+            return { status: 404, message: "Postagem não encontrada" };
+        }
+        await Postagem.findByIdAndDelete(postId);
+        return { status: 200, message: "Postagem deletada com sucesso!" };
+    } catch (error) {
+        throw new Error("Erro ao deletar postagem: " + error.message);
+    }
+};
+
+
 // 📌 Agora inclua a função na exportação
 module.exports = {
     createPost,

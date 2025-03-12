@@ -32,12 +32,17 @@ router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
 // 🔹 Admin pode excluir qualquer postagem
 router.delete('/postagens/:postId', authenticateUser, isAdmin, async (req, res) => {
     try {
-        const postId = req.params.id;
+        const postId = req.params.postId;
+        console.log("📝 ID recebido para exclusão:", postId); // 📌 LOG PARA DEPURAÇÃO
+
         await postagemController.deletePost(postId);
         res.json({ message: "Postagem excluída com sucesso!" });
     } catch (error) {
+        console.error("❌ Erro ao excluir postagem:", error);
         res.status(500).json({ error: "Erro ao excluir postagem.", details: error });
     }
 });
+
+
 
 module.exports = router;

@@ -38,18 +38,20 @@ const AdminCommentsPage = () => {
     const handleRemovePost = async (postId) => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
         if (!confirmDelete) return;
-
+    
         try {
             const token = localStorage.getItem("authToken");
             if (!token) {
                 console.error("❌ Usuário não autenticado.");
                 return;
             }
-
+    
+            console.log("📝 Enviando requisição DELETE para:", postId); // 📌 LOG PARA DEPURAÇÃO
+    
             const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+    
             if (response.status === 200) {
                 console.log("✅ Postagem removida com sucesso!");
                 setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
@@ -60,6 +62,7 @@ const AdminCommentsPage = () => {
             console.error("❌ Erro ao excluir a postagem:", error.response ? error.response.data : error);
         }
     };
+    
 
     return (
         <Container>
