@@ -26,7 +26,7 @@ const App = () => {
             if (token) {
                 try {
                     // Faz uma requisição para verificar os dados do usuário
-                    const response = await axios.get('https://book-recommendation-system-9uba.onrender.com/api/user', {
+                    const response = await axios.get('https://book-recommendation-system-9uba.onrender.com/user', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
