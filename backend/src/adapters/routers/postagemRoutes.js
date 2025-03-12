@@ -1,7 +1,5 @@
 const express = require('express');
 const postagemController = require('../controllers/postagemController');
-const isAdmin = require('../../middlewares/isAdmin');
-
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
@@ -23,15 +21,7 @@ router.get('/postagens/reviews/:bookId', postagemController.getBookReviews);
 
 router.get('/ranking', postagemController.getTopRatedBooks);
 
-// Rota para listar todos os usuários (somente admin pode acessar)
-router.get("/users", isAdmin, async (req, res) => {
-    try {
-        const users = await User.find({}, "-password"); // Exclui a senha na resposta
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ error: "Erro ao buscar usuários." });
-    }
-});
+
 
 
 
