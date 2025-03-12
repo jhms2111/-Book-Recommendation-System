@@ -13,7 +13,7 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona//
+    // Verifica se há um token no localStorage e redireciona
     useEffect(() => {
         const authToken = localStorage.getItem("authToken");
         if (authToken) {
@@ -36,15 +36,15 @@ const Login = ({ handleLogin }) => {
                 localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
 
-                setSuccess("✅ ¡Inicio de sesión exitoso!");
+                setSuccess("✅ Login bem-sucedido!");
                 handleLogin();
                 navigate("/");
             } else {
-                setError("⚠️ Error: No se recibió el token JWT.");
+                setError("⚠️ Erro: Token JWT não recebido.");
             }
         } catch (err) {
-            console.error("Error al iniciar sesión:", err);
-            setError(err.response?.data?.error || "Error al conectarse con el servidor.");
+            console.error("Erro ao fazer login:", err);
+            setError(err.response?.data?.error || "Erro ao se conectar ao servidor.");
         }
     };
 
@@ -56,12 +56,12 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
+                    Bem-vindo
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
                         fullWidth
-                        label="Correo Electrónico"
+                        label="Email"
                         variant="outlined"
                         margin="normal"
                         value={email}
@@ -71,7 +71,7 @@ const Login = ({ handleLogin }) => {
                     />
                     <TextField
                         fullWidth
-                        label="Contraseña"
+                        label="Senha"
                         type={showPassword ? "text" : "password"}
                         variant="outlined"
                         margin="normal"
@@ -90,22 +90,22 @@ const Login = ({ handleLogin }) => {
                         }}
                     />
                     <Button type="submit" variant="contained" sx={styles.button}>
-                        Iniciar sesión
+                        Login
                     </Button>
                     <Button
                         variant="outlined"
                         sx={styles.googleButton}
                         onClick={handleGoogleLogin}
-                        endIcon={<Google sx={{ color: "#fff" }} />}
+                        endIcon={<Google sx={{ color: "#fff" }} />} // 🔥 Ícone do Google no final
                     >
-                        Iniciar sesión con Google
+                        Login com Google
                     </Button>
 
                     <Button variant="text" onClick={() => navigate("/signup")} sx={styles.link}>
-                        Crear cuenta
+                        Criar conta
                     </Button>
                     <Button variant="text" onClick={() => navigate("/forgot-password")} sx={styles.forgotPassword}>
-                        Olvidé mi contraseña
+                        Esqueci minha senha
                     </Button>
                     {error && <Typography sx={styles.error}>{error}</Typography>}
                     {success && <Typography sx={styles.success}>{success}</Typography>}
@@ -119,13 +119,15 @@ Login.propTypes = {
     handleLogin: PropTypes.func.isRequired,
 };
 
+
+
 const styles = {
     container: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        width: "100vw",
+        width: "100vw", // Garante que a tela fique fixa
         backgroundColor: "#1c0101",
     },
     card: {
@@ -136,16 +138,19 @@ const styles = {
         backdropFilter: "blur(12px)",
         textAlign: "center",
         width: "100%",
-        maxWidth: "400px",
+        maxWidth: "400px", // 📱 Mantém 400px em dispositivos móveis
+
         minHeight: "400px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+
+        // 🔽 Ajuste para telas maiores
         "@media (min-width: 768px)": {
-            maxWidth: "350px",
+            maxWidth: "350px", // 📺 Reduz para tablets e notebooks médios
         },
         "@media (min-width: 1024px)": {
-            maxWidth: "380px",
+            maxWidth: "380px", // 🖥️ Reduz ainda mais para desktops grandes
         },
     },
     title: {
@@ -190,15 +195,15 @@ const styles = {
         backgroundColor: "transparent",
         border: "2px solid white",
         color: "#fff",
-        padding: "8px 16px",
+        padding: "8px 16px", // 🔽 Reduz padding para menor largura
         borderRadius: "8px",
         fontSize: "16px",
         fontWeight: "bold",
-        width: "auto",
+        width: "auto", // 🔥 Faz com que o botão tenha tamanho mínimo necessário
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "8px",
+        gap: "8px", // Espaçamento entre o texto e o ícone
         "&:hover": {
             backgroundColor: "rgba(255, 255, 255, 0.2)",
         },
