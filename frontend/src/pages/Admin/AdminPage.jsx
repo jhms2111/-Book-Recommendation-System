@@ -11,17 +11,19 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const token = localStorage.getItem("authToken"); // Certifique-se de usar a chave correta
+
                 if (!token) {
                     navigate("/login");
                     return;
                 }
 
                 const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/users", {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: { Authorization: `Bearer ${token}` } 
                 });
 
                 setUsers(response.data);
+
             } finally {
                 setLoading(false);
             }
