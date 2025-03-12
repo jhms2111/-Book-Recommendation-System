@@ -11,16 +11,17 @@ const AuthSuccess = ({ setIsAuthenticated }) => {
         const token = params.get('token');
 
         if (token) {
-            localStorage.setItem('authToken', token);
+            localStorage.setItem('token', token);
             localStorage.setItem('isAuthenticated', 'true');
             setIsAuthenticated(true);
 
-            // 🔥 Usa replace: true para evitar ciclos de navegação
-            navigate('/', { replace: true });
+            setTimeout(() => {
+                navigate('/', { replace: true }); // 🔥 Espera um pequeno delay para garantir que o estado foi atualizado
+            }, 100);
         } else {
             navigate('/login', { replace: true });
         }
-    }, []); // 🔥 Remove dependências para evitar múltiplas execuções
+    }, []);
 
     return null;
 };
