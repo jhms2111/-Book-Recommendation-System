@@ -11,35 +11,54 @@ const Login = ({ handleLogin }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(true); // Estado de carregamento
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
-        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
+        const token = localStorage.getItem("token");
+
         if (token) {
-            navigate("/"); 
+            console.log("Usuário já autenticado, verificando...");
+            setLoading(true);
+            
+            axios.get("https://book-recommendation-system-9uba.onrender.com/api/me", {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((res) => {
+                console.log("Usuário autenticado:", res.data);
+                handleLogin(); // Atualiza estado global
+                navigate("/"); // Redireciona apenas se a autenticação for confirmada
+            })
+            .catch(() => {
+                console.log("Token inválido, removendo do localStorage...");
+                localStorage.removeItem("token");
+                localStorage.removeItem("isAuthenticated");
+                localStorage.removeItem("role");
+            })
+            .finally(() => setLoading(false));
+        } else {
+            setLoading(false);
         }
-    }, [navigate]);
-    
+    }, [navigate, handleLogin]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-    
+
         try {
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
-    
+
             if (response.data && response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
-                localStorage.setItem("role", response.data.usuario.role); // 🔥 Armazena a role
-    
+                localStorage.setItem("role", response.data.usuario.role);
+
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
-                handleLogin();
+                handleLogin(); 
                 navigate("/");
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
@@ -49,11 +68,14 @@ const Login = ({ handleLogin }) => {
             setError(err.response?.data?.error || "Error al conectarse con el servidor.");
         }
     };
-    
 
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
     };
+
+    if (loading) {
+        return <Typography sx={{ color: "#fff", textAlign: "center", marginTop: "20px" }}>Carregando...</Typography>;
+    }
 
     return (
         <Box sx={styles.container}>
@@ -121,6 +143,7 @@ const Login = ({ handleLogin }) => {
 Login.propTypes = {
     handleLogin: PropTypes.func.isRequired,
 };
+
 
 const styles = {
     container: {
