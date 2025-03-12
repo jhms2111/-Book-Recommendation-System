@@ -1,24 +1,20 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Table, TableHead, TableRow, TableCell, TableBody, Typography, CircularProgress, Container, Button, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Table, TableHead, TableRow, TableCell, TableBody, Typography, CircularProgress, Container, Button } from "@mui/material";
 
 const AdminPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedUser, setSelectedUser] = useState(null); // Armazena o usuário a ser deletado
-    const [openDialog, setOpenDialog] = useState(false); // Controla a exibição do modal
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    // 🔹 Buscar usuários da API
     const fetchUsers = async () => {
         try {
-            const token = localStorage.getItem("authToken");
+            const token = localStorage.getItem("token");
             if (!token) {
                 navigate("/login");
                 return;
@@ -29,47 +25,32 @@ const AdminPage = () => {
             });
 
             setUsers(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar usuários:", error);
+            navigate("/");
         } finally {
             setLoading(false);
         }
     };
 
-    // 🔹 Abrir modal de confirmação antes de deletar
-    const handleOpenDialog = (user) => {
-        setSelectedUser(user);
-        setOpenDialog(true);
-    };
+    const handleDeleteUser = async (userId) => {
+        const confirmDelete = window.confirm("Tem certeza que deseja excluir este usuário?");
+        if (!confirmDelete) return;
 
-    // 🔹 Fechar modal sem deletar
-    const handleCloseDialog = () => {
-        setSelectedUser(null);
-        setOpenDialog(false);
-    };
-
-    // 🔥 Função para deletar usuário
-    const handleDeleteUser = async () => {
-        if (!selectedUser) return;
-    
         try {
-            const token = localStorage.getItem("authToken");
-    
-            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/users/${selectedUser._id}`, {
+            const token = localStorage.getItem("token");
+
+            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-    
-            alert("Usuário excluído com sucesso!");
-    
-            // 🔹 Em vez de filtrar manualmente, recarregamos a lista de usuários
-            fetchUsers();
-    
+
+            setUsers(users.filter(user => user._id !== userId)); // Remove da lista localmente
+            alert("Usuário deletado com sucesso!");
         } catch (error) {
-            console.error("Erro ao excluir usuário:", error);
-            alert("Erro ao excluir usuário.");
-        } finally {
-            handleCloseDialog();
+            console.error("Erro ao deletar usuário:", error);
+            alert("Erro ao deletar usuário.");
         }
     };
-    
 
     return (
         <Container>
@@ -94,9 +75,13 @@ const AdminPage = () => {
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell>
-                                    <IconButton color="error" onClick={() => handleOpenDialog(user)}>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => handleDeleteUser(user._id)}
+                                    >
+                                        Deletar
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -107,21 +92,6 @@ const AdminPage = () => {
             <Button variant="contained" sx={{ marginTop: 2 }} onClick={() => navigate("/")}>
                 Voltar para Home
             </Button>
-
-            {/* 🔥 Modal de Confirmação antes de excluir */}
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Confirmar Exclusão</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Tem certeza que deseja excluir o usuário <strong>{selectedUser?.name}</strong>?
-                        Essa ação não pode ser desfeita.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">Cancelar</Button>
-                    <Button onClick={handleDeleteUser} color="error">Excluir</Button>
-                </DialogActions>
-            </Dialog>
         </Container>
     );
 };
