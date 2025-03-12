@@ -1,7 +1,7 @@
 const express = require('express');
 const postagemController = require('../controllers/postagemController');
 const authenticateUser = require('../../adapters/controllers/middleware/authenticateUser');
-const isAdmin = require('../../middlewares/isAdmin'); // Certifique-se de importar
+const isAdmin = require('../../adapters/controllers/middleware/isAdmin'); // Certifique-se de importar
 
 console.log("📌 Funções carregadas no postagemController:", Object.keys(postagemController));
 
