@@ -13,14 +13,13 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona//
+    // Verifica se há um token no localStorage e redireciona
     useEffect(() => {
-        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
+        const token = localStorage.getItem("token"); // Verifique se o nome está consistente
         if (token) {
-            navigate("/"); 
+            navigate("/"); // Redireciona para a página principal se o token já existir
         }
     }, [navigate]);
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -34,12 +33,12 @@ const Login = ({ handleLogin }) => {
             });
 
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token); // 🔥 Garante que o token está sendo salvo corretamente!
+                localStorage.setItem("token", response.data.token); // Salva o token com a chave correta
                 localStorage.setItem("isAuthenticated", "true");
 
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
-                handleLogin();
-                navigate("/");
+                handleLogin(); // Chama a função handleLogin após o login
+                navigate("/"); // Redireciona para a página inicial após o login bem-sucedido
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
             }
@@ -57,7 +56,7 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
+                    BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
