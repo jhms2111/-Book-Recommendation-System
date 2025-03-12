@@ -11,7 +11,7 @@ import BookReviewPage from './pages/Books/BookReviewPage';
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage';
 import Feed from './components/Feed/Feed';
-import Layout from './components/Header/Layout';
+import Layout from './components/Header/Layoutt';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminRoute from './components/Auth/AdminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,7 +24,7 @@ const App = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            axios.get('https://seuprojeto.onrender.com/api/user/me', {
+            axios.get('https://book-recommendation-system-9uba.onrender.com/api/user/me', {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(res => {
                 setUser(res.data);
