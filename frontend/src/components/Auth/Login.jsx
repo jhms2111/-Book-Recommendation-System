@@ -11,34 +11,37 @@ const Login = ({ handleLogin }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(true); // Estado para verificar se a autenticação está sendo processada
     const navigate = useNavigate();
 
     // Verifica se o usuário já está autenticado e redireciona
     useEffect(() => {
         const token = localStorage.getItem("authToken");
-        
+
         if (token) {
             // Tenta validar o token com a API
             axios.get("https://book-recommendation-system-9uba.onrender.com/api/validate-token", {
-                headers: { 
-                    Authorization: `Bearer ${token}` // Envia o token de autenticação
+                headers: {
+                    Authorization: `Bearer ${token}`, // Envia o token corretamente
                 }
             })
-                .then(response => {
-                    // Se o token for válido, redireciona de acordo com a role do usuário
-                    const role = response.data.role;
-                    if (role === 'admin') {
-                        navigate("/admin");
-                    } else {
-                        navigate("/");
-                    }
-                })
-                .catch(() => {
-                    // Se a validação do token falhar, limpa o token e deixa o usuário na tela de login
-                    localStorage.removeItem("authToken");
-                    localStorage.removeItem("isAuthenticated");
-                    localStorage.removeItem("role");
-                });
+            .then(response => {
+                const role = response.data.role;
+                if (role === 'admin') {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
+            })
+            .catch(() => {
+                // Se a validação do token falhar, limpa o token e deixa o usuário na tela de login
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("isAuthenticated");
+                localStorage.removeItem("role");
+                setLoading(false); // Redefine o loading para false se falhar a autenticação
+            });
+        } else {
+            setLoading(false); // Se não houver token, podemos continuar com a renderização
         }
     }, [navigate]);
 
@@ -78,6 +81,10 @@ const Login = ({ handleLogin }) => {
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
     };
+
+    if (loading) {
+        return <div>Loading...</div>; // Exibe uma tela de carregamento enquanto valida o token
+    }
 
     return (
         <Box sx={styles.container}>
