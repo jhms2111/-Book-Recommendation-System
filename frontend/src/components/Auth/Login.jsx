@@ -13,11 +13,11 @@ const Login = ({ handleLogin }) => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    // Verifica se há um token no localStorage e redireciona
+    // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
-        const token = localStorage.getItem("token"); // Verifique se o nome está consistente
-        if (token) {
-            navigate("/"); // Redireciona para a página principal se o token já existir
+        const authToken = localStorage.getItem("authToken");
+        if (authToken) {
+            navigate("/"); // Se o token existir, o usuário já está autenticado
         }
     }, [navigate]);
 
@@ -33,12 +33,12 @@ const Login = ({ handleLogin }) => {
             });
 
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token); // Salva o token com a chave correta
+                localStorage.setItem("authToken", response.data.token);
                 localStorage.setItem("isAuthenticated", "true");
 
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
-                handleLogin(); // Chama a função handleLogin após o login
-                navigate("/"); // Redireciona para a página inicial após o login bem-sucedido
+                handleLogin();
+                navigate("/");
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
             }
@@ -56,7 +56,7 @@ const Login = ({ handleLogin }) => {
         <Box sx={styles.container}>
             <Container sx={styles.card}>
                 <Typography variant="h4" sx={styles.title}>
-                    BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
+                BookTrove <span style={{ fontSize: "22px", color: "#aaa" }}>(BT)</span>
                 </Typography>
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <TextField
