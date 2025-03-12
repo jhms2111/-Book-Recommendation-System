@@ -9,28 +9,42 @@ import BookDetailsPage from './pages/Books/BookDetailsPage';
 import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
 import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
 import UserBooksPage from './pages/Books/UserBooksPage';
-import RankingPage from './pages/Ranking/RankingPage'
+import RankingPage from './pages/Ranking/RankingPage';
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import AdminPage from "./pages/Admin/AdminPage";
 import AdminRoute from "./components/Auth/AdminRoute"; // 🔥 Novo Middleware
-
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [loading, setLoading] = useState(true); // 🔥 Novo estado de carregamento
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o JWT
-            setUserRole(payload.role); // Obtém a role do usuário
-        }
+        const checkAuth = () => {
+            const token = localStorage.getItem("token");
+
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o JWT
+                    setUserRole(payload.role); // Obtém a role do usuário
+                    setIsAuthenticated(true);
+                } catch (error) {
+                    console.error("Erro ao decodificar o token:", error);
+                    setIsAuthenticated(false);
+                    setUserRole(null);
+                }
+            } else {
+                setIsAuthenticated(false);
+                setUserRole(null);
+            }
+
+            setLoading(false); // 🔹 Finaliza o carregamento
+        };
+
+        checkAuth();
     }, []);
-    
 
     const handleLogin = () => {
         setIsAuthenticated(true);
@@ -39,18 +53,19 @@ const App = () => {
 
     const handleLogout = () => {
         setIsAuthenticated(false);
+        setUserRole(null);
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('token');
     };
 
-    if (isAuthenticated === null) {
-        // Renderiza um indicador de carregamento enquanto o estado é carregado
-        return <div>Carregando...</div>;
+    if (loading) {
+        return <div className="loading-screen">🔄 Carregando...</div>; // 🔥 Agora o carregamento desaparece corretamente
     }
 
     return (
         <Router>
             <Routes>
-
+                {/* 🔥 Rota protegida de Admin */}
                 <Route
                     path="/admin"
                     element={
@@ -59,7 +74,6 @@ const App = () => {
                         </AdminRoute>
                     }
                 />
-
 
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
