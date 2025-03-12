@@ -11,7 +11,7 @@ import BookReviewPage from './pages/Books/BookReviewPage';
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage';
 import Feed from './components/Feed/Feed';
-import Layout from './components/Header/Layoutt';
+import Layout from './components/Header/Layout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminRoute from './components/Auth/AdminRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
