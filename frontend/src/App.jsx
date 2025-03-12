@@ -11,51 +11,25 @@ import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componen
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AdminRoute from "./components/Auth/AdminRoute";
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [userRole, setUserRole] = useState(null);
-
-
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("userRole");
-    
-        if (token) {
-            setIsAuthenticated(true);
-            setUserRole(role);
-        } else {
-            setIsAuthenticated(false);
-            setUserRole(null);
-        }
+        const token = localStorage.getItem('isAuthenticated');
+        setIsAuthenticated(token === 'true');
     }, []);
-    
-
-
-
 
     const handleLogin = () => {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("userRole");
-    
-        if (token) {
-            setIsAuthenticated(true);
-            setUserRole(role);
-        }
+        setIsAuthenticated(true);
+        localStorage.setItem('isAuthenticated', 'true');
     };
-    
 
     const handleLogout = () => {
         setIsAuthenticated(false);
-        setUserRole(null);
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("token");
+        localStorage.removeItem('isAuthenticated');
     };
 
     if (isAuthenticated === null) {
@@ -78,17 +52,6 @@ const App = () => {
                                 <HomePage handleLogout={handleLogout} />
                             </Layout>
                         </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/admin"
-                    element={
-                        <AdminRoute isAuthenticated={isAuthenticated} userRole={userRole}>
-                            <Layout>
-                                <AdminDashboard />
-                            </Layout>
-                        </AdminRoute>
                     }
                 />
 
@@ -136,7 +99,7 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
+                
                 {/* Rotas para Postagens */}
                 <Route
                     path="/ranking"
