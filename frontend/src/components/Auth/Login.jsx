@@ -15,12 +15,11 @@ const Login = ({ handleLogin }) => {
 
     // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
         if (token) {
-            navigate("/", { replace: true }); // 🔥 Usa replace para evitar o ciclo de navegação
+            navigate("/"); 
         }
-    }, []);
-    
+    }, [navigate]);
     
 
     const handleSubmit = async (e) => {

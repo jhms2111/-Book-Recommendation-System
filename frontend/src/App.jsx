@@ -18,26 +18,28 @@ import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null); // Inicialmente null (não falso)
+    const [isAuthenticated, setIsAuthenticated] = useState(false) // Inicialmente null
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        setIsAuthenticated(!!token); // Converte para booleano (true se houver token)
+        if (token) {
+            setIsAuthenticated(true);
+        }
     }, []);
 
     const handleLogin = () => {
-        localStorage.setItem("isAuthenticated", "true");
         setIsAuthenticated(true);
+        localStorage.setItem('isAuthenticated', 'true');
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("isAuthenticated");
         setIsAuthenticated(false);
+        localStorage.removeItem('isAuthenticated');
     };
 
     if (isAuthenticated === null) {
-        return <div>Carregando...</div>; // Evita renderizações prematuras
+        // Renderiza um indicador de carregamento enquanto o estado é carregado
+        return <div>Carregando...</div>;
     }
 
     return (
