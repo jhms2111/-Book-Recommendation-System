@@ -53,7 +53,7 @@ const AdminPage = () => {
         try {
             const token = localStorage.getItem("authToken");
     
-            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/users/${selectedUser._id}`, {
+            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/users/${selectedUser._id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
