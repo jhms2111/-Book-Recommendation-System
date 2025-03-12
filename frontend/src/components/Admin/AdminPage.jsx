@@ -1,6 +1,6 @@
 // components/Admin/AdminPage.jsx
 
-import { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AdminPage = () => {
@@ -9,9 +9,10 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                const token = localStorage.getItem('token'); // Obtém o token JWT do localStorage
                 const res = await axios.get('https://book-recommendation-system-9uba.onrender.com/users', {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                        Authorization: `Bearer ${token}`
                     }
                 });
                 setUsers(res.data);
