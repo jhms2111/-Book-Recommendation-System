@@ -23,7 +23,7 @@ const AdminPage = () => {
                 return;
             }
 
-            const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/admin/users", {
+            const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/users", {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -41,7 +41,7 @@ const AdminPage = () => {
         try {
             const token = localStorage.getItem("authToken");
 
-            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/admin/users/${userId}`, {
+            await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
