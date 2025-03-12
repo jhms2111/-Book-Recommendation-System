@@ -30,7 +30,7 @@ router.get('/postagens/reviews/:bookId', authenticateUser, postagemController.ge
 router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
 
 // 🔹 Admin pode excluir qualquer postagem
-router.delete('/postagens/:id', authenticateUser, isAdmin, async (req, res) => {
+router.delete('/postagens/:postId', authenticateUser, isAdmin, async (req, res) => {
     try {
         const postId = req.params.id;
         await postagemController.deletePost(postId);
