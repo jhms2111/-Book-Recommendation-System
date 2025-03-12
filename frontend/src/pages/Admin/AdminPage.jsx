@@ -17,14 +17,11 @@ const AdminPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/users", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/users", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
                 setUsers(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar usuários:", error);
-                navigate("/"); // Redireciona se não for admin
             } finally {
                 setLoading(false);
             }

@@ -183,7 +183,7 @@ router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
 });
 
 // 🔹 Rota para listar todos os usuários (Somente admin pode acessar)
-router.get("/api/users", authenticateUser, isAdmin, async (req, res) => {
+router.get("/users", authenticateUser, isAdmin, async (req, res) => {
     try {
         const users = await User.find({}, "-senha"); // Remove a senha da resposta
         res.json(users);
