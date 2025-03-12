@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Configuração do CORS
 const corsOptions = {
-    origin: "https://book-recommendation-system-omega.vercel.app", 
+    origin: "https://book-recommendation-system-omega.vercel.app", // 🔥 Permite qualquer origem (substitua depois pelo endereço correto)
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, 
@@ -42,47 +42,11 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     console.error("Erro ao conectar ao MongoDB:", err);
   });
 
-// 🔹 🔥 GARANTINDO QUE O LOGIN FUNCIONE 🔥
-app.post('/api/login', async (req, res) => {
-    const bcrypt = require('bcryptjs');
-    const jwt = require('jsonwebtoken');
-    const User = require('../infrastructure/dataBase/models/User');
-
-    const { email, senha } = req.body;
-
-    try {
-        const usuario = await User.findOne({ email });
-        if (!usuario) {
-            return res.status(400).json({ error: "Usuário não encontrado" });
-        }
-
-        const senhaValida = await bcrypt.compare(senha, usuario.senha);
-        if (!senhaValida) {
-            return res.status(400).json({ error: "Senha incorreta" });
-        }
-
-        const token = jwt.sign(
-            { id: usuario._id, name: usuario.name, email: usuario.email, role: usuario.role },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-
-        res.json({ message: "Login bem-sucedido", token, usuario });
-    } catch (error) {
-        res.status(500).json({ error: "Erro ao processar login", details: error });
-    }
-});
-
-// 🔹 🔥 GARANTINDO QUE APENAS ADMINS POSSAM ACESSAR /api/users 🔥
-const authenticateUser = require('../middleware/authenticateUser');
-const isAdmin = require('../middleware/isAdmin');
-
-app.use('/api/users', authenticateUser, isAdmin, userRoutes);
-
-// Usar as rotas existentes
+// Usar as rotas
 console.log("Carregando as rotas de livros...");
-app.use('/api/books', booksRoutes);
+app.use('/api/books', booksRoutes); // Agora corretamente adicionado após express.json()
 app.use('/api', postagemRoutes);
+app.use(userRoutes);
 app.use(authRoutes); 
 
 // Rota principal
