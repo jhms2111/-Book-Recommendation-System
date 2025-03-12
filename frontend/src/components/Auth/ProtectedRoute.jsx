@@ -1,8 +1,10 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
 const ProtectedRoute = ({ children, isAuthenticated }) => {
+    const location = useLocation(); // Obtém a rota atual de forma segura
+
     if (!isAuthenticated) {
         console.log("Usuário não autenticado, redirecionando para login...");
         return <Navigate to="/login" />;
@@ -15,7 +17,8 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
             const decoded = jwt_decode(token);
             console.log("Usuário autenticado:", decoded);
 
-            if (window.location.pathname === "/admin" && decoded.role !== "admin") {
+            // Se a rota for /admin e o usuário não for admin, redireciona para home
+            if (location.pathname === "/admin" && decoded.role !== "admin") {
                 console.log("Acesso negado: usuário não é admin.");
                 return <Navigate to="/" />;
             }
@@ -30,7 +33,7 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
 
 ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
-    isAuthenticated: PropTypes.bool, // Agora é opcional
+    isAuthenticated: PropTypes.bool,
 };
 
 export default ProtectedRoute;
