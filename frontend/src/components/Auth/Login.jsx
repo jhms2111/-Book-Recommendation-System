@@ -19,7 +19,11 @@ const Login = ({ handleLogin }) => {
         
         if (token) {
             // Tenta validar o token com a API
-            axios.post("https://book-recommendation-system-9uba.onrender.com/api/validate-token", { token })
+            axios.get("https://book-recommendation-system-9uba.onrender.com/api/validate-token", {
+                headers: { 
+                    Authorization: `Bearer ${token}` // Envia o token de autenticação
+                }
+            })
                 .then(response => {
                     // Se o token for válido, redireciona de acordo com a role do usuário
                     const role = response.data.role;
@@ -35,7 +39,6 @@ const Login = ({ handleLogin }) => {
                     localStorage.removeItem("isAuthenticated");
                     localStorage.removeItem("role");
                 });
-                
         }
     }, [navigate]);
 
