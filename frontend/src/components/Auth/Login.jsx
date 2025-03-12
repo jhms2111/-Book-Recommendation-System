@@ -15,32 +15,30 @@ const Login = ({ handleLogin }) => {
 
     // Verifica se há um token no localStorage e redireciona//
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); // 🔥 Agora usa o nome correto!
         if (token) {
             navigate("/"); 
         }
-    }, []);
-    
+    }, [navigate]);
     
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
-    
+
         try {
             const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });
-    
+
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token); 
+                localStorage.setItem("token", response.data.token); // 🔥 Garante que o token está sendo salvo corretamente!
                 localStorage.setItem("isAuthenticated", "true");
-                localStorage.setItem("userRole", response.data.usuario.role); // 🔥 Salva a role do usuário
-    
+
                 setSuccess("✅ ¡Inicio de sesión exitoso!");
-                handleLogin(); // Chama a função para atualizar o estado de autenticação
+                handleLogin();
                 navigate("/");
             } else {
                 setError("⚠️ Error: No se recibió el token JWT.");
@@ -50,7 +48,6 @@ const Login = ({ handleLogin }) => {
             setError(err.response?.data?.error || "Error al conectarse con el servidor.");
         }
     };
-    
 
     const handleGoogleLogin = () => {
         window.location.href = "https://book-recommendation-system-9uba.onrender.com/auth/google";
