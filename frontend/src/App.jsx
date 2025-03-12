@@ -14,19 +14,19 @@ import Feed from './components/Feed/Feed';
 import Layout from './components/Header/Layout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import jwtDecode from "jwt-decode";
+import jwtDecode from 'jwt-decode';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [userRole, setUserRole] = useState(null); // 🔹 Apenas para verificar admin
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const decoded = jwtDecode(token); // 🔹 Decodifica o token
+                const decoded = jwtDecode(token);
                 setIsAuthenticated(true);
-                setUserRole(decoded.role); // 🔹 Pegamos apenas o `role`
+                setUserRole(decoded.role);
             } catch (error) {
                 console.error("Erro ao decodificar token:", error);
                 setIsAuthenticated(false);
@@ -57,7 +57,6 @@ const App = () => {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                {/* Rota principal */}
                 <Route path="/" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><HomePage handleLogout={handleLogout} /></Layout></ProtectedRoute>} />
                 <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path="/search-books" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><BookSearchPage /></Layout></ProtectedRoute>} />
@@ -66,8 +65,6 @@ const App = () => {
                 <Route path="/my-books" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><UserBooksPage /></Layout></ProtectedRoute>} />
                 <Route path="/ranking" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><RankingPage /></Layout></ProtectedRoute>} />
                 <Route path="/comentarios" element={<ProtectedRoute isAuthenticated={isAuthenticated}><Layout><Feed /></Layout></ProtectedRoute>} />
-
-                {/* 🔹 Rota protegida para Admin */}
                 <Route path="/admin" element={userRole === "admin" ? <Layout><AdminDashboard /></Layout> : <Navigate to="/" />} />
             </Routes>
         </Router>
