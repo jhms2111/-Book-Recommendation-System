@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs'); // Para hash de senha
 const jwt = require('jsonwebtoken'); // Para geração e verificação de tokens JWT
 const User = require('../../../infrastructure/dataBase/models/User');
 const authenticateUser = require('../middleware/authenticateUser'); // Middleware de autenticação
+const isAdmin = require("../middleware/isAdmin"); // Middleware para verificar admin
 
 const router = express.Router();
 
@@ -178,6 +179,16 @@ router.delete('/api/user/books/:bookId', authenticateUser, async (req, res) => {
         res.status(200).json({ message: '¡Libro eliminado con éxito!', books: user.books });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar libro.', details: error });
+    }
+});
+
+// 🔹 Rota para listar todos os usuários (Somente admin pode acessar)
+router.get("/users", authenticateUser, isAdmin, async (req, res) => {
+    try {
+        const users = await User.find({}, "-senha"); // Remove a senha da resposta
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar usuários.", details: error });
     }
 });
 
