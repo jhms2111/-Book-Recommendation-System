@@ -6,20 +6,20 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AuthSuccess from './components/Auth/AuthSuccess';
 import BookSearchPage from './pages/Books/BookSearchPage';
 import BookDetailsPage from './pages/Books/BookDetailsPage';
-import HomePage from './pages/Home/HomePage'; // Importa o componente HomePage
-import BookReviewPage from './pages/Books/BookReviewPage'; // Importe o componente da página de avaliação
+import HomePage from './pages/Home/HomePage';
+import BookReviewPage from './pages/Books/BookReviewPage';
 import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage';
-import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
+import Feed from './components/Feed/Feed';
 import AdminPage from "./pages/Admin/AdminPage";
-import AdminRoute from "./components/Auth/AdminRoute"; // 🔥 Novo Middleware
-import Layout from './components/Header/Layout'; // Importa o Layout
+import AdminRoute from "./components/Auth/AdminRoute";
+import Layout from './components/Header/Layout';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // 🔥 Agora começa como false
     const [userRole, setUserRole] = useState(null);
-    const [loading, setLoading] = useState(true); // 🔥 Novo estado de carregamento
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -40,32 +40,33 @@ const App = () => {
                 setUserRole(null);
             }
 
-            setLoading(false); // 🔹 Finaliza o carregamento
+            setLoading(false);
         };
 
         checkAuth();
     }, []);
 
-    const handleLogin = () => {
+    const handleLogin = (token) => {
+        localStorage.setItem('token', token);
         setIsAuthenticated(true);
-        localStorage.setItem('isAuthenticated', 'true');
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUserRole(payload.role);
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
         setUserRole(null);
-        localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('token');
     };
 
     if (loading) {
-        return <div className="loading-screen">🔄 Carregando...</div>; // 🔥 Agora o carregamento desaparece corretamente
+        return <div className="loading-screen">🔄 Carregando...</div>;
     }
 
     return (
         <Router>
             <Routes>
-                {/* 🔥 Rota protegida de Admin */}
+                {/* 🔥 Protegendo a Rota de Admin */}
                 <Route
                     path="/admin"
                     element={
@@ -75,10 +76,11 @@ const App = () => {
                     }
                 />
 
+                {/* 🔐 Login e Cadastro */}
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
 
-                {/* Rota principal "/" usando o componente HomePage dentro de uma ProtectedRoute e Layout */}
+                {/* 🔐 Rota Protegida para HomePage */}
                 <Route
                     path="/"
                     element={
@@ -90,10 +92,10 @@ const App = () => {
                     }
                 />
 
-                {/* Rota de sucesso após login com o Google */}
-                <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={setIsAuthenticated} />} />
+                {/* 🔐 Rota de Sucesso do Google */}
+                <Route path="/auth/success" element={<AuthSuccess setIsAuthenticated={handleLogin} />} />
 
-                {/* Rotas protegidas para busca de livros */}
+                {/* 🔐 Rotas Protegidas */}
                 <Route
                     path="/search-books"
                     element={
@@ -135,7 +137,7 @@ const App = () => {
                     }
                 />
                 
-                {/* Rotas para Postagens */}
+                {/* 🔐 Rotas para Postagens */}
                 <Route
                     path="/ranking"
                     element={
