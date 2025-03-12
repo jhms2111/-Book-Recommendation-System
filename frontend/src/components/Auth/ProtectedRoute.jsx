@@ -1,38 +1,35 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
-const AuthSuccess = ({ setIsAuthenticated }) => {
-    const location = useLocation();
-    const navigate = useNavigate();
+const ProtectedRoute = ({ children, isAuthenticated, checkAuth }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const token = params.get('token');
-
-        if (token) {
-            localStorage.setItem('authToken', token);
-            localStorage.setItem('isAuthenticated', 'true');
-
-            setIsAuthenticated(true);
+        const verifyAuth = async () => {
+            await checkAuth(); // Verifica a autenticação antes de tomar qualquer decisão
             setLoading(false);
-
-            navigate('/');
-        } else {
-            navigate('/login');
-        }
-    }, [location, navigate, setIsAuthenticated]);
+        };
+        verifyAuth();
+    }, [checkAuth]);
 
     if (loading) {
-        return <p>Carregando autenticação...</p>;
+        return <p>Carregando...</p>; // Evita redirecionamento prematuro
     }
 
-    return null;
+    if (!isAuthenticated) {
+        console.log('Usuário não autenticado, redirecionando para login...');
+        return <Navigate to="/login" />;
+    }
+
+    console.log('Usuário autenticado, permitindo acesso à rota.');
+    return children;
 };
 
-AuthSuccess.propTypes = {
-    setIsAuthenticated: PropTypes.func.isRequired,
+ProtectedRoute.propTypes = {
+    children: PropTypes.node.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    checkAuth: PropTypes.func.isRequired,
 };
 
-export default AuthSuccess;
+export default ProtectedRoute;
