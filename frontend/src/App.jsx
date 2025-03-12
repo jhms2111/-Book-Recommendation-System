@@ -12,6 +12,7 @@ import UserBooksPage from './pages/Books/UserBooksPage';
 import RankingPage from './pages/Ranking/RankingPage'
 import Feed from './components/Feed/Feed'; // Novo: componente para exibir o feed de postagens
 import AdminPage from './pages/Admin/AdminPage';
+import ProtectedAdminRoute from "./components/Auth/ProtectedAdminRoute";
 
 import Layout from './components/Header/Layout'; // Importa o Layout
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -57,16 +58,16 @@ const App = () => {
                     }
                 />
 
-                <Route
-                    path="/admin"
-                    element={
-                        <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <Layout>
-                                <AdminPage />
-                            </Layout>
-                        </ProtectedRoute>
-                    }
-                />
+<Route
+    path="/admin"
+    element={
+        <ProtectedAdminRoute>
+            <Layout>
+                <AdminPage />
+            </Layout>
+        </ProtectedAdminRoute>
+    }
+/>
 
 
                 {/* Rota de sucesso após login com o Google */}

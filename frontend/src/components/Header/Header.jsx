@@ -6,15 +6,17 @@ import { useState, useEffect } from 'react';
 const Header = () => {
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
+    const [userRole, setUserRole] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodificando el JWT
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodifica o JWT
             setUserName(decodedToken.name);
             setUserEmail(decodedToken.email);
+            setUserRole(decodedToken.role); // 🔥 Armazena a role do usuário
         }
     }, []);
 
@@ -23,6 +25,7 @@ const Header = () => {
         sessionStorage.removeItem('isAuthenticated');
         localStorage.removeItem('authToken');
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('role'); // 🔥 Remove a role ao fazer logout
         navigate('/login');
     };
 
@@ -48,26 +51,34 @@ const Header = () => {
                         BookTrove {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
                     </Typography>
                     
-                    {/* Ícono de menú para móviles */}
+                    {/* Ícone de menu para dispositivos móveis */}
                     <Box sx={{ display: { xs: 'block', md: 'none' } }}>
                         <IconButton edge="end" color="inherit" onClick={toggleMenu}>
                             <MenuIcon />
                         </IconButton>
                     </Box>
 
-                    {/* Botones de navegación para escritorio */}
+                    {/* Botões de navegação para desktop */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Button color="inherit" onClick={() => navigate('/')}>Inicio</Button>
-                        <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Libros</Button>
-                        <Button color="inherit" onClick={() => navigate('/my-books')}>Mis Libros</Button>
-                        <Button color="inherit" onClick={() => navigate('/Ranking')}>Ranking</Button>
-                        <Button color="inherit" onClick={() => navigate('/comentarios')}>Comentarios</Button>
-                        <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
+                        <Button color="inherit" onClick={() => navigate('/')}>Início</Button>
+                        <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Livros</Button>
+                        <Button color="inherit" onClick={() => navigate('/my-books')}>Meus Livros</Button>
+                        <Button color="inherit" onClick={() => navigate('/ranking')}>Ranking</Button>
+                        <Button color="inherit" onClick={() => navigate('/comentarios')}>Comentários</Button>
+
+                        {/* 🔥 Botão de Admin aparece apenas se a role for "admin" */}
+                        {userRole === 'admin' && (
+                            <Button color="secondary" variant="outlined" onClick={() => navigate('/admin')}>
+                                Admin
+                            </Button>
+                        )}
+
+                        <Button color="inherit" onClick={handleLogout}>Sair</Button>
                     </Box>
                 </Toolbar>
             </AppBar>
 
-            {/* Menú desplegable cubriendo toda la pantalla en móvil */}
+            {/* Menu lateral para dispositivos móveis */}
             {menuOpen && (
                 <Box sx={{
                     position: 'fixed',
@@ -82,58 +93,44 @@ const Header = () => {
                     alignItems: 'center',
                     zIndex: 50,
                 }}>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: '#1c0101' 
-                    }} onClick={() => { navigate('/'); toggleMenu(); }}>
-                        Inicio
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/'); toggleMenu(); }}>
+                        Início
                     </Button>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: '#1c0101' 
-                    }} onClick={() => { navigate('/search-books'); toggleMenu(); }}>
-                        Buscar Libros
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/search-books'); toggleMenu(); }}>
+                        Buscar Livros
                     </Button>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: '#1c0101' 
-                    }} onClick={() => { navigate('/my-books'); toggleMenu(); }}>
-                        Mis Libros
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/my-books'); toggleMenu(); }}>
+                        Meus Livros
                     </Button>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: '#1c0101' 
-                    }} onClick={() => { navigate('/ranking'); toggleMenu(); }}>
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/ranking'); toggleMenu(); }}>
                         Ranking
                     </Button>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: '#1c0101' 
-                    }} onClick={() => { navigate('/comentarios'); toggleMenu(); }}>
-                        Comentarios
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/comentarios'); toggleMenu(); }}>
+                        Comentários
                     </Button>
-                    <Button sx={{ 
-                        fontSize: '2rem', 
-                        fontWeight: 'bold', 
-                        fontFamily: '"Cinzel", serif', 
-                        color: 'red' 
-                    }} onClick={handleLogout}>
-                        Cerrar Sesión
+
+                    {/* 🔥 Botão de Admin no menu mobile */}
+                    {userRole === 'admin' && (
+                        <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={() => { navigate('/admin'); toggleMenu(); }}>
+                            Admin
+                        </Button>
+                    )}
+
+                    <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={handleLogout}>
+                        Sair
                     </Button>
                 </Box>
             )}
         </>
     );
+};
+
+// Estilos do menu mobile
+const menuButtonStyle = {
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    fontFamily: '"Cinzel", serif',
+    color: '#1c0101'
 };
 
 export default Header;
