@@ -34,7 +34,7 @@ const AdminCommentsPage = () => {
         fetchPosts();
     }, [navigate]);
 
-    // Função para remover uma postagem
+    // Função para remover uma postagem//
     const handleRemovePost = async (_id) => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
         if (!confirmDelete) return;

@@ -6,7 +6,7 @@ const UserBook = require('../../models/UserBooks'); // Certifique-se de que o no
 // 🔥 ROTA PARA REMOVER LIVRO: `/api/books/:bookId`
 router.delete('/:bookId', authenticateUser, async (req, res) => {
     try {
-        const userId = req.user.id; // Pega o ID do usuário autenticado
+        const userId = req.user.id; // Pega o ID do usuário autenticado//
         const { bookId } = req.params; // Pega o ID do livro a ser removido
 
         console.log(`🗑️ Tentando remover o livro ID: ${bookId} para o usuário: ${userId}`);
