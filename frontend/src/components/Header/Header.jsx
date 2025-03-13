@@ -66,7 +66,7 @@ const Header = () => {
                         <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Libros</Button>
                         <Button color="inherit" onClick={() => navigate('/my-books')}>Mis Libros</Button>
                         <Button color="inherit" onClick={() => navigate('/ranking')}>Ranking</Button>
-                        <Button color="inherit" onClick={() => navigate('/reseñas')}>Reseñas</Button>
+                        <Button color="inherit" onClick={() => navigate('/comentarios')}>Reseñas</Button>
 
                         {/* Botón de Admin aparece solo si el rol es "admin" */}
                         {userRole === 'admin' && (
@@ -107,7 +107,7 @@ const Header = () => {
                     <Button sx={menuButtonStyle} onClick={() => { navigate('/ranking'); toggleMenu(); }}>
                         Ranking
                     </Button>
-                    <Button sx={menuButtonStyle} onClick={() => { navigate('/reseñas'); toggleMenu(); }}>
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/comentarios'); toggleMenu(); }}>
                         Reseñas
                     </Button>
 

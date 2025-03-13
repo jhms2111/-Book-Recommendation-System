@@ -24,7 +24,6 @@ const Admin = () => {
                     color: '#1c0101'
                 }}
             >
-                Página de Admin
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -45,7 +44,7 @@ const Admin = () => {
                     }}
                     onClick={() => navigate('/admin/usersadmin')}
                 >
-                    Usuários
+                    Usuarios
                 </Button>
 
                 {/* Botão para postagens */}
@@ -65,7 +64,7 @@ const Admin = () => {
                     }}
                     onClick={() => navigate('/admin/comentariosadmin')}
                 >
-                    Postagens
+                    Reseñas
                 </Button>
             </Box>
         </Box>

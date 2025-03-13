@@ -77,7 +77,6 @@ const AdminCommentsPage = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell><strong>Usuário</strong></TableCell>
                             <TableCell><strong>Comentário</strong></TableCell>
                             <TableCell><strong>Ações</strong></TableCell>
                         </TableRow>
