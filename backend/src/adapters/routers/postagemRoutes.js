@@ -32,28 +32,33 @@ router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
 
 // 🔥 Rota para excluir uma postagem (SOMENTE ADMIN)
 // Middleware de validação de ID do MongoDB
+const mongoose = require("mongoose");
+
 const isValidObjectId = (req, res, next) => {
-    const { postId } = req.params;
-    if (!postId || postId.length !== 24) {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ error: "ID da postagem inválido." });
     }
+
     next();
 };
 
-router.delete('/postagens/:id', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
+router.delete('/api/postagens/:id', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
     try {
-        const { id } = req.params; // Alterado de postId para id
+        const { id } = req.params;
         console.log(`🛠 Tentando excluir a postagem: ${id}`);
 
-        // Tenta deletar a postagem
-        const deletedPost = await postagemController.deletePost(id);
-
-        if (!deletedPost) {
-            console.error("❌ ERRO: Postagem não encontrada.");
+        // Buscar postagem antes de excluir
+        const post = await postagemController.getPostById(id);
+        if (!post) {
             return res.status(404).json({ error: "Postagem não encontrada." });
         }
 
+        // Excluir a postagem
+        const deletedPost = await postagemController.deletePost(id);
         console.log("✅ Postagem excluída com sucesso!");
+
         res.json({ message: "✅ Postagem excluída com sucesso!", id: deletedPost._id });
 
     } catch (error) {
