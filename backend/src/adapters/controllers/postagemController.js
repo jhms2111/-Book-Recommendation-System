@@ -119,18 +119,31 @@ const getBookReviews = async (req, res) => {
 };
 
 
-exports.deletePost = async (postId) => {
+
+
+
+const deletePost = async (id) => {
     try {
-        const post = await Postagem.findById(postId);
-        if (!post) {
-            return { status: 404, message: "Postagem não encontrada" };
+        if (!mongoose.Types.ObjectId.isValid(id)) return null;
+
+        const deletedPost = await Postagem.findByIdAndDelete(id);
+        if (!deletedPost) {
+            console.error("❌ ERRO: Nenhuma postagem encontrada para excluir.");
+            return null;
         }
-        await Postagem.findByIdAndDelete(postId);
-        return { status: 200, message: "Postagem deletada com sucesso!" };
+
+        return deletedPost;
     } catch (error) {
-        throw new Error("Erro ao deletar postagem: " + error.message);
+        console.error("❌ Erro ao excluir postagem no banco:", error);
+        return null;
     }
 };
+
+
+
+
+
+
 
 
 // 📌 Agora inclua a função na exportação
@@ -138,5 +151,6 @@ module.exports = {
     createPost,
     getPosts,
     getTopRatedBooks,
+    deletePost,
     getBookReviews,  // ✅ Adicione essa linha
 };

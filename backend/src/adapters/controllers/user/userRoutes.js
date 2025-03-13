@@ -192,26 +192,14 @@ router.get("/users", authenticateUser, isAdmin, async (req, res) => {
     }
 });
 
-const deletePost = async (postId) => {
+// 🔹 Exemplo de rota para deletar um usuário (apenas admin)
+router.delete("/users/:id", authenticateUser, isAdmin, async (req, res) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/postagens/${postId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Se você estiver usando autenticação JWT
-            },
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            console.log('Postagem deletada com sucesso:', result);
-            // Aqui você pode atualizar o estado ou a UI para refletir a remoção do post
-        } else {
-            console.error('Erro ao deletar postagem:', result);
-        }
+        await User.findByIdAndDelete(req.params.id);
+        res.json({ message: "Usuário deletado com sucesso!" });
     } catch (error) {
-        console.error('Erro ao fazer requisição DELETE:', error);
+        res.status(500).json({ error: "Erro ao deletar usuário.", details: error });
     }
-};
+});
 
+module.exports = router;

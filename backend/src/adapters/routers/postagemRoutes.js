@@ -29,19 +29,44 @@ router.get('/postagens/reviews/:bookId', authenticateUser, postagemController.ge
 // 🔹 Rota de ranking de livros (apenas para usuários autenticados)
 router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
 
-// 🔹 Admin pode excluir qualquer postagem
-router.delete('/postagens/:postId', authenticateUser, isAdmin, async (req, res) => {
-    try {
-        const postId = req.params.postId;
-        console.log("📝 ID recebido para exclusão:", postId); // 📌 LOG PARA DEPURAÇÃO
 
-        await postagemController.deletePost(postId);
-        res.json({ message: "Postagem excluída com sucesso!" });
+// 🔥 Rota para excluir uma postagem (SOMENTE ADMIN)
+// Middleware de validação de ID do MongoDB
+const mongoose = require("mongoose");
+
+const isValidObjectId = (req, res, next) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID da postagem inválido." });
+    }
+
+    next();
+};
+
+router.delete('/api/postagens/:id', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log(`🛠 Tentando excluir a postagem: ${id}`);
+
+        // Buscar postagem antes de excluir
+        const post = await postagemController.getPostById(id);
+        if (!post) {
+            return res.status(404).json({ error: "Postagem não encontrada." });
+        }
+
+        // Excluir a postagem
+        const deletedPost = await postagemController.deletePost(id);
+        console.log("✅ Postagem excluída com sucesso!");
+
+        res.json({ message: "✅ Postagem excluída com sucesso!", id: deletedPost._id });
+
     } catch (error) {
-        console.error("❌ Erro ao excluir postagem:", error);
-        res.status(500).json({ error: "Erro ao excluir postagem.", details: error });
+        console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
+        res.status(500).json({ error: "Erro ao excluir postagem.", details: error.message });
     }
 });
+
 
 
 
