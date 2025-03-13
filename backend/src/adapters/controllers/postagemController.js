@@ -119,33 +119,18 @@ const getBookReviews = async (req, res) => {
 };
 
 
-
-
-
-const deletePost = async (id) => {
+exports.deletePost = async (postId) => {
     try {
-        console.log("🔹 ID recebido para exclusão:", id);
-        
-        const deletedPost = await Postagem.findByIdAndDelete(id);
-
-        if (!deletedPost) {
-            console.error("❌ ERRO: Nenhuma postagem encontrada para excluir.");
-            return null;
+        const post = await Postagem.findById(postId);
+        if (!post) {
+            return { status: 404, message: "Postagem não encontrada" };
         }
-
-        return deletedPost;
+        await Postagem.findByIdAndDelete(postId);
+        return { status: 200, message: "Postagem deletada com sucesso!" };
     } catch (error) {
-        console.error("❌ Erro ao excluir postagem no banco:", error);
-        throw error;
+        throw new Error("Erro ao deletar postagem: " + error.message);
     }
 };
-
-module.exports = { deletePost };
-
-
-module.exports = { deletePost };
-
-
 
 
 // 📌 Agora inclua a função na exportação
