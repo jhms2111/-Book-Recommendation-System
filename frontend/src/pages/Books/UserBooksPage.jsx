@@ -1,118 +1,132 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import {
-    Box, Typography, Tooltip, IconButton, CircularProgress, Container
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useEffect, useState } from 'react';
+import { Box, Typography, Tooltip, IconButton } from '@mui/material';
+import axios from 'axios';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom'; // ✅ Importando el hook de navegación
 
-const AdminCommentsPage = () => {
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+const UserBooksPage = () => {
+  const [books, setBooks] = useState([]);
+  const [, setLoading] = useState(true);
+  const navigate = useNavigate(); // ✅ Hook para navegación
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    navigate("/login");
-                    return;
-                }
-
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/postagens", {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                setPosts(response.data);
-            } catch (error) {
-                console.error("❌ Erro ao buscar postagens:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPosts();
-    }, []);
-
-    // 🛠 Função para remover uma postagem
-    const handleRemovePost = async (postId) => {
-        const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
-        if (!confirmDelete) return;
-
-        try {
-            const token = localStorage.getItem("authToken");
-            if (!token) {
-                console.error("❌ Usuário não autenticado.");
-                return;
-            }
-
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (response.status === 200) {
-                console.log("✅ Postagem removida com sucesso!");
-                setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
-            } else {
-                console.error("⚠️ Erro ao remover a postagem:", response.data);
-            }
-        } catch (error) {
-            console.error("❌ Erro ao excluir a postagem:", error.response ? error.response.data : error);
+  useEffect(() => {
+    const fetchUserBooks = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('❌ Usuario no autenticado.');
+          return;
         }
+
+        const response = await axios.get('https://book-recommendation-system-9uba.onrender.com/api/books', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setBooks(response.data.books);
+      } catch (error) {
+        console.error('❌ Error al buscar los libros del usuario:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <Container>
-            <Typography
-                variant="h4"
-                gutterBottom
-                sx={{
-                    fontFamily: "Georgia, serif",
-                    color: "#5A3E36",
-                    marginTop: "20px",
-                    textAlign: "center"
-                }}
-            >
-                📝 Gerenciar Comentários
-            </Typography>
+    fetchUserBooks();
+  }, []);
 
-            {loading ? (
-                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                        gap: "20px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        background: "#f8f8f8",
-                        padding: "20px",
-                        borderRadius: "10px",
-                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                    }}
-                >
-                    {posts.map((post) => (
-                        <Box key={post._id} sx={{ position: "relative", background: "#fff", padding: "15px", borderRadius: "8px", boxShadow: "3px 3px 8px rgba(0,0,0,0.3)" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>{post.userName}</Typography>
-                            <Typography variant="body1" sx={{ marginBottom: "10px" }}>{post.content}</Typography>
-                            <Tooltip title="Excluir postagem">
-                                <IconButton
-                                    onClick={() => handleRemovePost(post._id)}
-                                    sx={{ position: "absolute", top: 5, right: 5, color: "red" }}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                    ))}
-                </Box>
-            )}
-        </Container>
-    );
+  const handleRemoveBook = async (bookId) => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este libro?');
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('❌ Usuario no autenticado.');
+        return;
+      }
+
+      const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/books/${bookId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status === 200) {
+        console.log('✅ Libro eliminado con éxito!');
+        setBooks((prevBooks) => prevBooks.filter((book) => book.bookId !== bookId));
+      } else {
+        console.error('⚠️ Error al eliminar el libro:', response.data);
+      }
+    } catch (error) {
+      console.error('❌ Error al eliminar el libro:', error.response ? error.response.data : error);
+    }
+  };
+
+  // ✅ Modificando para redirigir a la página de evaluación
+  const handleBookClick = (book) => {
+    console.log(`📖 Redirigiendo a la evaluación del libro: ${book.bookId}`);
+    navigate(`/book-review/${book.bookId}`); // ✅ Ahora redirige a la página correcta
+  };
+
+  return (
+    <Box sx={{ padding: '80px 20px', textAlign: 'center', background: '#1c0101', minHeight: '100vh' }}>
+    <Typography
+      variant="h4"
+      gutterBottom
+      sx={{
+        fontFamily: 'Georgia, serif',
+        color: '#5A3E36',
+        marginTop: '0px', // 🔥 Mueve el título más arriba
+      }}
+    >
+      📚 Mi Estante de Libros
+    </Typography>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+        gap: '20px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: '#1c0101',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      }}
+      >
+        {books.map((book) => (
+          <Box key={book.bookId} sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
+            <Tooltip title={book.title} placement="top">
+              <IconButton
+                onClick={() => handleBookClick(book)} // ✅ Ahora llama a la función que redirige a la BookReviewPage
+                sx={{
+                  background: '#8B5A2B',
+                  color: '#FFF',
+                  width: '100px',
+                  height: '140px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '3px 3px 8px rgba(0,0,0,0.3)',
+                  '&:hover': { background: '#654321' },
+                }}
+              >
+                <img
+                  src={book.thumbnail || 'https://via.placeholder.com/100x140'}
+                  alt={book.title}
+                  style={{ width: '80px', height: '110px', borderRadius: '5px' }}
+                />
+              </IconButton>
+            </Tooltip>
+            <IconButton
+              onClick={() => handleRemoveBook(book.bookId)}
+              sx={{ position: 'absolute', top: 0, right: 0, color: 'red' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
 };
 
-export default AdminCommentsPage;
+export default UserBooksPage;
