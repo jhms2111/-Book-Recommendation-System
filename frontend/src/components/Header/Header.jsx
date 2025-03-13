@@ -27,7 +27,7 @@ const Header = () => {
         sessionStorage.removeItem('isAuthenticated');
         localStorage.removeItem('authToken');
         localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('role'); // 🔥 Elimina el rol al hacer logout
+        localStorage.removeItem('role'); // 🔥 Elimina el rol al hacer logout//
         navigate('/login');
     };
 
