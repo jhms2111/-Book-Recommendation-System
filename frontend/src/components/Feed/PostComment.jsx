@@ -10,7 +10,7 @@ const PostComment = ({ postId }) => {
     // Função para buscar os comentários de uma postagem
     const fetchComments = async (postId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/postagens/${postId}/comments`);
+            const response = await axios.get(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}/comments`);
             
             // Atualiza o estado com os comentários recebidos da API
             setComments(response.data);

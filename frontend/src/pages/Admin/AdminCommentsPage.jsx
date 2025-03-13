@@ -21,7 +21,7 @@ const AdminCommentsPage = () => {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:5000/api/postagens", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/postagens", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -49,7 +49,7 @@ const AdminCommentsPage = () => {
             console.log("📝 Enviando requisição DELETE para:", _id);
 
             // Corrigido o endpoint da requisição
-            const response = await axios.delete(`http://localhost:5000/api/postagens/${_id}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

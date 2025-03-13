@@ -38,7 +38,7 @@ const Login = ({ handleLogin }) => {
         setSuccess("");
     
         try {
-            const response = await axios.post("http://localhost:5000/api/login", {
+            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
                 email,
                 senha,
             });

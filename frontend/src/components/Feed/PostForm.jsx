@@ -26,7 +26,7 @@ const PostForm = () => {
       }
 
       // Enviar a postagem para o backend
-      await axios.post('http://localhost:5000/api/postagens', formData, {
+      await axios.post('https://book-recommendation-system-9uba.onrender.com/api/postagens', formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Passando o token de autenticação
           // Remova a linha 'Content-Type': 'multipart/form-data' - axios irá adicionar automaticamente

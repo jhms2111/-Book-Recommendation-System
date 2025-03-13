@@ -21,7 +21,7 @@ const AdminPage = () => {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:5000/users", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/users", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -46,7 +46,7 @@ const AdminPage = () => {
                 return;
             }
 
-            const response = await axios.delete(`http://localhost:5000/users/${userId}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
