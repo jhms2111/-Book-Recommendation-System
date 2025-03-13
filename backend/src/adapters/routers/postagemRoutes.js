@@ -31,18 +31,21 @@ router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
 
 
 // 🔥 Rota para excluir uma postagem (SOMENTE ADMIN)
-router.delete('/api/postagens/:postId', authenticateUser, isAdmin, async (req, res) => {
+// Middleware de validação de ID do MongoDB
+const isValidObjectId = (req, res, next) => {
+    const { postId } = req.params;
+    if (!postId || postId.length !== 24) {
+        return res.status(400).json({ error: "ID da postagem inválido." });
+    }
+    next();
+};
+
+router.delete('/api/postagens/:postId', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
     try {
         const { postId } = req.params;
-        console.log(`🛠 Tentando excluir a postagem: ${postId}`); // Log para depuração
+        console.log(`🛠 Tentando excluir a postagem: ${postId}`);
 
-        // Verifica se o ID tem 24 caracteres (formato do MongoDB)
-        if (!postId || postId.length !== 24) {
-            console.error("❌ ERRO: ID inválido ou mal formatado.");
-            return res.status(400).json({ error: "ID da postagem inválido." });
-        }
-
-        // 🔹 Tenta deletar a postagem
+        // Tenta deletar a postagem
         const deletedPost = await postagemController.deletePost(postId);
 
         if (!deletedPost) {
@@ -51,13 +54,14 @@ router.delete('/api/postagens/:postId', authenticateUser, isAdmin, async (req, r
         }
 
         console.log("✅ Postagem excluída com sucesso!");
-        res.json({ message: "✅ Postagem excluída com sucesso!" });
+        res.json({ message: "✅ Postagem excluída com sucesso!", postId: deletedPost._id });
 
     } catch (error) {
         console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
         res.status(500).json({ error: "Erro ao excluir postagem.", details: error.message });
     }
 });
+
 
 
 module.exports = router;

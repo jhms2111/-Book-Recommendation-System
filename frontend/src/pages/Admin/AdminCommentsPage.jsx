@@ -55,13 +55,17 @@ const AdminCommentsPage = () => {
             if (response.status === 200) {
                 console.log("✅ Postagem removida com sucesso!");
                 setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+                alert("Postagem excluída com sucesso!");  // Exibindo a mensagem de sucesso
             } else {
                 console.error("⚠️ Erro ao remover a postagem:", response.data);
+                alert("Erro ao remover a postagem.");
             }
         } catch (error) {
             console.error("❌ Erro ao excluir a postagem:", error.response ? error.response.data : error);
+            alert("Erro ao excluir a postagem.");
         }
     };
+    
     
 
     return (
@@ -80,20 +84,21 @@ const AdminCommentsPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {posts.map((post) => (
-                            <TableRow key={post._id}>
-                                <TableCell>{post.userName}</TableCell>
-                                <TableCell>{post.content}</TableCell>
-                                <TableCell>
-                                    <Tooltip title="Excluir postagem">
-                                        <IconButton onClick={() => handleRemovePost(post._id)} sx={{ color: "red" }}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
+    {posts.map((post) => (
+        <TableRow key={post._id}>
+            <TableCell>{post.userName || 'Usuário desconhecido'}</TableCell> {/* Adicionando um fallback */}
+            <TableCell>{post.content}</TableCell>
+            <TableCell>
+                <Tooltip title="Excluir postagem">
+                    <IconButton onClick={() => handleRemovePost(post._id)} sx={{ color: "red" }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            </TableCell>
+        </TableRow>
+    ))}
+</TableBody>
+
                 </Table>
             )}
 
