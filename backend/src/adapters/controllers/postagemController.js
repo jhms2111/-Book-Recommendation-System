@@ -119,24 +119,7 @@ const getBookReviews = async (req, res) => {
 };
 
 
-const deletePost = async (postId) => {
-    try {
-        console.log(`🔍 Tentando deletar postagem com ID: ${postId}`);
 
-        const post = await Postagem.findById(postId);
-        if (!post) {
-            console.error("❌ ERRO: Postagem não encontrada no banco de dados");
-            return null;
-        }
-
-        await Postagem.findByIdAndDelete(postId);
-        console.log("✅ Postagem removida do banco de dados!");
-        return post;
-    } catch (error) {
-        console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
-        throw new Error("Erro ao excluir postagem.");
-    }
-};
 
 
 // 📌 Agora inclua a função na exportação

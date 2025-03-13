@@ -35,7 +35,7 @@ const AdminCommentsPage = () => {
     }, [navigate]);
 
     // 🛠 Função para remover uma postagem
-    const handleRemovePost = async (postId) => {
+    const handleRemovePost = async (_id) => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
         if (!confirmDelete) return;
     
@@ -46,16 +46,16 @@ const AdminCommentsPage = () => {
                 return;
             }
     
-            console.log("📝 Enviando requisição DELETE para:", postId); // 📌 LOG PARA DEPURAÇÃO
+            console.log("📝 Enviando requisição DELETE para:", _id); // 📌 LOG PARA DEPURAÇÃO
     
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
             if (response.status === 200) {
                 console.log("✅ Postagem removida com sucesso!");
-                setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
-                alert("Postagem excluída com sucesso!");  // Exibindo a mensagem de sucesso
+                setPosts((prevPosts) => prevPosts.filter((post) => post._id !== _id));
+                alert("Postagem excluída com sucesso!");  
             } else {
                 console.error("⚠️ Erro ao remover a postagem:", response.data);
                 alert("Erro ao remover a postagem.");
@@ -65,8 +65,6 @@ const AdminCommentsPage = () => {
             alert("Erro ao excluir a postagem.");
         }
     };
-    
-    
 
     return (
         <Container>

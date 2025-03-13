@@ -40,13 +40,13 @@ const isValidObjectId = (req, res, next) => {
     next();
 };
 
-router.delete('/api/postagens/:postId', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
+router.delete('/api/postagens/:id', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
     try {
-        const { postId } = req.params;
-        console.log(`🛠 Tentando excluir a postagem: ${postId}`);
+        const { id } = req.params; // Alterado de postId para id
+        console.log(`🛠 Tentando excluir a postagem: ${id}`);
 
         // Tenta deletar a postagem
-        const deletedPost = await postagemController.deletePost(postId);
+        const deletedPost = await postagemController.deletePost(id);
 
         if (!deletedPost) {
             console.error("❌ ERRO: Postagem não encontrada.");
@@ -54,13 +54,14 @@ router.delete('/api/postagens/:postId', authenticateUser, isAdmin, isValidObject
         }
 
         console.log("✅ Postagem excluída com sucesso!");
-        res.json({ message: "✅ Postagem excluída com sucesso!", postId: deletedPost._id });
+        res.json({ message: "✅ Postagem excluída com sucesso!", id: deletedPost._id });
 
     } catch (error) {
         console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
         res.status(500).json({ error: "Erro ao excluir postagem.", details: error.message });
     }
 });
+
 
 
 
