@@ -118,7 +118,7 @@ const getBookReviews = async (req, res) => {
     }
 };
 
-const Postagem = require('../models/Postagem'); // Certifique-se de que o modelo está importado corretamente
+
 
 const deletePost = async (id) => {
     try {
