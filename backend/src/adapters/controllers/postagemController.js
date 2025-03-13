@@ -124,9 +124,10 @@ const getBookReviews = async (req, res) => {
 
 const deletePost = async (id) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return null;
-
+        console.log("🔹 ID recebido para exclusão:", id);
+        
         const deletedPost = await Postagem.findByIdAndDelete(id);
+
         if (!deletedPost) {
             console.error("❌ ERRO: Nenhuma postagem encontrada para excluir.");
             return null;
@@ -135,13 +136,14 @@ const deletePost = async (id) => {
         return deletedPost;
     } catch (error) {
         console.error("❌ Erro ao excluir postagem no banco:", error);
-        return null;
+        throw error;
     }
 };
 
+module.exports = { deletePost };
 
 
-
+module.exports = { deletePost };
 
 
 
@@ -151,6 +153,5 @@ module.exports = {
     createPost,
     getPosts,
     getTopRatedBooks,
-    deletePost,
     getBookReviews,  // ✅ Adicione essa linha
 };
