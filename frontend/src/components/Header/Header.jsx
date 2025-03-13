@@ -113,7 +113,7 @@ const Header = () => {
 
                     {/* Botón de Admin en el menú móvil */}
                     {userRole === 'admin' && (
-                        <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={() => { navigate('/admin/admin'); toggleMenu(); }}>
+                        <Button sx={{ ...menuButtonStyle, color: 'green' }} onClick={() => { navigate('/admin/admin'); toggleMenu(); }}>
                             Admin
                         </Button>
                     )}
