@@ -12,13 +12,13 @@ const Header = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
-        const storedRole = localStorage.getItem('role'); // Certifique-se de que a role está sendo salva no localStorage
+        const storedRole = localStorage.getItem('role'); // Asegúrate de que el rol se guarda en el localStorage
         
         if (token) {
-            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodifica o JWT
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
             setUserName(decodedToken.name);
             setUserEmail(decodedToken.email);
-            setUserRole(storedRole); // Lê a role do localStorage diretamente
+            setUserRole(storedRole); // Lee el rol directamente del localStorage
         }
     }, []);
 
@@ -27,7 +27,7 @@ const Header = () => {
         sessionStorage.removeItem('isAuthenticated');
         localStorage.removeItem('authToken');
         localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('role'); // 🔥 Remove a role ao fazer logout
+        localStorage.removeItem('role'); // 🔥 Elimina el rol al hacer logout
         navigate('/login');
     };
 
@@ -53,34 +53,34 @@ const Header = () => {
                         BookTrove {userName && ` - ${userName}`} {userEmail && ` (${userEmail})`} 
                     </Typography>
                     
-                    {/* Ícone de menu para dispositivos móveis */}
+                    {/* Ícono de menú para dispositivos móviles */}
                     <Box sx={{ display: { xs: 'block', md: 'none' } }}>
                         <IconButton edge="end" color="inherit" onClick={toggleMenu}>
                             <MenuIcon />
                         </IconButton>
                     </Box>
 
-                    {/* Botões de navegação para desktop */}
+                    {/* Botones de navegación para escritorio */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Button color="inherit" onClick={() => navigate('/')}>Início</Button>
-                        <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Livros</Button>
-                        <Button color="inherit" onClick={() => navigate('/my-books')}>Meus Livros</Button>
+                        <Button color="inherit" onClick={() => navigate('/')}>Inicio</Button>
+                        <Button color="inherit" onClick={() => navigate('/search-books')}>Buscar Libros</Button>
+                        <Button color="inherit" onClick={() => navigate('/my-books')}>Mis Libros</Button>
                         <Button color="inherit" onClick={() => navigate('/ranking')}>Ranking</Button>
-                        <Button color="inherit" onClick={() => navigate('/comentarios')}>Comentários</Button>
+                        <Button color="inherit" onClick={() => navigate('/reseñas')}>Reseñas</Button>
 
-                        {/* Botão de Admin aparece apenas se a role for "admin" */}
+                        {/* Botón de Admin aparece solo si el rol es "admin" */}
                         {userRole === 'admin' && (
                             <Button color="secondary" variant="outlined" onClick={() => navigate('/admin/admin')}>
                                 Admin
                             </Button>
                         )}
 
-                        <Button color="inherit" onClick={handleLogout}>Sair</Button>
+                        <Button color="inherit" onClick={handleLogout}>Cerrar sesión</Button>
                     </Box>
                 </Toolbar>
             </AppBar>
 
-            {/* Menu lateral para dispositivos móveis */}
+            {/* Menú lateral para dispositivos móviles */}
             {menuOpen && (
                 <Box sx={{
                     position: 'fixed',
@@ -96,22 +96,22 @@ const Header = () => {
                     zIndex: 50,
                 }}>
                     <Button sx={menuButtonStyle} onClick={() => { navigate('/'); toggleMenu(); }}>
-                        Início
+                        Inicio
                     </Button>
                     <Button sx={menuButtonStyle} onClick={() => { navigate('/search-books'); toggleMenu(); }}>
-                        Buscar Livros
+                        Buscar Libros
                     </Button>
                     <Button sx={menuButtonStyle} onClick={() => { navigate('/my-books'); toggleMenu(); }}>
-                        Meus Livros
+                        Mis Libros
                     </Button>
                     <Button sx={menuButtonStyle} onClick={() => { navigate('/ranking'); toggleMenu(); }}>
                         Ranking
                     </Button>
-                    <Button sx={menuButtonStyle} onClick={() => { navigate('/comentarios'); toggleMenu(); }}>
-                        Comentários
+                    <Button sx={menuButtonStyle} onClick={() => { navigate('/reseñas'); toggleMenu(); }}>
+                        Reseñas
                     </Button>
 
-                    {/* Botão de Admin no menu mobile */}
+                    {/* Botón de Admin en el menú móvil */}
                     {userRole === 'admin' && (
                         <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={() => { navigate('/admin/admin'); toggleMenu(); }}>
                             Admin
@@ -119,7 +119,7 @@ const Header = () => {
                     )}
 
                     <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={handleLogout}>
-                        Sair
+                        Cerrar sesión
                     </Button>
                 </Box>
             )}
@@ -127,7 +127,7 @@ const Header = () => {
     );
 };
 
-// Estilos do menu mobile
+// Estilos del menú móvil
 const menuButtonStyle = {
     fontSize: '2rem',
     fontWeight: 'bold',
