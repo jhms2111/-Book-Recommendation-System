@@ -34,28 +34,28 @@ const AdminCommentsPage = () => {
         fetchPosts();
     }, [navigate]);
 
-    // Função para remover uma postagem
+    // 🛠 Função para remover uma postagem
     const handleRemovePost = async (_id) => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
         if (!confirmDelete) return;
-
+    
         try {
             const token = localStorage.getItem("authToken");
             if (!token) {
                 console.error("❌ Usuário não autenticado.");
                 return;
             }
-
-            console.log("📝 Enviando requisição DELETE para:", _id); // Log para depuração
-
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${_id}`, {
+    
+            console.log("📝 Enviando requisição DELETE para:", _id); // 📌 LOG PARA DEPURAÇÃO
+    
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/postagens/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+    
             if (response.status === 200) {
                 console.log("✅ Postagem removida com sucesso!");
                 setPosts((prevPosts) => prevPosts.filter((post) => post._id !== _id));
-                alert("Postagem excluída com sucesso!");
+                alert("Postagem excluída com sucesso!");  
             } else {
                 console.error("⚠️ Erro ao remover a postagem:", response.data);
                 alert("Erro ao remover a postagem.");
@@ -84,7 +84,7 @@ const AdminCommentsPage = () => {
                     <TableBody>
                         {posts.map((post) => (
                             <TableRow key={post._id}>
-                                <TableCell>{post.userId.name}</TableCell> {/* Corrigido para exibir o nome do usuário */}
+                                <TableCell>{post.userName}</TableCell>
                                 <TableCell>{post.content}</TableCell>
                                 <TableCell>
                                     <Tooltip title="Excluir postagem">
