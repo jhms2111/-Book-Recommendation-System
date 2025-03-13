@@ -40,7 +40,7 @@ const isValidObjectId = (req, res, next) => {
     next();
 };
 
-router.delete('/postagens/:postId', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
+router.delete('/api/postagens/:postId', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
     try {
         const { postId } = req.params;
         console.log(`🛠 Tentando excluir a postagem: ${postId}`);
