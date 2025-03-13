@@ -48,7 +48,7 @@ const AdminCommentsPage = () => {
     
             console.log("📝 Enviando requisição DELETE para:", _id); // 📌 LOG PARA DEPURAÇÃO
     
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${_id}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/postagens/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
