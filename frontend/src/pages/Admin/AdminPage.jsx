@@ -15,7 +15,7 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const token = localStorage.getItem("authToken"); // Certifique-se de usar a chave correta
+                const token = localStorage.getItem("authToken"); // Certifique-se de usar a chave correta//
                 if (!token) {
                     navigate("/login");
                     return;
