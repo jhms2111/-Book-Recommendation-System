@@ -21,7 +21,7 @@ const AdminCommentsPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/postagens", {
+                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/postagens", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -48,7 +48,7 @@ const AdminCommentsPage = () => {
     
             console.log("📝 Enviando requisição DELETE para:", postId); // 📌 LOG PARA DEPURAÇÃO
     
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/postagens/${postId}`, {
+            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${postId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
@@ -84,21 +84,20 @@ const AdminCommentsPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-    {posts.map((post) => (
-        <TableRow key={post._id}>
-            <TableCell>{post.userName || 'Usuário desconhecido'}</TableCell> {/* Adicionando um fallback */}
-            <TableCell>{post.content}</TableCell>
-            <TableCell>
-                <Tooltip title="Excluir postagem">
-                    <IconButton onClick={() => handleRemovePost(post._id)} sx={{ color: "red" }}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            </TableCell>
-        </TableRow>
-    ))}
-</TableBody>
-
+                        {posts.map((post) => (
+                            <TableRow key={post._id}>
+                                <TableCell>{post.userName}</TableCell>
+                                <TableCell>{post.content}</TableCell>
+                                <TableCell>
+                                    <Tooltip title="Excluir postagem">
+                                        <IconButton onClick={() => handleRemovePost(post._id)} sx={{ color: "red" }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
                 </Table>
             )}
 
