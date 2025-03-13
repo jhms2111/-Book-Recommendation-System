@@ -118,6 +118,19 @@ const getBookReviews = async (req, res) => {
     }
 };
 
+const Postagem = require('../models/Postagem'); // Certifique-se de que o modelo está importado corretamente
+
+const deletePost = async (id) => {
+    try {
+        const deletedPost = await Postagem.findByIdAndDelete(id);
+        return deletedPost;
+    } catch (error) {
+        console.error("❌ Erro ao excluir postagem no banco:", error);
+        return null;
+    }
+};
+
+module.exports = { deletePost };
 
 
 
