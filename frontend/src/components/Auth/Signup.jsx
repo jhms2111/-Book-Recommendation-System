@@ -26,7 +26,7 @@ const Signup = () => {
         }
 
         try {
-            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/usuarios", {
+            const response = await axios.post("http://localhost:5000/api/usuarios", {
                 name,
                 email,
                 senha,

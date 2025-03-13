@@ -38,8 +38,8 @@ router.get('/auth/google/callback', passport.authenticate('google', {
     // Gera um token de autenticação usando JWT
     const authToken = generateAuthToken(user);
 
-    // Redireciona para o front-end com o token como parâmetro
-    res.redirect(`https://book-recommendation-system-omega.vercel.app/auth/success?token=${authToken}`);
+// Redireciona para o front-end com o token como parâmetro
+res.redirect(`http://localhost:5173/auth/success?token=${authToken}`);
 });
 
 

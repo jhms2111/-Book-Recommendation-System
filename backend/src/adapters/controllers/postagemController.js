@@ -119,31 +119,18 @@ const getBookReviews = async (req, res) => {
 };
 
 
-
-
-
 const deletePost = async (id) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return null;
-
         const deletedPost = await Postagem.findByIdAndDelete(id);
         if (!deletedPost) {
-            console.error("❌ ERRO: Nenhuma postagem encontrada para excluir.");
-            return null;
+            return null; // Se a postagem não for encontrada, retornamos null
         }
-
-        return deletedPost;
+        return deletedPost; // Caso contrário, retornamos a postagem deletada
     } catch (error) {
-        console.error("❌ Erro ao excluir postagem no banco:", error);
-        return null;
+        console.error("❌ Erro ao tentar excluir a postagem:", error);
+        throw new Error("Erro ao excluir a postagem");
     }
 };
-
-
-
-
-
-
 
 
 // 📌 Agora inclua a função na exportação

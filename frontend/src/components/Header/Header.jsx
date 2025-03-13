@@ -12,11 +12,13 @@ const Header = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
+        const storedRole = localStorage.getItem('role'); // Certifique-se de que a role está sendo salva no localStorage
+        
         if (token) {
             const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodifica o JWT
             setUserName(decodedToken.name);
             setUserEmail(decodedToken.email);
-            setUserRole(decodedToken.role); // 🔥 Armazena a role do usuário
+            setUserRole(storedRole); // Lê a role do localStorage diretamente
         }
     }, []);
 
@@ -66,9 +68,9 @@ const Header = () => {
                         <Button color="inherit" onClick={() => navigate('/ranking')}>Ranking</Button>
                         <Button color="inherit" onClick={() => navigate('/comentarios')}>Comentários</Button>
 
-                        {/* 🔥 Botão de Admin aparece apenas se a role for "admin" */}
+                        {/* Botão de Admin aparece apenas se a role for "admin" */}
                         {userRole === 'admin' && (
-                            <Button color="secondary" variant="outlined" onClick={() => navigate('/admin')}>
+                            <Button color="secondary" variant="outlined" onClick={() => navigate('/admin/admin')}>
                                 Admin
                             </Button>
                         )}
@@ -109,9 +111,9 @@ const Header = () => {
                         Comentários
                     </Button>
 
-                    {/* 🔥 Botão de Admin no menu mobile */}
+                    {/* Botão de Admin no menu mobile */}
                     {userRole === 'admin' && (
-                        <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={() => { navigate('/admin'); toggleMenu(); }}>
+                        <Button sx={{ ...menuButtonStyle, color: 'red' }} onClick={() => { navigate('/admin/admin'); toggleMenu(); }}>
                             Admin
                         </Button>
                     )}

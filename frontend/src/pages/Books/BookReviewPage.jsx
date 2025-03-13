@@ -79,7 +79,7 @@ const BookReviewPage = () => {
         status,
       };
 
-      const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/books", bookData, {
+      const response = await axios.post("http://localhost:5000/api/books", bookData, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -117,7 +117,7 @@ const BookReviewPage = () => {
 
         console.log("📩 Enviando reseña:", reviewData); // 🔍 Log para verificación
 
-        await axios.post('https://book-recommendation-system-9uba.onrender.com/api/postagens', reviewData, {
+        await axios.post('http://localhost:5000/api/postagens', reviewData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'

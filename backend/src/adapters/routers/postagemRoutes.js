@@ -27,7 +27,7 @@ router.post('/postagens', authenticateUser, postagemController.createPost);
 router.get('/postagens/reviews/:bookId', authenticateUser, postagemController.getBookReviews);
 
 // 🔹 Rota de ranking de livros (apenas para usuários autenticados)
-router.get('/ranking', authenticateUser, postagemController.getTopRatedBooks);
+router.get('/ranking', postagemController.getTopRatedBooks);
 
 
 // 🔥 Rota para excluir uma postagem (SOMENTE ADMIN)
@@ -46,26 +46,26 @@ const isValidObjectId = (req, res, next) => {
 
 router.delete('/postagens/:id', authenticateUser, isAdmin, isValidObjectId, async (req, res) => {
     try {
-        const { id } = req.params;
-        console.log(`🛠 Tentando excluir a postagem: ${id}`);
+        const { id } = req.params; // Desestruturação correta para pegar o parâmetro id
+        console.log(`🛠 Tentando excluir a postagem com ID: ${id}`);
 
-        // Buscar postagem antes de excluir
-        const post = await postagemController.getPostById(id);
-        if (!post) {
+        // Usando findByIdAndDelete diretamente
+        const deletedPost = await postagemController.deletePost(id);
+
+        // Se não encontrar a postagem
+        if (!deletedPost) {
             return res.status(404).json({ error: "Postagem não encontrada." });
         }
 
-        // Excluir a postagem
-        const deletedPost = await postagemController.deletePost(id);
         console.log("✅ Postagem excluída com sucesso!");
-
         res.json({ message: "✅ Postagem excluída com sucesso!", id: deletedPost._id });
-
     } catch (error) {
-        console.error("❌ ERRO AO EXCLUIR POSTAGEM:", error);
+        console.error("❌ Erro ao excluir postagem:", error);
         res.status(500).json({ error: "Erro ao excluir postagem.", details: error.message });
     }
 });
+
+
 
 
 

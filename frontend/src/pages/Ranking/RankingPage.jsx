@@ -10,7 +10,7 @@ const RankingPage = () => {
     useEffect(() => {
         const fetchRanking = async () => {
             try {
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/ranking");
+                const response = await axios.get("http://localhost:5000/api/ranking");
                 setRanking(response.data);
                 setLoading(false);
             } catch (error) {

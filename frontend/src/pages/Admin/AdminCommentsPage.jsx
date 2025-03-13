@@ -21,7 +21,7 @@ const AdminCommentsPage = () => {
                     return;
                 }
 
-                const response = await axios.get("https://book-recommendation-system-9uba.onrender.com/api/postagens", {
+                const response = await axios.get("http://localhost:5000/api/postagens", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -34,8 +34,8 @@ const AdminCommentsPage = () => {
         fetchPosts();
     }, [navigate]);
 
-    // Função para remover uma postagem////
-    const handleRemovePost = async (_id) => {
+    // 🛠 Função para remover uma postagem
+    const handleRemovePost = async (_id, ) => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta postagem?");
         if (!confirmDelete) return;
 
@@ -46,15 +46,16 @@ const AdminCommentsPage = () => {
                 return;
             }
 
-            console.log("📝 Enviando requisição DELETE para:", _id); // Log para depuração
+            console.log("📝 Enviando requisição DELETE para:", _id);
 
-            const response = await axios.delete(`https://book-recommendation-system-9uba.onrender.com/api/postagens/${_id}`, {
+            // Corrigido o endpoint da requisição
+            const response = await axios.delete(`http://localhost:5000/api/postagens/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             if (response.status === 200) {
                 console.log("✅ Postagem removida com sucesso!");
-                setPosts((prevPosts) => prevPosts.filter((post) => post._id !== _id));
+                setPosts((prevPosts) => prevPosts.filter((post) => post._id !== _id)); // Filtra corretamente a postagem
                 alert("Postagem excluída com sucesso!");
             } else {
                 console.error("⚠️ Erro ao remover a postagem:", response.data);
@@ -84,11 +85,14 @@ const AdminCommentsPage = () => {
                     <TableBody>
                         {posts.map((post) => (
                             <TableRow key={post._id}>
-                                <TableCell>{post.userId.name}</TableCell> {/* Corrigido para exibir o nome do usuário */}
+                                <TableCell>{post.userName}</TableCell>
                                 <TableCell>{post.content}</TableCell>
                                 <TableCell>
                                     <Tooltip title="Excluir postagem">
-                                        <IconButton onClick={() => handleRemovePost(post._id)} sx={{ color: "red" }}>
+                                        <IconButton 
+                                            onClick={() => handleRemovePost(post._id, post.userId)} // Passa o _id e userId
+                                            sx={{ color: "red" }}
+                                        >
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>

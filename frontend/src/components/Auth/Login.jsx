@@ -22,7 +22,7 @@ const Login = ({ handleLogin }) => {
         if (token) {
             // Verifica o role antes de redirecionar
             if (role === 'admin') {
-                navigate("/admin"); // Redireciona para /admin se o usuário for admin
+                navigate("/admin/usersadmin"); // Redireciona para /admin se o usuário for admin
             } else {
                 navigate("/"); // Caso contrário, redireciona para a página principal
             }
@@ -38,7 +38,7 @@ const Login = ({ handleLogin }) => {
         setSuccess("");
     
         try {
-            const response = await axios.post("https://book-recommendation-system-9uba.onrender.com/api/login", {
+            const response = await axios.post("http://localhost:5000/api/login", {
                 email,
                 senha,
             });
@@ -53,7 +53,7 @@ const Login = ({ handleLogin }) => {
     
                 // Redireciona para a página correta dependendo do role
                 if (response.data.usuario.role === 'admin') {
-                    navigate("/admin"); // Redireciona para a página de admin se o usuário for admin
+                    navigate("/admin/usersadmin"); // Redireciona para a página de admin se o usuário for admin
                 } else {
                     navigate("/");  // Caso contrário, redireciona para a página principal
                 }
